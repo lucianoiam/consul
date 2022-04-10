@@ -1,0 +1,21 @@
+@font-face {
+    font-family: 'UbuntuMono';
+    src: url('UbuntuMono-Regular.ttf') format('truetype');
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    padding: 20px;
+    margin: 0;
+    background-color: #8c8c8c;
+    color: #000000;
+    position: relative;
+}
