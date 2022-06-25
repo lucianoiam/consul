@@ -22,21 +22,19 @@
 #include "DistrhoPlugin.hpp"
 #include "DistrhoPluginInfo.h"
 
+#include "extra/PluginEx.hpp"
+
 START_NAMESPACE_DISTRHO
 
-class ConsulPlugin : public Plugin
+class ConsulPlugin : public PluginEx
 {
 public:
     ConsulPlugin()
-        : Plugin(0/*parameters*/, 0/*programs*/, 1/*states*/)
-    {
+        : PluginEx(0/*parameters*/, 0/*programs*/, 1/*states*/)
+    {}
 
-    }
-
-    ~ConsulPlugin()
-    {
-
-    }
+    virtual ~ConsulPlugin()
+    {}
 
     const char* getLabel() const override
     {
@@ -65,18 +63,24 @@ public:
 
     void initState(uint32_t index, State& state) override
     {
+        PluginEx::initState(index, state);
+
         switch (index)
         {
         case 0:
             state.key = "ui_size";
+            state.defaultValue = "";
             break;
         }
 
-        state.defaultValue = "";
+        // This is necessary because DISTRHO_PLUGIN_WANT_FULL_STATE==1
+        fState[state.key.buffer()] = state.defaultValue;
     }
 
     void setState(const char* key, const char* value) override
     {
+        PluginEx::setState(key, value);
+
         fState[key] = value;
     }
 
@@ -93,14 +97,12 @@ public:
 
     void run(const float** inputs, float** outputs, uint32_t frames,
              const MidiEvent* midiEvents, uint32_t midiEventCount)
-    {
-
-    }
+    {}
 
 private:
     typedef std::unordered_map<std::string,std::string> StateMap;
 
-    StateMap  fState;
+    StateMap fState;
 
 };
 

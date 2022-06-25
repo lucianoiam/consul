@@ -16,3 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
+class ConsulUI extends DISTRHO.UI {
+
+    constructor() {
+        super();
+
+        document.body.style.visibility = 'visible';
+
+        // TODO
+    }
+
+}
