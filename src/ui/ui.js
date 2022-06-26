@@ -16,6 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
+const CONTROL_DESCRIPTOR = Object.freeze({
+    'g-knob'   : { ccBase: 0,    midiVal: v => Math.floor(127 * v) },
+    'g-button' : { ccBase: 0x10, midiVal: v => v ? 127 : 0         },
+    'g-fader'  : { ccBase: 0x20, midiVal: v => Math.floor(127 * v) }
+});
+
 class ConsulUI extends DISTRHO.UI {
 
     constructor() {
@@ -23,23 +29,28 @@ class ConsulUI extends DISTRHO.UI {
 
         document.body.style.visibility = 'visible';
 
-        this.mixer.querySelectorAll('.control').forEach((el) => {
-            el.addEventListener('input', (ev) => {
-                this.broadcastMessage({id: el.id, val: el.value});
-            });
+        document.querySelectorAll('.control').forEach(el => {
+            el.addEventListener('input', ev => this.handleInput(el));
         });
+    }
+
+    handleInput(el) {
+        const descriptor = CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
+        const index = parseInt(el.id.split('-')[1]) - 1;
+        const value = descriptor.midiVal(el.value);
+        this.sendControlChange(descriptor.ccBase + index, value);
+        this.broadcastMessage({id: el.id, val: el.value});
+    }
+
+    // There is no method for sending MIDI control changes messages in DPF, only
+    // UI::sendNote() is available. See custom implementation in ConsulUI.cpp .
+    sendControlChange(control, value) {
+        this.postMessage('ConsulUI', 'sendControlChange', control, value);
     }
 
     messageReceived(args) {
         const control = document.getElementById(args.id);
-
-        if (control) {
-            control.value = args.val;
-        }
-    }
-
-    get mixer() {
-        return document.getElementById('mixer');
+        control.value = args.val;
     }
 
 }

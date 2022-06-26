@@ -18,7 +18,27 @@
 
 #include "WebUI.hpp"
 
+class ConsulUI : public WebUI
+{
+public:
+    ConsulUI()
+        : WebUI(800 /*width*/, 540 /*height*/, 0x101010ff /*background*/)
+    {}
+
+    void onMessageReceived(const JSValue& args, uintptr_t /*context*/) override
+    {
+        if ((args[1].getString() == "sendControlChange") && (args.getArraySize() == 4)) {
+            const unsigned char index = static_cast<unsigned char>(args[2].getNumber());
+            const unsigned char value = static_cast<unsigned char>(args[3].getNumber());
+
+            d_stderr("FIXME - cc %d = %d", index, value);
+
+        }
+    }
+
+};
+
 UI* DISTRHO::createUI()
 {
-    return new WebUI(800 /*width*/, 540 /*height*/, 0x101010ff /*background*/);
+    return new ConsulUI();
 }

@@ -58,7 +58,7 @@ public:
 
     int64_t getUniqueId() const override
     {
-        return d_cconst('L', 'I', 'c', 's');
+        return d_cconst('L', 'c', 's', 'l');
     }
 
     void initState(uint32_t index, State& state) override
