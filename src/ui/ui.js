@@ -23,7 +23,23 @@ class ConsulUI extends DISTRHO.UI {
 
         document.body.style.visibility = 'visible';
 
-        // TODO
+        this.mixer.querySelectorAll('.control').forEach((el) => {
+            el.addEventListener('input', (ev) => {
+                this.broadcastMessage({id: el.id, val: el.value});
+            });
+        });
+    }
+
+    messageReceived(args) {
+        const control = document.getElementById(args.id);
+
+        if (control) {
+            control.value = args.val;
+        }
+    }
+
+    get mixer() {
+        return document.getElementById('mixer');
     }
 
 }

@@ -3,6 +3,11 @@
     src: url('UbuntuMono-Regular.ttf') format('truetype');
 }
 
+@font-face {
+    font-family: 'Satisfy';
+    src: url('Satisfy-Regular.ttf') format('truetype');
+}
+
 * {
     box-sizing: border-box;
 }
@@ -13,17 +18,48 @@ html {
 
 body {
     height: 100%;
-    padding: 10px;
+    min-width: 800px;
+    min-height: 540px;
     margin: 0;
-    background-color: #101010;
+}
+
+#title {
+    position: absolute;
+    width: 100%;
+    top: 20px;
+    left: 0;
+    text-align: center;
+    color: #fff;
+    font-family: Satisfy;
+    font-size: 2em;
+    color: #888;
+}
+
+@media (max-height: 680px) {
+    #title {
+        display: none;
+    }
+}
+
+#overscan {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #222;
 }
 
 #mixer { 
     display: grid; 
     grid-template-columns: repeat(8, 1fr); 
     grid-column-gap: 5px;
-    width: 100%;
-    height: 100%;
+    width: 800px;
+    height: 540px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #111;
 }
 
 .strip {
@@ -32,8 +68,8 @@ body {
     grid-row-gap: 20px;
 }
 
-.control {
-    display: grid;
+.cell {
+    display: flex;
     justify-content: center;
     align-items: center;
 }
@@ -48,7 +84,7 @@ g-button {
     height: 37px;
     border-radius: 4px;
     color: #fff;
-    background-color: #555;
+    background-color: #404040;
 }
 
 g-fader {
