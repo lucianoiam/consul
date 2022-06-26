@@ -25,15 +25,22 @@ public:
         : WebUI(800 /*width*/, 540 /*height*/, 0x101010ff /*background*/)
     {}
 
-    void onMessageReceived(const JSValue& args, uintptr_t /*context*/) override
+    void onMessageReceived(const JSValue& args, uintptr_t context) override
     {
-        if ((args[1].getString() == "sendControlChange") && (args.getArraySize() == 4)) {
-            const unsigned char index = static_cast<unsigned char>(args[2].getNumber());
-            const unsigned char value = static_cast<unsigned char>(args[3].getNumber());
-
-            d_stderr("FIXME - cc %d = %d", index, value);
-
+        if ((args[0].getString() != "ConsulUI") || (args[1].getString() != "ui2host")
+                || (args.getArraySize() != 4)) {
+            return;
         }
+
+        const String id = args[2].getString();
+        const double value = args[3].getNumber();
+
+        d_stderr2("FIXME - send cc to Plugin %s = %g", id.buffer(), value);
+
+        JSValue argsCopy = args;
+        argsCopy.setArrayItem(1, "host2ui");
+
+        broadcastMessage(argsCopy, /*exclude*/reinterpret_cast<Client>(context));
     }
 
 };
