@@ -41,7 +41,7 @@ public:
         const String id = args[2].getString(); // k-00, b-00, f-00, k-01, ...
 
         uint8_t ccIndex = static_cast<uint8_t>(std::atoi(id.buffer() + 2));
-        uint8_t ccValue;
+        uint8_t ccValue = 0;
 
         switch (id[0]) {
             case 'k':
