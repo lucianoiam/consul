@@ -76,6 +76,7 @@ public:
         event.data[1] = index;
         event.data[2] = value;
         event.dataExt = nullptr;
+        
         setState("cc", String::asBase64(&event, sizeof(MidiEvent)));
     }
 

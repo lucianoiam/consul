@@ -31,7 +31,7 @@ class ConsulPlugin : public PluginEx
 {
 public:
     ConsulPlugin()
-        : PluginEx(0/*parameters*/, 0/*programs*/, 1/*states*/)
+        : PluginEx(0/*parameters*/, 0/*programs*/, 2/*states*/)
     {}
 
     virtual ~ConsulPlugin()
@@ -69,6 +69,11 @@ public:
         switch (index)
         {
         case 0:
+            state.key = "cfg";
+            state.defaultValue = "";
+            state.hints = kStateIsOnlyForUI;
+            break;
+        case 1:
             state.key = "cc";
             state.defaultValue = "";
             state.hints = kStateIsBase64Blob | kStateIsOnlyForDSP;
@@ -83,7 +88,7 @@ public:
     {
         PluginEx::setState(key, value);
 
-        if (::strcmp(key, "cc") == 0) {
+        if ((::strcmp(key, "cc") == 0) && (::strlen(value) > 0)) {
             std::vector<uint8_t> data = d_getChunkFromBase64String(value);
             const MidiEvent* event = reinterpret_cast<MidiEvent*>(data.data());
             writeMidiEvent(*event);
@@ -106,7 +111,7 @@ public:
     }
 
     void run(const float** /*inputs*/, float** /*outputs*/, uint32_t /*frames*/,
-             const MidiEvent* /*midiEvents*/, uint32_t /*midiEventCount*/)
+             const MidiEvent* /*midiEvents*/, uint32_t /*midiEventCount*/) override
     {}
 
 private:

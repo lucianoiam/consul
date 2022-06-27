@@ -21,6 +21,8 @@ class ConsulUI extends DISTRHO.UI {
     constructor() {
         super();
 
+        this._config = {};
+
         document.body.style.visibility = 'visible';
 
         if (DISTRHO.env.noReliableScreenSize) {
@@ -41,4 +43,18 @@ class ConsulUI extends DISTRHO.UI {
         }
     }
 
+    messageChannelOpen() {
+        this._saveConfig();
+    }
+
+    stateChanged(key, value) {
+        if (key == 'cfg') {
+            this._config = JSON.parse(value);
+        }
+    }
+
+    _saveConfig() {
+        this.setState('cfg', JSON.stringify(this._config));
+    }
+    
 }
