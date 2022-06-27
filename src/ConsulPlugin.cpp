@@ -33,7 +33,7 @@ class ConsulPlugin : public PluginEx
 {
 public:
     ConsulPlugin()
-        : PluginEx(0/*parameters*/, 0/*programs*/, 2/*states*/)
+        : PluginEx(0/*parameters*/, 0/*programs*/, 3/*states*/)
         , fMidiEvents(128 * sizeof(MidiEvent))
     {}
 
@@ -72,11 +72,16 @@ public:
         switch (index)
         {
         case 0:
-            state.key = "cfg";
-            state.defaultValue = "";
+            state.key = "config";
+            state.defaultValue = "{}";
             state.hints = kStateIsOnlyForUI;
             break;
         case 1:
+            state.key = "ui";
+            state.defaultValue = "{}";
+            state.hints = kStateIsOnlyForUI;
+            break;
+        case 2:
             state.key = "midi";
             state.defaultValue = "";
             state.hints = kStateIsBase64Blob | kStateIsOnlyForDSP;
@@ -89,6 +94,7 @@ public:
 
     void setState(const char* key, const char* value) override
     {
+        d_stderr("set state : %s = %s", key, value);
         PluginEx::setState(key, value);
 
         if ((::strcmp(key, "midi") == 0) && (::strlen(value) > 0)) {

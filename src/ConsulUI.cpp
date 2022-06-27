@@ -27,6 +27,15 @@ public:
         : WebUI(800 /*width*/, 540 /*height*/, 0x101010ff /*background*/)
     {}
 
+    void stateChanged(const char* key, const char* value) override
+    {
+        WebUI::stateChanged(key, value);
+
+        if (::strcmp(key, "ui") == 0) {
+            fState = JSValue::fromJSON(value);
+        }
+    }
+
     void onMessageReceived(const JSValue& args, uintptr_t context) override
     {
         if (args[0].getString() != "ui2host") {
@@ -45,9 +54,14 @@ public:
             argc - 3   // size
         );
 
+        const JSValue& id = args[1];
+        const JSValue& value = args[2];
+
+        fState.setObjectItem(id.getString(), value);
+        setState("ui", fState.toJSON());
+
         // Keep all connected UIs in sync
-        broadcastMessage({"host2ui", args[1], args[2]},
-                        /*exclude*/reinterpret_cast<Client>(context));
+        broadcastMessage({"host2ui", id, value}, /*exclude*/reinterpret_cast<Client>(context));
     }
 
     // DPF UI provides sendNote() only, see also ConsulPlugin.cpp .
@@ -63,6 +77,9 @@ public:
         
         setState("midi", String::asBase64(&event, sizeof(MidiEvent)));
     }
+
+private:
+    JSValue fState;
 
 };
 

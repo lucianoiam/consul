@@ -58,8 +58,12 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     stateChanged(key, value) {
-        if ((key == 'cfg') && value) {
+        console.log(key);
+        
+        if ((key == 'config') && value) {
             this._config = JSON.parse(value);
+
+            console.log(this._config);
         }
     }
 
@@ -72,7 +76,7 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     _saveConfig() {
-        this.setState('cfg', JSON.stringify(this._config));
+        this.setState('config', JSON.stringify(this._config));
     }
     
 }
