@@ -780,16 +780,27 @@ class Fader extends RangeInputWidget {
         this._startValue = this._value;
         this._dragDistance = 0;
 
-        this._onMove(ev);
+        if (! ev.isInputWheel) {
+            this._onMove(ev);
+        }
     }
 
     _onMove(ev) {
         document.body.style.cursor = ev.isInputWheel ? 'ns-resize' : 'none';
 
-        const y = (ev.clientY - this.getBoundingClientRect().top) / this.clientHeight;
-        const val = 1.0 - Math.max(0, Math.min(1.0, y));
+        if (ev.isInputWheel) {
+            this._dragDistance += -0.1 * ev.deltaY / this.clientHeight;
 
-        this._setNormalizedValueAndDispatchInputEventIfNeeded(val);
+            const dval = this._dragDistance * this.opt.sensibility;
+            const val = Math.max(0, Math.min(1.0, this._startValue + dval));
+
+            this._setNormalizedValueAndDispatchInputEventIfNeeded(val);
+        } else if (ev.isInputMouse) {
+            const y = (ev.clientY - this.getBoundingClientRect().top) / this.clientHeight;
+            const val = 1.0 - Math.max(0, Math.min(1.0, y));
+
+            this._setNormalizedValueAndDispatchInputEventIfNeeded(val);
+        }
     }
 
     _onRelease(ev) {
