@@ -29,15 +29,20 @@ public:
 
     void onMessageReceived(const JSValue& args, uintptr_t context) override
     {
-        if ((args[0].getString() != "ui2host") || (args.getArraySize() != 6)) {
+        if (args[0].getString() != "ui2host") {
             return;
         }
 
-        // This method is not available in DPF, see implementation below.
-        sendControlChange(
-            static_cast<uint8_t>(args[3].getNumber()), // channel
-            static_cast<uint8_t>(args[4].getNumber()), // index
-            static_cast<uint8_t>(args[5].getNumber())  // value
+        const int argc = args.getArraySize();
+        if (argc < 5) {
+            return;
+        }
+
+        sendMidiEvent(
+            static_cast<uint8_t>(args[3].getNumber()),                // status
+            static_cast<uint8_t>(args[4].getNumber()),                // data1
+            argc > 5 ? static_cast<uint8_t>(args[5].getNumber()) : 0, // data2
+            argc - 3   // size
         );
 
         // Keep all connected UIs in sync
@@ -45,17 +50,18 @@ public:
                         /*exclude*/reinterpret_cast<Client>(context));
     }
 
-    void sendControlChange(uint8_t channel, uint8_t index, uint8_t value)
+    // DPF UI provides sendNote() only, see also ConsulPlugin.cpp .
+    void sendMidiEvent(uint8_t status, uint8_t data1, uint8_t data2, uint32_t size)
     {
         MidiEvent event;
         event.frame = 0; // hardcoded position
-        event.size = 3;
-        event.data[0] = 0xb0 | channel;
-        event.data[1] = index;
-        event.data[2] = value;
+        event.size = size;
+        event.data[0] = status;
+        event.data[1] = data1;
+        event.data[2] = data2;
         event.dataExt = nullptr;
         
-        setState("cc", String::asBase64(&event, sizeof(MidiEvent)));
+        setState("midi", String::asBase64(&event, sizeof(MidiEvent)));
     }
 
 };

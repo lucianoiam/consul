@@ -74,7 +74,7 @@ public:
             state.hints = kStateIsOnlyForUI;
             break;
         case 1:
-            state.key = "cc";
+            state.key = "midi";
             state.defaultValue = "";
             state.hints = kStateIsBase64Blob | kStateIsOnlyForDSP;
             break;
@@ -88,12 +88,11 @@ public:
     {
         PluginEx::setState(key, value);
 
-        if ((::strcmp(key, "cc") == 0) && (::strlen(value) > 0)) {
+        if ((::strcmp(key, "midi") == 0) && (::strlen(value) > 0)) {
             std::vector<uint8_t> data = d_getChunkFromBase64String(value);
             const MidiEvent* event = reinterpret_cast<MidiEvent*>(data.data());
             writeMidiEvent(*event);
-            //d_stderr("MIDI CC : ch = %x, idx = %x, val = %x", event->data[0] & 0x0f,
-            //            event->data[1], event->data[2]);
+            //d_stderr("MIDI -> [%x %x %x]", event->data[0], event->data[1], event->data[2]);
             return;
         }
 

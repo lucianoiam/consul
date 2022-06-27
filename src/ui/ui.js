@@ -61,9 +61,10 @@ class ConsulUI extends DISTRHO.UI {
 
     _handleControlInput(el) {
         const descriptor = CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
+        const status = 0xb0 | (MIDI_CHANNEL - 1);
         const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
         const ccValue = descriptor.midiVal(el.value);
-        this.postMessage('ui2host', el.id, el.value, MIDI_CHANNEL - 1, ccIndex, ccValue);
+        this.postMessage('ui2host', el.id, el.value, status, ccIndex, ccValue);
     }
 
     _saveConfig() {
