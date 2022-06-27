@@ -49,7 +49,7 @@ class ConsulUI extends DISTRHO.UI {
 
     messageReceived(args) {
         if ((args[0] == 'host2ui') && (args.length == 3)) {
-            document.getElementById(args[1]).value = args[2];
+            this._updateControlValue(args[1], args[2]);
         }
     }
 
@@ -60,10 +60,20 @@ class ConsulUI extends DISTRHO.UI {
     stateChanged(key, value) {
         console.log(`JS stateChanged() : ${key} = ${value}`);
 
-        if ((key == 'config') && value) {
-            this._config = JSON.parse(value);
+        if (! value) {
+            return;
+        }
 
-            console.log(this._config);
+        switch (key) {
+            case 'config':
+                this._config = JSON.parse(value);
+                break;
+            case 'ui':
+                const ui = JSON.parse(value);
+                for (const id in ui) {
+                    this._updateControlValue(id, ui[id]);
+                }
+                break;
         }
     }
 
@@ -73,6 +83,10 @@ class ConsulUI extends DISTRHO.UI {
         const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
         const ccValue = descriptor.midiVal(el.value);
         this.postMessage('ui2host', el.id, el.value, status, ccIndex, ccValue);
+    }
+
+    _updateControlValue(id, value) {
+        document.getElementById(id).value = value;
     }
 
     _saveConfig() {
