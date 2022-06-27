@@ -83,7 +83,6 @@ class ConsulUI extends DISTRHO.UI {
         const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
         const ccValue = descriptor.midiVal(el.value);
         this.postMessage('ui2host', el.id, el.value, status, ccIndex, ccValue);
-        this._saveConfig();
     }
 
     _updateControlValue(id, value) {
