@@ -24,6 +24,8 @@ const CONTROL_DESCRIPTOR = Object.freeze({
     'g-fader'  : { ccBase: 0x20, midiVal: v => Math.floor(127 * v) }
 });
 
+const env = DISTRHO.env, helper = DISTRHO.UIHelper;
+
 class ConsulUI extends DISTRHO.UI {
 
     constructor() {
@@ -31,9 +33,9 @@ class ConsulUI extends DISTRHO.UI {
 
         this._config = {};
 
-        document.body.style.visibility = 'visible';
+        helper.enableOfflineModal(this);
 
-        if (DISTRHO.env.noReliableScreenSize) {
+        if (env.noReliableScreenSize) {
             // This is only needed for Linux GTK, otherwise it is handled by CSS.
             document.getElementById('title').style.display = 'none';
         }
@@ -41,6 +43,8 @@ class ConsulUI extends DISTRHO.UI {
         document.querySelectorAll('.control').forEach(el => {
             el.addEventListener('input', ev => this._handleControlInput(el));
         });
+
+        document.body.style.visibility = 'visible';
     }
 
     messageReceived(args) {
