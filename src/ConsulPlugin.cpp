@@ -30,7 +30,7 @@ class ConsulPlugin : public PluginEx
 {
 public:
     ConsulPlugin()
-        : PluginEx(0/*parameters*/, 0/*programs*/, 1/*states*/)
+        : PluginEx(0/*parameters*/, 0/*programs*/, 0/*states*/)
     {}
 
     virtual ~ConsulPlugin()
@@ -65,13 +65,13 @@ public:
     {
         PluginEx::initState(index, state);
 
-        switch (index)
+        /*switch (index)
         {
         case 0:
             state.key = "ui_size";
             state.defaultValue = "";
             break;
-        }
+        }*/
 
         // This is necessary because DISTRHO_PLUGIN_WANT_FULL_STATE==1
         fState[state.key.buffer()] = state.defaultValue;
