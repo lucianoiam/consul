@@ -90,7 +90,8 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     _saveConfig() {
-        this.setState('config', JSON.stringify(this._config));
+        // FIXME - this breaks the WebSocket connection (!!)
+        //this.setState('config', JSON.stringify(this._config));
     }
     
 }
