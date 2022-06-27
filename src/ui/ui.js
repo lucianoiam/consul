@@ -52,7 +52,8 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     messageChannelOpen() {
-        this._saveConfig();
+        // Writing to the WebSocket during the open callback breaks connection
+        //this._saveConfig();
     }
 
     stateChanged(key, value) {
@@ -82,6 +83,7 @@ class ConsulUI extends DISTRHO.UI {
         const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
         const ccValue = descriptor.midiVal(el.value);
         this.postMessage('ui2host', el.id, el.value, status, ccIndex, ccValue);
+        this._saveConfig();
     }
 
     _updateControlValue(id, value) {
@@ -89,8 +91,7 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     _saveConfig() {
-        // FIXME - this breaks the WebSocket connection (!!)
-        //this.setState('config', JSON.stringify(this._config));
+        this.setState('config', JSON.stringify(this._config));
     }
     
 }
