@@ -23,6 +23,11 @@ class ConsulUI extends DISTRHO.UI {
 
         document.body.style.visibility = 'visible';
 
+        if (DISTRHO.env.noReliableDocumentSize) {
+            // This is only needed for Linux GTK, otherwise it is handled by CSS.
+            document.getElementById('title').style.display = 'none';
+        }
+
         document.querySelectorAll('.control').forEach(el => {
             el.addEventListener('input', (ev) => {
                 this.postMessage('ConsulUI', 'ui2host', el.id, el.value);

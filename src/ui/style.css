@@ -21,6 +21,8 @@ body {
     min-width: 800px;
     min-height: 540px;
     margin: 0;
+    color: #fff;
+    font-family: UbuntuMono;
 }
 
 #title {
@@ -54,7 +56,6 @@ body {
 #mixer { 
     display: grid; 
     grid-template-columns: repeat(8, 1fr); 
-    grid-column-gap: 5px;
     width: 800px;
     height: 540px;
     padding: 10px;
@@ -65,7 +66,8 @@ body {
 .strip {
     display: grid;
     grid-template-rows: 1fr 1fr 0.66fr 0.66fr 4fr;
-    grid-row-gap: 20px;
+    color: #404040;
+    font-size: 1em;
 }
 
 .cell {
@@ -76,7 +78,7 @@ body {
 
 g-knob {
     width: 56px;
-    height: 56px;
+    height: 60px;
 }
 
 g-button {
@@ -85,6 +87,10 @@ g-button {
     border-radius: 4px;
     color: #fff;
     background-color: #404040;
+}
+
+.fader-cell {
+    padding: 10px 0;
 }
 
 g-fader {
