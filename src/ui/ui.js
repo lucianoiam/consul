@@ -58,8 +58,8 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     stateChanged(key, value) {
-        console.log(key);
-        
+        console.log(`JS stateChanged() : ${key} = ${value}`);
+
         if ((key == 'config') && value) {
             this._config = JSON.parse(value);
 
