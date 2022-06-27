@@ -43,8 +43,6 @@ class ConsulUI extends DISTRHO.UI {
         document.querySelectorAll('.control').forEach(el => {
             el.addEventListener('input', ev => this._handleControlInput(el));
         });
-
-        document.body.style.visibility = 'visible';
     }
 
     messageReceived(args) {
@@ -60,19 +58,20 @@ class ConsulUI extends DISTRHO.UI {
     stateChanged(key, value) {
         console.log(`JS stateChanged() : ${key} = ${value}`);
 
-        if (! value) {
-            return;
-        }
-
         switch (key) {
             case 'config':
-                this._config = JSON.parse(value);
+                if (value) {
+                    this._config = JSON.parse(value);
+                }
                 break;
             case 'ui':
-                const ui = JSON.parse(value);
-                for (const id in ui) {
-                    this._updateControlValue(id, ui[id]);
+                if (value) {
+                    const ui = JSON.parse(value);
+                    for (const id in ui) {
+                        this._updateControlValue(id, ui[id]);
+                    }
                 }
+                document.body.style.visibility = 'visible';
                 break;
         }
     }
