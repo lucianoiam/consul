@@ -23,7 +23,7 @@ class ConsulUI extends DISTRHO.UI {
 
         document.body.style.visibility = 'visible';
 
-        if (DISTRHO.env.noReliableDocumentSize) {
+        if (DISTRHO.env.noReliableScreenSize) {
             // This is only needed for Linux GTK, otherwise it is handled by CSS.
             document.getElementById('title').style.display = 'none';
         }
