@@ -33,10 +33,12 @@ HIPHOP_WEB_UI_PATH = src/ui
 # Files to build
 
 FILES_DSP = \
-    src/ConsulPlugin.cpp
+    src/ConsulPlugin.cpp \
+    src/ring_buffer.cc
 
 FILES_UI  = \
-    src/ConsulUI.cpp
+    src/ConsulUI.cpp \
+    src/ring_buffer.cc
 
 # --------------------------------------------------------------
 # Do some magic
@@ -47,7 +49,7 @@ include hiphop/Makefile.plugins.mk
 # Enable all possible plugin types
 
 TARGETS += lv2_sep vst vst3
-
+CXXFLAGS += -std=c++17
 BASE_FLAGS += -Isrc
 LXHELPER_CPPFLAGS += -Isrc
 

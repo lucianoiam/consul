@@ -25,6 +25,8 @@
 
 #include "extra/PluginEx.hpp"
 
+#include "ring_buffer/ring_buffer.h"
+
 START_NAMESPACE_DISTRHO
 
 class ConsulPlugin : public PluginEx
@@ -32,6 +34,7 @@ class ConsulPlugin : public PluginEx
 public:
     ConsulPlugin()
         : PluginEx(0/*parameters*/, 0/*programs*/, 2/*states*/)
+        , fMidiEvents(128 * sizeof(MidiEvent))
     {}
 
     virtual ~ConsulPlugin()
@@ -90,9 +93,7 @@ public:
 
         if ((::strcmp(key, "midi") == 0) && (::strlen(value) > 0)) {
             std::vector<uint8_t> data = d_getChunkFromBase64String(value);
-            const MidiEvent* event = reinterpret_cast<MidiEvent*>(data.data());
-            writeMidiEvent(*event);
-            //d_stderr("MIDI -> [%x %x %x]", event->data[0], event->data[1], event->data[2]);
+            fMidiEvents.put(*reinterpret_cast<MidiEvent*>(data.data()));
             return;
         }
 
@@ -113,12 +114,18 @@ public:
 
     void run(const float** /*inputs*/, float** /*outputs*/, uint32_t /*frames*/,
              const MidiEvent* /*midiEvents*/, uint32_t /*midiEventCount*/) override
-    {}
+    {
+        MidiEvent event;
+        while (fMidiEvents.get(event)) {
+            writeMidiEvent(event);
+        }
+    }
 
 private:
     typedef std::unordered_map<std::string,std::string> StateMap;
 
-    StateMap fState;
+    StateMap    fState;
+    Ring_Buffer fMidiEvents;
 
 };
 
