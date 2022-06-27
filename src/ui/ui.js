@@ -15,7 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- 
+
+const MIDI_CHANNEL = 1;
+
+const CONTROL_DESCRIPTOR = Object.freeze({
+    'g-knob'   : { ccBase: 0,    midiVal: v => Math.floor(127 * v) },
+    'g-button' : { ccBase: 0x10, midiVal: v => v ? 127 : 0         },
+    'g-fader'  : { ccBase: 0x20, midiVal: v => Math.floor(127 * v) }
+});
+
 class ConsulUI extends DISTRHO.UI {
 
     constructor() {
@@ -31,15 +39,13 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         document.querySelectorAll('.control').forEach(el => {
-            el.addEventListener('input', (ev) => {
-                this.postMessage('ConsulUI', 'ui2host', el.id, el.value);
-            });
+            el.addEventListener('input', ev => this._handleControlInput(el));
         });
     }
 
     messageReceived(args) {
-        if ((args[0] == 'ConsulUI') && (args[1] == 'host2ui') && (args.length == 4)) {
-            document.getElementById(args[2]).value = args[3];
+        if ((args[0] == 'host2ui') && (args.length == 3)) {
+            document.getElementById(args[1]).value = args[2];
         }
     }
 
@@ -51,6 +57,13 @@ class ConsulUI extends DISTRHO.UI {
         if (key == 'cfg') {
             this._config = JSON.parse(value);
         }
+    }
+
+    _handleControlInput(el) {
+        const descriptor = CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
+        const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
+        const ccValue = descriptor.midiVal(el.value);
+        this.postMessage('ui2host', el.id, el.value, MIDI_CHANNEL - 1, ccIndex, ccValue);
     }
 
     _saveConfig() {

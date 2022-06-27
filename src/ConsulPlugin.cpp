@@ -92,6 +92,8 @@ public:
             std::vector<uint8_t> data = d_getChunkFromBase64String(value);
             const MidiEvent* event = reinterpret_cast<MidiEvent*>(data.data());
             writeMidiEvent(*event);
+            //d_stderr("MIDI CC : ch = %x, idx = %x, val = %x", event->data[0] & 0x0f,
+            //            event->data[1], event->data[2]);
             return;
         }
 

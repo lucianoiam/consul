@@ -20,10 +20,6 @@
 
 #include "DistrhoPlugin.hpp"
 
-#define CC_BASE_INDEX_KNOB    0
-#define CC_BASE_INDEX_BUTTON  0x10
-#define CC_BASE_INDEX_FADER   0x20
-
 class ConsulUI : public WebUI
 {
 public:
@@ -33,40 +29,22 @@ public:
 
     void onMessageReceived(const JSValue& args, uintptr_t context) override
     {
-        if ((args[0].getString() != "ConsulUI") || (args[1].getString() != "ui2host")
-                || (args.getArraySize() != 4)) {
+        if ((args[0].getString() != "ui2host") || (args.getArraySize() != 6)) {
             return;
         }
 
-        const String id = args[2].getString(); // k-00, b-00, f-00, k-01, ...
+        // This method is not available in DPF, see implementation below.
+        sendControlChange(
+            static_cast<uint8_t>(args[3].getNumber()), // channel
+            static_cast<uint8_t>(args[4].getNumber()), // index
+            static_cast<uint8_t>(args[5].getNumber())  // value
+        );
 
-        uint8_t ccIndex = static_cast<uint8_t>(std::atoi(id.buffer() + 2));
-        uint8_t ccValue = 0;
-
-        switch (id[0]) {
-            case 'k':
-                ccIndex += CC_BASE_INDEX_KNOB;
-                ccValue = static_cast<uint8_t>(127.0 * args[3].getNumber());
-                break;
-            case 'b':
-                ccIndex += CC_BASE_INDEX_BUTTON;
-                ccValue = args[3].getBoolean() ? 127 : 0;
-                break;
-            case 'f':
-                ccIndex += CC_BASE_INDEX_FADER;
-                ccValue = static_cast<uint8_t>(127.0 * args[3].getNumber());
-                break;
-        }
-
-        sendControlChange(0, ccIndex, ccValue);
-
-        JSValue argsCopy = args;
-        argsCopy.setArrayItem(1, "host2ui");
-
-        broadcastMessage(argsCopy, /*exclude*/reinterpret_cast<Client>(context));
+        // Keep all connected UIs in sync
+        broadcastMessage({"host2ui", args[1], args[2]},
+                        /*exclude*/reinterpret_cast<Client>(context));
     }
 
-    // This method is not available in DPF
     void sendControlChange(uint8_t channel, uint8_t index, uint8_t value)
     {
         MidiEvent event;
