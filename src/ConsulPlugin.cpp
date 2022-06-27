@@ -21,6 +21,7 @@
 
 #include "DistrhoPlugin.hpp"
 #include "DistrhoPluginInfo.h"
+#include "extra/Base64.hpp"
 
 #include "extra/PluginEx.hpp"
 
@@ -30,7 +31,7 @@ class ConsulPlugin : public PluginEx
 {
 public:
     ConsulPlugin()
-        : PluginEx(0/*parameters*/, 0/*programs*/, 0/*states*/)
+        : PluginEx(0/*parameters*/, 0/*programs*/, 1/*states*/)
     {}
 
     virtual ~ConsulPlugin()
@@ -65,13 +66,14 @@ public:
     {
         PluginEx::initState(index, state);
 
-        /*switch (index)
+        switch (index)
         {
         case 0:
-            state.key = "ui_size";
+            state.key = "cc";
             state.defaultValue = "";
+            state.hints = kStateIsBase64Blob | kStateIsOnlyForDSP;
             break;
-        }*/
+        }
 
         // This is necessary because DISTRHO_PLUGIN_WANT_FULL_STATE==1
         fState[state.key.buffer()] = state.defaultValue;
@@ -81,9 +83,17 @@ public:
     {
         PluginEx::setState(key, value);
 
+        if (::strcmp(key, "cc") == 0) {
+            std::vector<uint8_t> data = d_getChunkFromBase64String(value);
+            const MidiEvent* event = reinterpret_cast<MidiEvent*>(data.data());
+            writeMidiEvent(*event);
+            return;
+        }
+
         fState[key] = value;
     }
 
+    // TODO : this will needed for persisting UI state
     String getState(const char* key) const override
     {
         StateMap::const_iterator it = fState.find(key);
@@ -95,8 +105,8 @@ public:
         return String(it->second.c_str());
     }
 
-    void run(const float** inputs, float** outputs, uint32_t frames,
-             const MidiEvent* midiEvents, uint32_t midiEventCount)
+    void run(const float** /*inputs*/, float** /*outputs*/, uint32_t /*frames*/,
+             const MidiEvent* /*midiEvents*/, uint32_t /*midiEventCount*/)
     {}
 
 private:
