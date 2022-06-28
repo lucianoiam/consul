@@ -126,27 +126,27 @@ g-fader {
 }
 
 #strip-1 g-knob {
-    --value-color: #ff7f3f;
+    --value-color: #7f3fff;
 }
 
 #strip-1 g-button {
-    color: #ff7f3f;
+    color: #7f3fff;
 }
 
 #strip-1 g-fader {
-    --value-color: #ff7f3f;
+    --value-color: #7f3fff;
 }
 
 #strip-2 g-knob {
-    --value-color: #ff3f7f;
+    --value-color: #ff7f3f;
 }
 
 #strip-2 g-button {
-    color: #ff3f7f;
+    color: #ff7f3f;
 }
 
 #strip-2 g-fader {
-    --value-color: #ff3f7f;
+    --value-color: #ff7f3f;
 }
 
 #strip-3 g-knob {
@@ -162,51 +162,51 @@ g-fader {
 }
 
 #strip-4 g-knob {
-    --value-color: #3fff7f;
+    --value-color: #ff3f7f;
 }
 
 #strip-4 g-button {
-    color: #3fff7f;
+    color: #ff3f7f;
 }
 
 #strip-4 g-fader {
-    --value-color: #3fff7f;
+    --value-color: #ff3f7f;
 }
 
 #strip-5 g-knob {
-    --value-color: #7f3fff;
+    --value-color: #3f7fff;
 }
 
 #strip-5 g-button {
-    color: #7f3fff;
-}
-
-#strip-5 g-fader {
-    --value-color: #7f3fff;
-}
-
-#strip-6 g-knob {
-    --value-color: #3f7fff;
-}
-
-#strip-6 g-button {
     color: #3f7fff;
 }
 
-#strip-6 g-fader {
+#strip-5 g-fader {
     --value-color: #3f7fff;
 }
 
-#strip-7 g-knob {
+#strip-6 g-knob {
     --value-color: #ff7f7f;
 }
 
-#strip-7 g-button {
+#strip-6 g-button {
     color: #ff7f7f;
 }
 
-#strip-7 g-fader {
+#strip-6 g-fader {
     --value-color: #ff7f7f;
+}
+
+#strip-7 g-knob {
+    --value-color: #3fff7f;
+}
+
+#strip-7 g-button {
+    color: #3fff7f;
+}
+
+#strip-7 g-fader {
+    --value-color: #3fff7f;
 }
 
 #strip-8 g-knob {
