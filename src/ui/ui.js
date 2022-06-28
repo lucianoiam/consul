@@ -36,7 +36,8 @@ class ConsulUI extends DISTRHO.UI {
         helper.enableOfflineModal(this);
 
         if (env.plugin) {
-            this._toolbar.appendChild(helper.getQRButtonElement(this, {
+            const toolbar = document.getElementById('toolbar');
+            toolbar.appendChild(helper.getQRButtonElement(this, {
                 id: 'qr-button',
                 modal: {
                     id: 'qr-modal'
@@ -44,9 +45,20 @@ class ConsulUI extends DISTRHO.UI {
             }));
         }
 
+        if (this._isMobile()) {
+            const main = document.getElementById('main');
+            const dv = window.innerHeight - main.clientHeight;
+            const scale = 100 * (1 + dv / main.clientHeight);
+            main.style.transform = `scale(${scale}%)`;
+        }
+
         document.querySelectorAll('.control').forEach(el => {
             el.addEventListener('input', ev => this._handleControlInput(el));
         });
+
+        if (env.dev) {
+            this._showUi();
+        }
     }
 
     messageReceived(args) {
@@ -75,7 +87,7 @@ class ConsulUI extends DISTRHO.UI {
                         this._updateControlValue(id, ui[id]);
                     }
                 }
-                document.body.style.visibility = 'visible';
+                this._showUi();
                 break;
         }
     }
@@ -96,8 +108,13 @@ class ConsulUI extends DISTRHO.UI {
         this.setState('config', JSON.stringify(this._config));
     }
 
-    get _toolbar() {
-        return document.getElementById('toolbar');
+    _showUi() {
+        document.body.style.visibility = 'visible';
+    }
+
+    _isMobile() {
+        const ua = navigator.userAgent;
+        return /android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
     }
     
 }
