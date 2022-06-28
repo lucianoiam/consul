@@ -25,24 +25,6 @@ body {
     font-family: UbuntuMono;
 }
 
-#title {
-    position: absolute;
-    width: 100%;
-    top: 20px;
-    left: 0;
-    text-align: center;
-    color: #fff;
-    font-family: Satisfy;
-    font-size: 2em;
-    color: #888;
-}
-
-@media (max-height: 680px) {
-    #title {
-        display: none;
-    }
-}
-
 #overscan {
     display: flex;
     flex-direction: column;
@@ -50,23 +32,64 @@ body {
     align-items: center;
     width: 100%;
     height: 100%;
-    background-color: #222;
+    background-color: #1a1a1a;
+}
+
+#main {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    height: 540px;
+    border-radius: 4px;
+    background-color: #101010;
+}
+
+#toolbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 37px;
+    padding: 0 5px;
+}
+
+#title {
+    flex: 1;
+    font-family: Satisfy;
+    font-size: 1.2em;
+    color: #fff;
+    padding-left: 5px;
+}
+
+#qr-button {
+    padding: 0 5px;
+}
+
+#qr-button path {
+    fill: #fff;
+}
+
+#qr-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 10;
 }
 
 #mixer { 
     display: grid; 
     grid-template-columns: repeat(8, 1fr); 
-    width: 800px;
-    height: 540px;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #101010;
+    width: 100%;
+    height: 100%;
+    padding: 0 10px 10px 10px;
 }
 
 .strip {
     display: grid;
     grid-template-rows: 1fr 1fr 0.66fr 0.66fr 4fr;
-    color: #404040;
+    color: #fff;
     font-size: 1em;
 }
 
@@ -79,21 +102,121 @@ body {
 g-knob {
     width: 56px;
     height: 60px;
+    --body-color: #333;
+    --range-color: #1a1a1a;
+    --pointer-off-color: #000;
+    --pointer-on-color: #eee;
 }
 
 g-button {
     width: 74px;
     height: 37px;
     border-radius: 4px;
-    color: #fff;
-    background-color: #404040;
+    background-color: #333;
 }
 
 .fader-cell {
-    padding: 10px 0;
+    padding: 15px 0 10px 0;
 }
 
 g-fader {
     max-width: 37px;
     height: 100%;
+    --body-color: #333;
+}
+
+#strip-1 g-knob {
+    --value-color: #ff7f3f;
+}
+
+#strip-1 g-button {
+    color: #ff7f3f;
+}
+
+#strip-1 g-fader {
+    --value-color: #ff7f3f;
+}
+
+#strip-2 g-knob {
+    --value-color: #ff3f7f;
+}
+
+#strip-2 g-button {
+    color: #ff3f7f;
+}
+
+#strip-2 g-fader {
+    --value-color: #ff3f7f;
+}
+
+#strip-3 g-knob {
+    --value-color: #7fff3f;
+}
+
+#strip-3 g-button {
+    color: #7fff3f;
+}
+
+#strip-3 g-fader {
+    --value-color: #7fff3f;
+}
+
+#strip-4 g-knob {
+    --value-color: #3fff7f;
+}
+
+#strip-4 g-button {
+    color: #3fff7f;
+}
+
+#strip-4 g-fader {
+    --value-color: #3fff7f;
+}
+
+#strip-5 g-knob {
+    --value-color: #7f3fff;
+}
+
+#strip-5 g-button {
+    color: #7f3fff;
+}
+
+#strip-5 g-fader {
+    --value-color: #7f3fff;
+}
+
+#strip-6 g-knob {
+    --value-color: #3f7fff;
+}
+
+#strip-6 g-button {
+    color: #3f7fff;
+}
+
+#strip-6 g-fader {
+    --value-color: #3f7fff;
+}
+
+#strip-7 g-knob {
+    --value-color: #ff7f7f;
+}
+
+#strip-7 g-button {
+    color: #ff7f7f;
+}
+
+#strip-7 g-fader {
+    --value-color: #ff7f7f;
+}
+
+#strip-8 g-knob {
+    --value-color: #ffffff;
+}
+
+#strip-8 g-button {
+    color: #ffffff;
+}
+
+#strip-8 g-fader {
+    --value-color: #ffffff;
 }

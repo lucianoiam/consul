@@ -35,9 +35,13 @@ class ConsulUI extends DISTRHO.UI {
 
         helper.enableOfflineModal(this);
 
-        if (env.noReliableScreenSize) {
-            // This is only needed for Linux GTK, otherwise it is handled by CSS.
-            document.getElementById('title').style.display = 'none';
+        if (env.plugin) {
+            this._toolbar.appendChild(helper.getQRButtonElement(this, {
+                id: 'qr-button',
+                modal: {
+                    id: 'qr-modal'
+                }
+            }));
         }
 
         document.querySelectorAll('.control').forEach(el => {
@@ -57,8 +61,7 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     stateChanged(key, value) {
-        console.log(`JS stateChanged() : ${key} = ${value}`);
-
+        //console.log(`JS stateChanged() : ${key} = ${value}`);
         switch (key) {
             case 'config':
                 if (value) {
@@ -91,6 +94,10 @@ class ConsulUI extends DISTRHO.UI {
 
     _saveConfig() {
         this.setState('config', JSON.stringify(this._config));
+    }
+
+    get _toolbar() {
+        return document.getElementById('toolbar');
     }
     
 }

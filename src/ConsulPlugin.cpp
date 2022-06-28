@@ -94,7 +94,7 @@ public:
 
     void setState(const char* key, const char* value) override
     {
-        d_stderr("cpp setState() : %s = %s", key, value);
+        //d_stderr("cpp setState() : %s = %s", key, value);
         PluginEx::setState(key, value);
 
         if ((::strcmp(key, "midi") == 0) && (::strlen(value) > 0)) {
@@ -106,7 +106,6 @@ public:
         fState[key] = value;
     }
 
-    // TODO : this will needed for persisting UI state
     String getState(const char* key) const override
     {
         StateMap::const_iterator it = fState.find(key);

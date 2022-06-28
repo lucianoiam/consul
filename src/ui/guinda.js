@@ -691,7 +691,7 @@ class Fader extends RangeInputWidget {
 
     static get _attributeDescriptors() {
         return super._attributeDescriptors.concat([
-            { key: 'sensibility', parser: ValueParser.float, default: 5.0 }
+            { key: 'sensibility', parser: ValueParser.float, default: 10.0 }
         ]);
     }
 
@@ -777,10 +777,10 @@ class Fader extends RangeInputWidget {
      */
 
     _onGrab(ev) {
-        this._startValue = this._value;
-        this._dragDistance = 0;
-
-        if (! ev.isInputWheel) {
+        if (ev.isInputWheel) {
+            this._startValue = this._value;
+            this._dragDistance = 0;
+        } else {
             this._onMove(ev);
         }
     }
@@ -795,7 +795,7 @@ class Fader extends RangeInputWidget {
             const val = Math.max(0, Math.min(1.0, this._startValue + dval));
 
             this._setNormalizedValueAndDispatchInputEventIfNeeded(val);
-        } else if (ev.isInputMouse) {
+        } else {
             const y = (ev.clientY - this.getBoundingClientRect().top) / this.clientHeight;
             const val = 1.0 - Math.max(0, Math.min(1.0, y));
 

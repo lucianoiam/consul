@@ -57,6 +57,7 @@ public:
         const JSValue& id = args[1];
         const JSValue& value = args[2];
 
+        // Persist UI state
         fState.setObjectItem(id.getString(), value);
         setState("ui", fState.toJSON());
 

@@ -7,152 +7,156 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body style="visibility: hidden;" onload="new ConsulUI">
-    <div id="title">Consul</div>
     <div id="overscan">
-        <div id="mixer">
-            <div class="strip">
-                <div class="cell">
-                    <g-knob class="control" id="k-01"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-knob class="control" id="k-02"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-01" mode="latch"></g-button>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-02" mode="latch"></g-button>
-                </div>
-                <div class="cell fader-cell">
-                    <g-fader class="control" id="f-01"></g-fader>
-                </div>
-                <div class="cell">1</div>
+        <div id="main">
+            <div id="toolbar">
+                <div id="title">Consul</div>
             </div>
-            <div class="strip">
-                <div class="cell">
-                    <g-knob class="control" id="k-03"></g-knob>
+            <div id="mixer">
+                <div class="strip" id="strip-1">
+                    <div class="cell">
+                        <g-knob class="control" id="k-01"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-knob class="control" id="k-02"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-01" mode="latch"></g-button>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-02" mode="latch"></g-button>
+                    </div>
+                    <div class="cell fader-cell">
+                        <g-fader class="control" id="f-01"></g-fader>
+                    </div>
+                    <div class="cell">1</div>
                 </div>
-                <div class="cell">
-                    <g-knob class="control" id="k-04"></g-knob>
+                <div class="strip" id="strip-2">
+                    <div class="cell">
+                        <g-knob class="control" id="k-03"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-knob class="control" id="k-04"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-03" mode="latch"></g-button>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-04" mode="latch"></g-button>
+                    </div>
+                    <div class="cell fader-cell">
+                        <g-fader class="control" id="f-02"></g-fader>
+                    </div>
+                    <div class="cell">2</div>
                 </div>
-                <div class="cell">
-                    <g-button class="control" id="b-03" mode="latch"></g-button>
+                <div class="strip" id="strip-3">
+                    <div class="cell">
+                        <g-knob class="control" id="k-05"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-knob class="control" id="k-06"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-05" mode="latch"></g-button>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-06" mode="latch"></g-button>
+                    </div>
+                    <div class="cell fader-cell">
+                        <g-fader class="control" id="f-03"></g-fader>
+                    </div>
+                    <div class="cell">3</div>
                 </div>
-                <div class="cell">
-                    <g-button class="control" id="b-04" mode="latch"></g-button>
+                <div class="strip" id="strip-4">
+                    <div class="cell">
+                        <g-knob class="control" id="k-07"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-knob class="control" id="k-08"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-07" mode="latch"></g-button>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-08" mode="latch"></g-button>
+                    </div>
+                    <div class="cell fader-cell">
+                        <g-fader class="control" id="f-04"></g-fader>
+                    </div>
+                    <div class="cell">4</div>
                 </div>
-                <div class="cell fader-cell">
-                    <g-fader class="control" id="f-02"></g-fader>
+                <div class="strip" id="strip-5">
+                    <div class="cell">
+                        <g-knob class="control" id="k-09"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-knob class="control" id="k-10"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-09" mode="latch"></g-button>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-10" mode="latch"></g-button>
+                    </div>
+                    <div class="cell fader-cell">
+                        <g-fader class="control" id="f-05"></g-fader>
+                    </div>
+                    <div class="cell">5</div>
                 </div>
-                <div class="cell">2</div>
-            </div>
-            <div class="strip">
-                <div class="cell">
-                    <g-knob class="control" id="k-05"></g-knob>
+                <div class="strip" id="strip-6">
+                    <div class="cell">
+                        <g-knob class="control" id="k-11"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-knob class="control" id="k-12"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-11" mode="latch"></g-button>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-12" mode="latch"></g-button>
+                    </div>
+                    <div class="cell fader-cell">
+                        <g-fader class="control" id="f-06"></g-fader>
+                    </div>
+                    <div class="cell">6</div>
                 </div>
-                <div class="cell">
-                    <g-knob class="control" id="k-06"></g-knob>
+                <div class="strip" id="strip-7">
+                    <div class="cell">
+                        <g-knob class="control" id="k-13"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-knob class="control" id="k-14"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-13" mode="latch"></g-button>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-14" mode="latch"></g-button>
+                    </div>
+                    <div class="cell fader-cell">
+                        <g-fader class="control" id="f-07"></g-fader>
+                    </div>
+                    <div class="cell">7</div>
                 </div>
-                <div class="cell">
-                    <g-button class="control" id="b-05" mode="latch"></g-button>
+                <div class="strip" id="strip-8">
+                    <div class="cell">
+                        <g-knob class="control" id="k-15"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-knob class="control" id="k-16"></g-knob>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-15" mode="latch"></g-button>
+                    </div>
+                    <div class="cell">
+                        <g-button class="control" id="b-16" mode="latch"></g-button>
+                    </div>
+                    <div class="cell fader-cell">
+                        <g-fader class="control" id="f-08"></g-fader>
+                    </div>
+                    <div class="cell">8</div>
                 </div>
-                <div class="cell">
-                    <g-button class="control" id="b-06" mode="latch"></g-button>
-                </div>
-                <div class="cell fader-cell">
-                    <g-fader class="control" id="f-03"></g-fader>
-                </div>
-                <div class="cell">3</div>
-            </div>
-            <div class="strip">
-                <div class="cell">
-                    <g-knob class="control" id="k-07"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-knob class="control" id="k-08"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-07" mode="latch"></g-button>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-08" mode="latch"></g-button>
-                </div>
-                <div class="cell fader-cell">
-                    <g-fader class="control" id="f-04"></g-fader>
-                </div>
-                <div class="cell">4</div>
-            </div>
-            <div class="strip">
-                <div class="cell">
-                    <g-knob class="control" id="k-09"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-knob class="control" id="k-10"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-09" mode="latch"></g-button>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-10" mode="latch"></g-button>
-                </div>
-                <div class="cell fader-cell">
-                    <g-fader class="control" id="f-05"></g-fader>
-                </div>
-                <div class="cell">5</div>
-            </div>
-            <div class="strip">
-                <div class="cell">
-                    <g-knob class="control" id="k-11"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-knob class="control" id="k-12"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-11" mode="latch"></g-button>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-12" mode="latch"></g-button>
-                </div>
-                <div class="cell fader-cell">
-                    <g-fader class="control" id="f-06"></g-fader>
-                </div>
-                <div class="cell">6</div>
-            </div>
-            <div class="strip">
-                <div class="cell">
-                    <g-knob class="control" id="k-13"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-knob class="control" id="k-14"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-13" mode="latch"></g-button>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-14" mode="latch"></g-button>
-                </div>
-                <div class="cell fader-cell">
-                    <g-fader class="control" id="f-07"></g-fader>
-                </div>
-                <div class="cell">7</div>
-            </div>
-            <div class="strip">
-                <div class="cell">
-                    <g-knob class="control" id="k-15"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-knob class="control" id="k-16"></g-knob>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-15" mode="latch"></g-button>
-                </div>
-                <div class="cell">
-                    <g-button class="control" id="b-16" mode="latch"></g-button>
-                </div>
-                <div class="cell fader-cell">
-                    <g-fader class="control" id="f-08"></g-fader>
-                </div>
-                <div class="cell">8</div>
             </div>
         </div>
     </div>
