@@ -125,6 +125,31 @@ g-fader {
     --body-color: #333;
 }
 
+
+/*
+ * Phones
+ */
+
+@media (orientation: portrait) {
+    body {
+        min-width: 400px;
+    }
+    #main {
+        width: 400px;
+    }
+    #mixer {
+        grid-template-columns: repeat(4, 1fr); 
+    }
+    .landscape {
+        display: none;
+    }
+}
+
+
+/*
+ * Color palette
+ */
+
 #strip-1 g-knob {
     --value-color: #7f3fff;
 }

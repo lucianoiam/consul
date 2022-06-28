@@ -32,44 +32,17 @@ class ConsulUI extends DISTRHO.UI {
         super();
 
         this._config = {};
-
-        helper.enableOfflineModal(this);
-
-        if (env.plugin) {
-            const toolbar = document.getElementById('toolbar');
-            toolbar.appendChild(helper.getQRButtonElement(this, {
-                id: 'qr-button',
-                modal: {
-                    id: 'qr-modal'
-                }
-            }));
-        }
-
-        if (this._isMobile()) {
-            const main = document.getElementById('main');
-            const dv = window.innerHeight - main.clientHeight;
-            const scale = 100 * (1 + dv / main.clientHeight);
-            main.style.transform = `scale(${scale}%)`;
-        }
+        this._setupUi();
 
         document.querySelectorAll('.control').forEach(el => {
             el.addEventListener('input', ev => this._handleControlInput(el));
         });
-
-        if (env.dev) {
-            this._showUi();
-        }
     }
 
     messageReceived(args) {
         if ((args[0] == 'host2ui') && (args.length == 3)) {
             this._updateControlValue(args[1], args[2]);
         }
-    }
-
-    messageChannelOpen() {
-        // Writing to the WebSocket during the open callback breaks connection
-        //this._saveConfig();
     }
 
     stateChanged(key, value) {
@@ -92,6 +65,36 @@ class ConsulUI extends DISTRHO.UI {
         }
     }
 
+    _setupUi() {
+        helper.enableOfflineModal(this);
+
+        if (env.plugin) {
+            const toolbar = document.getElementById('toolbar');
+            toolbar.appendChild(helper.getQRButtonElement(this, {
+                id: 'qr-button',
+                modal: {
+                    id: 'qr-modal'
+                }
+            }));
+        }
+
+        if (this._isMobile) {
+            const main = document.getElementById('main');
+            const dv = window.innerHeight - main.clientHeight;
+            const scale = 100 * (1 + dv / main.clientHeight);
+            main.style.transform = `scale(${scale}%)`;
+        }
+
+        if (env.dev) {
+            this._showUi();
+        }
+    }
+
+    _showUi() {
+        document.body.style.visibility = 'visible';
+    }
+
+    // ui->host
     _handleControlInput(el) {
         const descriptor = CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
         const status = 0xb0 | (MIDI_CHANNEL - 1);
@@ -100,6 +103,7 @@ class ConsulUI extends DISTRHO.UI {
         this.postMessage('ui2host', el.id, el.value, status, ccIndex, ccValue);
     }
 
+    // host->ui
     _updateControlValue(id, value) {
         document.getElementById(id).value = value;
     }
@@ -108,13 +112,9 @@ class ConsulUI extends DISTRHO.UI {
         this.setState('config', JSON.stringify(this._config));
     }
 
-    _showUi() {
-        document.body.style.visibility = 'visible';
-    }
-
-    _isMobile() {
+    get _isMobile() {
         const ua = navigator.userAgent;
-        return /android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
+        return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
     }
     
 }
