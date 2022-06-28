@@ -131,16 +131,19 @@ g-fader {
  */
 
 @media (orientation: portrait) {
-    body {
+    body:not(.force-landscape) {
         min-width: 400px;
     }
-    #main {
+
+    #main:not(.force-landscape) {
         width: 400px;
     }
-    #mixer {
+
+    #mixer:not(.force-landscape) {
         grid-template-columns: repeat(4, 1fr); 
     }
-    .landscape {
+    
+    .landscape:not(.force-landscape) {
         display: none;
     }
 }

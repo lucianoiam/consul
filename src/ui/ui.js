@@ -78,11 +78,21 @@ class ConsulUI extends DISTRHO.UI {
             }));
         }
 
+        // CSS media query unusuable on Linux WebKitGTK
+        if (env.noReliableScreenSize) {
+            const className = 'force-landscape';
+            document.body.classList.add(className);
+            document.getElementById('main').classList.add(className);
+            document.getElementById('mixer').classList.add(className);
+            document.querySelectorAll('.landscape').forEach(el => {
+                el.classList.add(className);
+            });
+        }
+
         if (this._isMobile) {
-            const main = document.getElementById('main');
             const dv = window.innerHeight - main.clientHeight;
             const scale = 100 * (1 + dv / main.clientHeight);
-            main.style.transform = `scale(${scale}%)`;
+            document.getElementById('main').style.transform = `scale(${scale}%)`;
         }
 
         if (env.dev) {
