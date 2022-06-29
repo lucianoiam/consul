@@ -38,7 +38,7 @@ public:
 
     void onMessageReceived(const JSValue& args, uintptr_t context) override
     {
-        if (args[0].getString() != "ui2host") {
+        if (args[0].getString() != "control") {
             return;
         }
 
@@ -62,7 +62,7 @@ public:
         setState("ui", fState.toJSON());
 
         // Keep all connected UIs in sync
-        broadcastMessage({"host2ui", id, value}, /*exclude*/reinterpret_cast<Client>(context));
+        broadcastMessage({"control", id, value}, /*exclude*/reinterpret_cast<Client>(context));
     }
 
     // DPF UI provides sendNote() only, see also ConsulPlugin.cpp .

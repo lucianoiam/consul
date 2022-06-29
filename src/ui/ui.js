@@ -24,7 +24,9 @@ const CONTROL_DESCRIPTOR = Object.freeze({
     'g-fader'  : { ccBase: 0x20, midiVal: v => Math.floor(127 * v) }
 });
 
-const env = DISTRHO.env, helper = DISTRHO.UIHelper;
+const env = DISTRHO.env,
+      helper = DISTRHO.UIHelper,
+      el = document.getElementById.bind(document);
 
 class ConsulUI extends DISTRHO.UI {
 
@@ -32,16 +34,15 @@ class ConsulUI extends DISTRHO.UI {
         super();
 
         this._config = {};
-        this._setupUi();
-
-        document.querySelectorAll('.control').forEach(el => {
-            el.addEventListener('input', ev => this._handleControlInput(el));
-        });
+        this._clearStatusTimer = null;
+        
+        this._initView();
+        this._initController();
     }
 
     messageReceived(args) {
-        if ((args[0] == 'host2ui') && (args.length == 3)) {
-            this._updateControlValue(args[1], args[2]);
+        if ((args[0] == 'control') && (args.length == 3)) {
+            el(args[1]).value = args[2];
         }
     }
 
@@ -57,7 +58,7 @@ class ConsulUI extends DISTRHO.UI {
                 if (value) {
                     const ui = JSON.parse(value);
                     for (const id in ui) {
-                        this._updateControlValue(id, ui[id]);
+                        el(id).value = ui[id];
                     }
                 }
                 this._showUi();
@@ -65,25 +66,13 @@ class ConsulUI extends DISTRHO.UI {
         }
     }
 
-    _setupUi() {
-        helper.enableOfflineModal(this);
-
-        if (env.plugin) {
-            const toolbar = document.getElementById('toolbar');
-            toolbar.appendChild(helper.getQRButtonElement(this, {
-                id: 'qr-button',
-                modal: {
-                    id: 'qr-modal'
-                }
-            }));
-        }
-
+    _initView() {
         // CSS media query unusuable on Linux WebKitGTK
         if (env.noReliableScreenSize) {
             const className = 'force-landscape';
             document.body.classList.add(className);
-            document.getElementById('main').classList.add(className);
-            document.getElementById('mixer').classList.add(className);
+            el('main').classList.add(className);
+            el('mixer').classList.add(className);
             document.querySelectorAll('.landscape').forEach(el => {
                 el.classList.add(className);
             });
@@ -92,7 +81,7 @@ class ConsulUI extends DISTRHO.UI {
         if (this._isMobile) {
             const dv = window.innerHeight - main.clientHeight;
             const scale = 100 * (1 + dv / main.clientHeight);
-            document.getElementById('main').style.transform = `scale(${scale}%)`;
+            el('main').style.transform = `scale(${scale}%)`;
         }
 
         if (env.dev) {
@@ -100,22 +89,61 @@ class ConsulUI extends DISTRHO.UI {
         }
     }
 
+    _initController() {
+        helper.enableOfflineModal(this);
+
+        if (env.plugin || env.dev) {
+            el('network').addEventListener('input', ev => {
+                if (ev.target.value) {
+                    helper.showQRCodeModal(this, {id: 'qr-modal'});
+                }
+            });
+            
+            el('midi').addEventListener('input', ev => {
+                if (ev.target.value) {
+                    this._showStatus('Not yet implemented');
+                }
+            });
+
+            el('layout').addEventListener('input', ev => {
+                if (ev.target.value) {
+                    this._showStatus('Not yet implemented');
+                }
+            });
+        } else {
+            const network = el('network');
+            network.parentNode.removeChild(network);
+        }
+
+        document.querySelectorAll('.control').forEach(el => {
+            el.addEventListener('input', ev => this._handleControlInput(el));
+        });
+    }
+
     _showUi() {
         document.body.style.visibility = 'visible';
     }
 
-    // ui->host
+    _showStatus(message) {
+        const status = el('status');
+        status.innerText = message;
+
+        if (this._clearStatusTimer) {
+            clearTimeout(this._clearStatusTimer);
+        }
+
+        this._clearStatusTimer = setTimeout(() => {
+            this._clearStatusTimer = null;
+            status.innerText = '';
+        }, 1500);
+    }
+
     _handleControlInput(el) {
         const descriptor = CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
         const status = 0xb0 | (MIDI_CHANNEL - 1);
         const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
         const ccValue = descriptor.midiVal(el.value);
-        this.postMessage('ui2host', el.id, el.value, status, ccIndex, ccValue);
-    }
-
-    // host->ui
-    _updateControlValue(id, value) {
-        document.getElementById(id).value = value;
+        this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
     }
 
     _saveConfig() {
