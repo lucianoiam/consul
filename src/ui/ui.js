@@ -89,11 +89,10 @@ class ConsulUI extends DISTRHO.UI {
                 el.classList.add(className);
             });
         }
-
+        
         if (this._isMobile) {
-            const dv = window.innerHeight - main.clientHeight;
-            const scale = 100 * (1 + dv / main.clientHeight);
-            el('main').style.transform = `scale(${scale}%)`;
+            this._zoomUi();
+            window.addEventListener('resize', _ => this._zoomUi());
         }
 
         if (env.dev) {
@@ -105,21 +104,9 @@ class ConsulUI extends DISTRHO.UI {
         helper.enableOfflineModal(this);
 
         if (env.plugin || env.dev) {
-            el('network').addEventListener('input', ev => {
+            el('network').addEventListener('input', _ => {
                 if (! ev.target.value) {
                     helper.showQRCodeModal(this, {id: 'qr-modal'});
-                }
-            });
-            
-            el('midi').addEventListener('input', ev => {
-                if (ev.target.value) {
-                    this._showStatus('MIDI mappings N/A');
-                }
-            });
-
-            el('layout').addEventListener('input', ev => {
-                if (ev.target.value) {
-                    this._showStatus('Select layout N/A');
                 }
             });
         } else {
@@ -127,9 +114,33 @@ class ConsulUI extends DISTRHO.UI {
             network.parentNode.removeChild(network);
         }
 
-        document.querySelectorAll('.control').forEach(el => {
-            el.addEventListener('input', ev => this._handleControlInput(el));
+        el('midi').addEventListener('input', _ => {
+            if (ev.target.value) {
+                this._showStatus('MIDI mappings N/A');
+            }
         });
+
+        el('layout').addEventListener('input', _ => {
+            if (ev.target.value) {
+                this._showStatus('Select layout N/A');
+            }
+        });
+
+        document.querySelectorAll('.control').forEach(el => {
+            el.addEventListener('input', _ => this._handleControlInput(el));
+        });
+    }
+
+    _zoomUi() {
+        // Zoom interface to take up full window height
+        const main = el('main');
+        const dv = window.innerHeight - main.clientHeight; // can be negative
+        const scale = 1.0 + dv / main.clientHeight;
+        main.style.width = window.innerWidth / scale + 'px';
+        main.style.transform = `scale(${100 * scale}%)`;
+        // Remove minimum size restrictions
+        document.body.style.minWidth = 'auto';
+        document.body.style.minHeight = 'auto';
     }
 
     _showUi() {
