@@ -19,9 +19,21 @@
 const MIDI_CHANNEL = 1;
 
 const CONTROL_DESCRIPTOR = Object.freeze({
-    'g-knob'   : { ccBase: 0,    midiVal: v => Math.floor(127 * v) },
-    'g-button' : { ccBase: 0x10, midiVal: v => v ? 127 : 0         },
-    'g-fader'  : { ccBase: 0x20, midiVal: v => Math.floor(127 * v) }
+    'g-knob': {
+        ccBase  : 0,
+        midiVal : v => Math.floor(127 * v),
+        strVal  : v => Math.round(100 * v) + '%'
+    },
+    'g-button': { 
+        ccBase  : 0x10,
+        midiVal : v => v ? 127 : 0,
+        strVal  : v => v ? 'ON ' : 'OFF'
+    },
+    'g-fader': {
+        ccBase  : 0x20,
+        midiVal : v => Math.floor(127 * v),
+        strVal  : v => Math.round(100 * v) + '%'
+    }
 });
 
 const env = DISTRHO.env,
@@ -101,13 +113,13 @@ class ConsulUI extends DISTRHO.UI {
             
             el('midi').addEventListener('input', ev => {
                 if (ev.target.value) {
-                    this._showStatus('Not yet implemented');
+                    this._showStatus('MIDI mappings N/A');
                 }
             });
 
             el('layout').addEventListener('input', ev => {
                 if (ev.target.value) {
-                    this._showStatus('Not yet implemented');
+                    this._showStatus('Select layout N/A');
                 }
             });
         } else {
@@ -143,7 +155,20 @@ class ConsulUI extends DISTRHO.UI {
         const status = 0xb0 | (MIDI_CHANNEL - 1);
         const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
         const ccValue = descriptor.midiVal(el.value);
+
         this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
+
+        let name = el.getAttribute('data-name');
+        while (name.length < 9) {
+            name += ' ';
+        }
+
+        let value = descriptor.strVal(el.value);
+        while (value.length < 4) {
+            value = ' ' + value;
+        }
+
+        this._showStatus(`${name} ${value}`);
     }
 
     _saveConfig() {

@@ -49,7 +49,7 @@ body {
     flex-direction: row;
     align-items: center;
     height: 37px;
-    padding: 0 5px;
+    padding-left: 5px;
     background: #000;
 }
 
@@ -68,6 +68,7 @@ body {
 #status {
     flex: 1;
     text-align: center;
+    white-space: pre;
 }
 
 #qr-button path {
