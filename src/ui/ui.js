@@ -94,7 +94,7 @@ class ConsulUI extends DISTRHO.UI {
 
         if (env.plugin || env.dev) {
             el('network').addEventListener('input', ev => {
-                if (ev.target.value) {
+                if (! ev.target.value) {
                     helper.showQRCodeModal(this, {id: 'qr-modal'});
                 }
             });
