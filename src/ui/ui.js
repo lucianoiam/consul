@@ -104,7 +104,7 @@ class ConsulUI extends DISTRHO.UI {
         helper.enableOfflineModal(this);
 
         if (env.plugin || env.dev) {
-            el('network').addEventListener('input', _ => {
+            el('network').addEventListener('input', ev => {
                 if (! ev.target.value) {
                     helper.showQRCodeModal(this, {id: 'qr-modal'});
                 }
@@ -114,13 +114,13 @@ class ConsulUI extends DISTRHO.UI {
             network.parentNode.removeChild(network);
         }
 
-        el('midi').addEventListener('input', _ => {
+        el('midi').addEventListener('input', ev => {
             if (ev.target.value) {
                 this._showStatus('MIDI mappings N/A');
             }
         });
 
-        el('layout').addEventListener('input', _ => {
+        el('layout').addEventListener('input', ev => {
             if (ev.target.value) {
                 this._showStatus('Select layout N/A');
             }
