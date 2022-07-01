@@ -46,7 +46,8 @@ class ConsulUI extends DISTRHO.UI {
         super();
 
         this._config = {};
-        this._clearStatusTimer = null;
+        this._showStatusTimer = null;
+        this._hideStatusTimer = null;
         
         this._initView();
         this._initController();
@@ -148,21 +149,34 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     _showStatus(message) {
-        const status = el('status');
-        status.innerText = message;
+        // For some reason setting status.textContent takes abnormally long
+        // on Linux WebKitGTK. Issue not reproducible on Firefox or Chromium
+        // running on the same hardware/OS combination.
+        const t = env.noReliableScreenSize ? 20 : 0;
 
-        if (this._clearStatusTimer) {
-            clearTimeout(this._clearStatusTimer);
+        if (this._showStatusTimer) {
+            clearTimeout(this._showStatusTimer);
         }
 
-        status.style.transition = 'none';
-        status.style.opacity = '1';
+        this._showStatusTimer = setTimeout(() => {
+            this._showStatusTimer = null;
 
-        this._clearStatusTimer = setTimeout(() => {
-            this._clearStatusTimer = null;
-            status.style.transition = 'opacity 150ms';
-            status.style.opacity = '0';
-        }, 1500);
+            const status = el('status');
+            status.textContent = message;
+            status.style.transition = 'none';
+            status.style.opacity = '1';
+
+            if (this._hideStatusTimer) {
+                clearTimeout(this._hideStatusTimer);
+            }
+
+            this._hideStatusTimer = setTimeout(() => {
+                this._hideStatusTimer = null;
+
+                status.style.transition = 'opacity 150ms';
+                status.style.opacity = '0';
+            }, 1500);
+        }, t);
     }
 
     _handleControlInput(el) {
