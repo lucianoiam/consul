@@ -22,12 +22,12 @@ const CONTROL_DESCRIPTOR = Object.freeze({
     'g-knob': {
         ccBase  : 0,
         midiVal : v => Math.floor(127 * v),
-        strVal  : v => Math.round(100 * v) + '%'
+        strVal  : v => Math.round(100 * v) + '%',
     },
     'g-button': { 
         ccBase  : 0x10,
         midiVal : v => v ? 127 : 0,
-        strVal  : v => v ? 'ON ' : 'OFF'
+        strVal  : v => v ? 'ON' : 'OFF'
     },
     'g-fader': {
         ccBase  : 0x20,
@@ -52,12 +52,6 @@ class ConsulUI extends DISTRHO.UI {
         this._initController();
     }
 
-    messageReceived(args) {
-        if ((args[0] == 'control') && (args.length == 3)) {
-            el(args[1]).value = args[2];
-        }
-    }
-
     stateChanged(key, value) {
         //console.log(`JS stateChanged() : ${key} = ${value}`);
         switch (key) {
@@ -75,6 +69,12 @@ class ConsulUI extends DISTRHO.UI {
                 }
                 this._showUi();
                 break;
+        }
+    }
+
+    messageReceived(args) {
+        if ((args[0] == 'control') && (args.length == 3)) {
+            el(args[1]).value = args[2];
         }
     }
 
@@ -105,7 +105,7 @@ class ConsulUI extends DISTRHO.UI {
 
         if (env.plugin || env.dev) {
             el('network').addEventListener('input', ev => {
-                if (! ev.target.value) {
+                if (! ev.target.value) { // up
                     helper.showQRCodeModal(this, {id: 'qr-modal'});
                 }
             });
@@ -115,13 +115,13 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         el('midi').addEventListener('input', ev => {
-            if (ev.target.value) {
+            if (ev.target.value) { // down
                 this._showStatus('MIDI mappings N/A');
             }
         });
 
         el('layout').addEventListener('input', ev => {
-            if (ev.target.value) {
+            if (ev.target.value) { // down
                 this._showStatus('Select layout N/A');
             }
         });
@@ -155,9 +155,13 @@ class ConsulUI extends DISTRHO.UI {
             clearTimeout(this._clearStatusTimer);
         }
 
+        status.style.transition = 'none';
+        status.style.opacity = '1';
+
         this._clearStatusTimer = setTimeout(() => {
             this._clearStatusTimer = null;
-            status.innerText = '';
+            status.style.transition = 'opacity 150ms';
+            status.style.opacity = '0';
         }, 1500);
     }
 
@@ -169,17 +173,10 @@ class ConsulUI extends DISTRHO.UI {
 
         this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
 
-        let name = el.getAttribute('data-name');
-        while (name.length < 9) {
-            name += ' ';
-        }
+        const name = el.getAttribute('data-name').padEnd(10, ' ');
+        const value = descriptor.strVal(el.value).padStart(4, ' ');
 
-        let value = descriptor.strVal(el.value);
-        while (value.length < 4) {
-            value = ' ' + value;
-        }
-
-        this._showStatus(`${name} ${value}`);
+        this._showStatus(`${name}${value}`);
     }
 
     _saveConfig() {
