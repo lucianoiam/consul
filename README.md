@@ -1,8 +1,12 @@
-# Consul - Control Surface Library
+# Consul
+
+*Control Surface Library*
 
 - Backend : complete
-- Frontend : in progress
-- Documentation : null
+- Frontend : 8-track mixer layout complete, other layouts in progress.
+- Documentation : null for the moment
+
+Android users have a look at [pisco](https://github.com/lucianoiam/pisco)
 
 <img width="1706" alt="Screen Shot 2022-06-29 at 11 54 58" src="https://user-images.githubusercontent.com/930494/176409094-196869a4-453d-4551-9a55-92121602db5a.png">
 
