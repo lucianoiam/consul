@@ -84,7 +84,7 @@ body {
     left: 0;
     width: 800px; /* WebKitGTK bug? 100% results in 2x size */
     height: 540px; /* WebKitGTK bug? 100% results in 2x size */
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.66);
     justify-content: center;
     align-items: center;
     z-index: 10;
