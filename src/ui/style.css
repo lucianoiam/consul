@@ -72,18 +72,24 @@ body {
     white-space: pre;
 }
 
-#qr-button path {
-    fill: #fff;
-}
-
-#qr-modal {
+#modal-box {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 800px; /* WebKitGTK bug? 100% results in 2x size */
     height: 540px; /* WebKitGTK bug? 100% results in 2x size */
-    background: #000;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
     z-index: 10;
+}
+
+#qr-modal {
+    width: 520px;
+    height: 240px;
+    border-radius: 4px;
+    background: #000;
 }
 
 #mixer { 

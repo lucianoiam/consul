@@ -107,7 +107,11 @@ class ConsulUI extends DISTRHO.UI {
         if (env.plugin || env.dev) {
             el('network').addEventListener('input', ev => {
                 if (! ev.target.value) { // up
-                    helper.showQRCodeModal(this, {id: 'qr-modal'});
+                    helper.showQRCodeModal(this, {
+                        id: 'qr-modal',
+                        parent: this.modalBox,
+                        display: 'flex'
+                    });
                 }
             });
         } else {
@@ -208,6 +212,10 @@ class ConsulUI extends DISTRHO.UI {
     get _isMobile() {
         const ua = navigator.userAgent;
         return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
+    }
+
+    get modalBox() {
+        return document.getElementById('modal-box');
     }
     
 }
