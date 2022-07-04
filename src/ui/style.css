@@ -40,7 +40,6 @@ body {
     flex-direction: column;
     width: 800px;
     height: 540px;
-    border-radius: 4px;
     overflow: hidden;
     background: #101010;
 }

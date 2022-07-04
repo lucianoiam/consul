@@ -94,6 +94,8 @@ class ConsulUI extends DISTRHO.UI {
         if (this._isMobile) {
             this._zoomUi();
             window.addEventListener('resize', _ => this._zoomUi());
+        } else if (! env.plugin) { // desktop browser
+            el('main').style.borderRadius = '10px';
         }
 
         if (env.dev) {
