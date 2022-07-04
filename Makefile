@@ -12,12 +12,17 @@ NAME = consul
 # --------------------------------------------------------------
 # Project version, used for generating unique symbol names
 
-HIPHOP_PROJECT_VERSION = 1
+HIPHOP_PROJECT_VERSION = 2
 
 # --------------------------------------------------------------
 # Enable Web UI control from devices in the local network
 
 HIPHOP_NETWORK_UI = true
+
+# --------------------------------------------------------------
+# Enable ARM and Intel fat binary for macOS
+
+HIPHOP_MACOS_UNIVERSAL ?= true
 
 # --------------------------------------------------------------
 # Support macOS down to High Sierra
