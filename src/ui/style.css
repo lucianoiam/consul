@@ -24,6 +24,7 @@ body {
     background: #1a1a1a;
     color: #fff;
     font-family: UbuntuMono;
+    font-size: 1em;
 }
 
 #overscan {
@@ -66,7 +67,7 @@ body {
 
 #about {
     font-family: Satisfy;
-    font-size: 1.2em;
+    font-size: 1.25em;
     color: #fff;
 }
 
@@ -109,7 +110,6 @@ body {
     display: grid;
     grid-template-rows: 1fr 1fr 0.66fr 0.66fr 4fr;
     color: #fff;
-    font-size: 1em;
 }
 
 .cell {
