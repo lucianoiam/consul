@@ -90,6 +90,7 @@ body {
 }
 
 #qr-modal {
+    position: relative;
     width: 520px;
     height: 240px;
     border-radius: 4px;
