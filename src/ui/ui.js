@@ -104,6 +104,24 @@ class ConsulUI extends DISTRHO.UI {
     _initController() {
         helper.enableOfflineModal(this);
 
+        el('about').addEventListener('input', ev => {
+            if (ev.target.value) { // down
+                this._showStatus('About N/A yet');
+            }
+        });
+
+        el('layout').addEventListener('input', ev => {
+            if (ev.target.value) { // down
+                this._showStatus('Select layout N/A yet');
+            }
+        });
+
+        el('midi').addEventListener('input', ev => {
+            if (ev.target.value) { // down
+                this._showStatus('MIDI mappings N/A yet');
+            }
+        });
+
         if (env.plugin || env.dev) {
             el('network').addEventListener('input', ev => {
                 if (! ev.target.value) { // up
@@ -118,18 +136,6 @@ class ConsulUI extends DISTRHO.UI {
             const network = el('network');
             network.parentNode.removeChild(network);
         }
-
-        el('midi').addEventListener('input', ev => {
-            if (ev.target.value) { // down
-                this._showStatus('MIDI mappings N/A');
-            }
-        });
-
-        el('layout').addEventListener('input', ev => {
-            if (ev.target.value) { // down
-                this._showStatus('Select layout N/A');
-            }
-        });
 
         document.querySelectorAll('.control').forEach(el => {
             el.addEventListener('input', _ => this._handleControlInput(el));
