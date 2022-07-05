@@ -109,17 +109,6 @@ class ConsulUI extends DISTRHO.UI {
             }
         });
 
-        if (env.plugin || env.dev) {
-            el('show-network').addEventListener('input', ev => {
-                if (! ev.target.value) { // up
-                    this._showNetworkModal();
-                }
-            });
-        } else {
-            const network = el('show-network');
-            network.parentNode.removeChild(network);
-        }
-
         el('modal-ok').addEventListener('input', ev => {
             if (! ev.target.value) { // up
                 this._hideModal();
@@ -234,29 +223,30 @@ class ConsulUI extends DISTRHO.UI {
     // Modal dialogs
     //
 
-    _showAboutModal() {
-        this._showModal('about');
+    async _showAboutModal() {
+        const modal = this._getModal('about');
+        helper.enableSystemBrowser(this, modal.querySelector('#homepage'));
+
+        if (env.plugin) {
+            modal.appendChild(await helper.getQRCodeElement(this));
+        }
+
+        this._showModal(modal);
     }
 
     _showMidiModal() {
-        this._showModal('midi');
+        this._showModal(this._getModal('midi'));
     }
 
     _showLayoutModal() {
-        this._showModal('layout');
+        this._showModal(this._getModal('layout'));
     }
 
-    async _showNetworkModal() {
-        const qr = await helper.getQRCodeElement(this);
-        qr.style.padding = '30px'; // +20px #modal-box
-        this._showModal(qr);
+    _getModal(id) {
+        return el('modal-temp').content.getElementById(id).cloneNode(true);
     }
 
     _showModal(elem) {
-        if (typeof(elem) === 'string') {
-            elem = el('modal-temp').content.getElementById(elem).cloneNode(true);
-        }
-
         el('modal-elem').appendChild(elem);
         el('modal-root').style.display = 'flex';
     }

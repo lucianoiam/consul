@@ -14,7 +14,6 @@
                     <g-button id="show-about"><div style="margin-top: 1px;">Consul</div></g-button>
                     <g-button id="show-layout">LAYOUT</g-button>
                     <g-button id="show-midi">MIDI</g-button>
-                    <g-button id="show-network">NETWORK</g-button>
                 </div>
                 <div id="status"></div>
             </div>
@@ -173,7 +172,17 @@
                 </div>
             </div>
             <template id="modal-temp">
-                <div id="about">About dialog not yet available</div>
+                <div id="about">
+                    <div id="about-text">
+                        <div id="about-title">Consul</div>
+                        <div>Control Surface Library v1.0</div>
+                        <div>
+                            <a href="https://github.com/lucianoiam/consul" id="homepage">
+                                Go to project homepage
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <div id="midi">MIDI mappings not yet available</div>
                 <div id="layout">Layout picker not yet available</div>
             </template>

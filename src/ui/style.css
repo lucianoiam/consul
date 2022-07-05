@@ -69,7 +69,6 @@ body {
 #show-about {
     font-family: Satisfy;
     font-size: 1.25em;
-    color: #fff;
 }
 
 #status {
@@ -116,6 +115,29 @@ body {
     border-radius: 4px;
 }
 
+#about {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    padding: 10px 30px 30px 30px;
+}
+
+#about-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+#about-title {
+    font-family: Satisfy;
+    font-size: 2em;
+}
+
+#about a {
+    color: #fff;
+    text-decoration: none;
+}
+
 #mixer { 
     display: grid; 
     grid-template-columns: repeat(8, 1fr); 
@@ -127,7 +149,6 @@ body {
 .strip {
     display: grid;
     grid-template-rows: 1fr 1fr 0.66fr 0.66fr 4fr;
-    color: #fff;
 }
 
 .cell {
