@@ -247,7 +247,9 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     async _showNetworkModal() {
-        this._showModal(await helper.getQRCodeElement(this));
+        const qr = await helper.getQRCodeElement(this);
+        qr.style.padding = '30px'; // +20px #modal-box
+        this._showModal(qr);
     }
 
     _showModal(elem) {
