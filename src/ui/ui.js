@@ -42,6 +42,10 @@ const env = DISTRHO.env,
 
 class ConsulUI extends DISTRHO.UI {
 
+    //
+    // DPF + hiphop interface
+    // 
+
     constructor() {
         super();
 
@@ -68,7 +72,7 @@ class ConsulUI extends DISTRHO.UI {
                         el(id).value = ui[id];
                     }
                 }
-                this._showUi();
+                this._showView();
                 break;
         }
     }
@@ -78,6 +82,73 @@ class ConsulUI extends DISTRHO.UI {
             el(args[1]).value = args[2];
         }
     }
+
+
+    //
+    // Controller
+    //
+
+    _initController() {
+        helper.enableOfflineModal(this);
+
+        el('show-about').addEventListener('input', ev => {
+            if (! ev.target.value) { // up
+                this._showAboutModal();
+            }
+        });
+
+        el('show-midi').addEventListener('input', ev => {
+            if (! ev.target.value) { // up
+                this._showMidiModal();
+            }
+        });
+
+        el('show-layout').addEventListener('input', ev => {
+            if (! ev.target.value) { // up
+                this._showLayoutModal();
+            }
+        });
+
+        if (env.plugin || env.dev) {
+            el('show-network').addEventListener('input', ev => {
+                if (! ev.target.value) { // up
+                    this._showNetworkModal();
+                }
+            });
+        } else {
+            const network = el('show-network');
+            network.parentNode.removeChild(network);
+        }
+
+        el('modal-ok').addEventListener('input', ev => {
+            if (! ev.target.value) { // up
+                this._hideModal();
+            }
+        });
+
+        document.querySelectorAll('.control').forEach(el => {
+            el.addEventListener('input', _ => this._handleControlInput(el));
+        });
+    }
+
+    _handleControlInput(el) {
+        const descriptor = CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
+        const status = 0xb0 | (MIDI_CHANNEL - 1);
+        const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
+        const ccValue = descriptor.midiVal(el.value);
+
+        this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
+
+        const name = el.getAttribute('data-name').padEnd(10, ' ');
+        const value = descriptor.strVal(el.value).padStart(4, ' ');
+
+        this._showStatus(`${name}${value}`);
+    }
+
+
+    //
+    // View related
+    //
 
     _initView() {
         // CSS media query unusuable on Linux WebKitGTK
@@ -92,59 +163,18 @@ class ConsulUI extends DISTRHO.UI {
         }
         
         if (this._isMobile) {
-            this._zoomUi();
-            window.addEventListener('resize', _ => this._zoomUi());
+            this._zoomView();
+            window.addEventListener('resize', _ => this._zoomView());
         } else if (! env.plugin) { // desktop browser
             el('main').style.borderRadius = '10px';
         }
 
         if (env.dev) {
-            this._showUi();
+            this._showView();
         }
     }
 
-    _initController() {
-        helper.enableOfflineModal(this);
-
-        el('about').addEventListener('input', ev => {
-            if (ev.target.value) { // down
-                this._showStatus('About N/A yet');
-            }
-        });
-
-        el('layout').addEventListener('input', ev => {
-            if (ev.target.value) { // down
-                this._showStatus('Select layout N/A yet');
-            }
-        });
-
-        el('midi').addEventListener('input', ev => {
-            if (ev.target.value) { // down
-                this._showStatus('MIDI mappings N/A yet');
-            }
-        });
-
-        if (env.plugin || env.dev) {
-            el('network').addEventListener('input', ev => {
-                if (! ev.target.value) { // up
-                    helper.showQRCodeModal(this, {
-                        id: 'qr-modal',
-                        parent: this.modalBox,
-                        display: 'flex'
-                    });
-                }
-            });
-        } else {
-            const network = el('network');
-            network.parentNode.removeChild(network);
-        }
-
-        document.querySelectorAll('.control').forEach(el => {
-            el.addEventListener('input', _ => this._handleControlInput(el));
-        });
-    }
-
-    _zoomUi() {
+    _zoomView() {
         // Zoom interface to take up full window height
         const main = el('main');
         const dv = window.innerHeight - main.clientHeight; // can be negative
@@ -156,7 +186,7 @@ class ConsulUI extends DISTRHO.UI {
         document.body.style.minHeight = 'auto';
     }
 
-    _showUi() {
+    _showView() {
         document.body.style.visibility = 'visible';
     }
 
@@ -199,31 +229,53 @@ class ConsulUI extends DISTRHO.UI {
         apply();
     }
 
-    _handleControlInput(el) {
-        const descriptor = CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
-        const status = 0xb0 | (MIDI_CHANNEL - 1);
-        const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
-        const ccValue = descriptor.midiVal(el.value);
 
-        this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
+    //
+    // Modal dialogs
+    //
 
-        const name = el.getAttribute('data-name').padEnd(10, ' ');
-        const value = descriptor.strVal(el.value).padStart(4, ' ');
-
-        this._showStatus(`${name}${value}`);
+    _showAboutModal() {
+        this._showModal('about');
     }
 
-    _saveConfig() {
-        this.setState('config', JSON.stringify(this._config));
+    _showMidiModal() {
+        this._showModal('midi');
     }
+
+    _showLayoutModal() {
+        this._showModal('layout');
+    }
+
+    async _showNetworkModal() {
+        this._showModal(await helper.getQRCodeElement(this));
+    }
+
+    _showModal(elem) {
+        if (typeof(elem) === 'string') {
+            elem = el('modal-temp').content.getElementById(elem).cloneNode(true);
+        }
+
+        el('modal-elem').appendChild(elem);
+        el('modal-root').style.display = 'flex';
+    }
+
+    _hideModal() {
+        el('modal-root').style.display = 'none';
+        el('modal-elem').innerHTML = '';
+    }
+    
+
+    //
+    // Helper methods
+    //
 
     get _isMobile() {
         const ua = navigator.userAgent;
         return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
     }
 
-    get modalBox() {
-        return document.getElementById('modal-box');
+    _saveConfig() {
+        this.setState('config', JSON.stringify(this._config));
     }
-    
+
 }

@@ -8,14 +8,13 @@
   </head>
   <body style="visibility: hidden;" onload="new ConsulUI">
     <div id="overscan">
-        <div id="modal-box"></div>
         <div id="main">
-            <div id="toolbar">
+            <div id="top-bar">
                 <div id="menu">
-                    <g-button id="about"><div style="margin-top: 1px;">Consul</div></g-button>
-                    <g-button id="layout">LAYOUT</g-button>
-                    <g-button id="midi">MIDI</g-button>
-                    <g-button id="network">NETWORK</g-button>
+                    <g-button id="show-about"><div style="margin-top: 1px;">Consul</div></g-button>
+                    <g-button id="show-layout">LAYOUT</g-button>
+                    <g-button id="show-midi">MIDI</g-button>
+                    <g-button id="show-network">NETWORK</g-button>
                 </div>
                 <div id="status"></div>
             </div>
@@ -165,6 +164,19 @@
                     <div class="cell">8</div>
                 </div>
             </div>
+            <div id="modal-root">
+                <div id="modal-box">
+                    <div id="modal-elem"></div>
+                    <div id="modal-btns">
+                        <g-button id="modal-ok">OK</g-button>
+                    </div>
+                </div>
+            </div>
+            <template id="modal-temp">
+                <div id="about">About dialog not yet available</div>
+                <div id="midi">MIDI mappings not yet available</div>
+                <div id="layout">Layout picker not yet available</div>
+            </template>
         </div>
     </div>
     <script src="guinda.js"></script>
