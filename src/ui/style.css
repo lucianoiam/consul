@@ -118,8 +118,8 @@ body {
 #about {
     display: flex;
     flex-direction: column;
-    gap: 50px;
-    padding: 10px 30px 30px 30px;
+    gap: 40px;
+    padding: 10px 30px 20px 30px;
 }
 
 #about-text {
@@ -135,7 +135,6 @@ body {
 
 #about a {
     color: #fff;
-    text-decoration: none;
 }
 
 #mixer { 
