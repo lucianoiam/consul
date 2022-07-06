@@ -437,6 +437,7 @@ function ControlTrait(opt) {
     // function() can be used instead of =>
     function createControlEvent(name, originalEvent, clientX, clientY) {
         const ev = new ControlEvent(name);
+        Object.defineProperty(ev, 'target', { value: originalEvent.target });
         ev.originalEvent = originalEvent;
         ev.shiftKey = originalEvent.shiftKey;
         ev.ctrlKey = originalEvent.ctrlKey;

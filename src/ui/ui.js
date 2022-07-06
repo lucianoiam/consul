@@ -193,8 +193,22 @@ class ConsulUI extends DISTRHO.UI {
             }
         });
 
-        el('modal-ok').addEventListener('input', ev => {
+        const modalRoot = el('modal-root');
+        ControlTrait.apply(modalRoot); // merges touch and mouse (guinda.js)
+        modalRoot.addEventListener('controlstart', ev => {
+            if (ev.target == modalRoot) {
+                this._hideModal();
+            }            
+        });
+
+        const modalOk = el('modal-ok');
+        modalOk.addEventListener('input', ev => {
             if (! ev.target.value) { // up
+                this._hideModal();
+            }
+        });
+        modalOk.addEventListener('keydown', ev => {
+            if (ev.key == 'Enter') {
                 this._hideModal();
             }
         });
@@ -247,30 +261,32 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     _showModal(elem) {
+        const t = 0.2;
         el('modal-elem').appendChild(elem);
-        const t = '0.2s';
-        
+
         const root = el('modal-root');
         root.style.animationName = 'fadeIn';
-        root.style.animationDuration = t;
+        root.style.animationDuration = t + 's';
         
         const box = el('modal-box');
         box.style.animationName = 'modalBoxIn';
-        box.style.animationDuration = t;
+        box.style.animationDuration = t + 's';
+
+        setTimeout(() => { el('modal-ok').focus() }, 1000 * t);
     }
 
     _hideModal() {
-        const t = '0.1s';
+        const t = 0.1;
 
         const root = el('modal-root');
         root.style.animationName = 'fadeOut';
-        root.style.animationDuration = t;
+        root.style.animationDuration = t + 's';
         
         const box = el('modal-box');
         box.style.animationName = 'modalBoxOut';
-        box.style.animationDuration = t;
+        box.style.animationDuration = t + 's';
 
-        setTimeout(() => el('modal-elem').innerHTML = '', 100);
+        setTimeout(() => el('modal-elem').innerHTML = '', 1000 * t);
     }
     
 
