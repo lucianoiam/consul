@@ -212,10 +212,6 @@ class ConsulUI extends DISTRHO.UI {
                 this._hideModal();
             }
         });
-
-        document.querySelectorAll('.control').forEach(el => {
-            el.addEventListener('input', _ => this._handleControlInput(el));
-        });
     }
 
     _handleControlInput(el) {
@@ -258,8 +254,13 @@ class ConsulUI extends DISTRHO.UI {
             const html = await (await fetch(`/layouts/${id}.html`)).text();
             const layout = document.createRange().createContextualFragment(html).firstChild;
             el('layout').replaceChildren(layout);
-            document.body.style.visibility = 'visible';
+
+            layout.querySelectorAll('.control').forEach(el => {
+                el.addEventListener('input', _ => this._handleControlInput(el));
+            });
         }
+
+        document.body.style.visibility = 'visible';
     }
 
 
