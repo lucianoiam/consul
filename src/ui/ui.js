@@ -194,8 +194,7 @@ class ConsulUI extends DISTRHO.UI {
         });
 
         const modalRoot = el('modal-root');
-        ControlTrait.apply(modalRoot); // merges touch and mouse (guinda.js)
-        modalRoot.addEventListener('controlstart', ev => {
+        modalRoot.addEventListener('click', ev => {
             if (ev.target == modalRoot) {
                 this._hideModal();
             }            
