@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const DEFAULT_LAYOUT = 'mixer';
+
 const MIDI_CHANNEL = 1;
 
 const CONTROL_DESCRIPTOR = Object.freeze({
@@ -50,6 +52,8 @@ class ConsulUI extends DISTRHO.UI {
         super();
 
         this._config = {};
+        this._hasUiState = false;
+
         this._showStatusTimer = null;
         this._hideStatusTimer = null;
         
@@ -70,9 +74,14 @@ class ConsulUI extends DISTRHO.UI {
                     for (const id in ui) {
                         el(id).value = ui[id];
                     }
+                    this._hasUiState = true;
                 }
-                this._showView();
                 break;
+        }
+
+        if (this._config && this._hasUiState) {
+            this._hasUiState = false;
+            this._loadLayout(this._config.layout || DEFAULT_LAYOUT);
         }
     }
 
@@ -100,18 +109,14 @@ class ConsulUI extends DISTRHO.UI {
         }
         
         if (this._isMobile) {
-            this._zoomView();
-            window.addEventListener('resize', _ => this._zoomView());
+            this._zoomUi();
+            window.addEventListener('resize', _ => this._zoomUi());
         } else if (! env.plugin) { // desktop browser
             el('main').style.borderRadius = '10px';
         }
-
-        if (env.dev) {
-            this._showView();
-        }
     }
 
-    _zoomView() {
+    _zoomUi() {
         // Zoom interface to take up full window height
         const main = el('main');
         const dv = window.innerHeight - main.clientHeight; // can be negative
@@ -122,10 +127,6 @@ class ConsulUI extends DISTRHO.UI {
         // Remove minimum size restrictions
         document.body.style.minWidth = 'auto';
         document.body.style.minHeight = 'auto';
-    }
-
-    _showView() {
-        document.body.style.visibility = 'visible';
     }
 
     _showStatus(message) {
@@ -229,6 +230,36 @@ class ConsulUI extends DISTRHO.UI {
         const value = descriptor.strVal(el.value).padStart(4, ' ');
 
         this._showStatus(`${name}${value}`);
+    }
+
+
+    //
+    // Layouts
+    //
+
+    async _loadLayout(id) {
+        // Load stylesheet
+        const styleId = `style-${id}`;
+        if (! el(styleId)) {
+            await new Promise((resolve, reject) => {
+                const link = document.createElement('link');
+                link.id = `style-${id}`;
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = `/layouts/${id}.css`;
+                link.addEventListener('load', resolve);
+                document.head.appendChild(link);
+            });
+        }
+
+        // Load HTML
+        const layoutId = `layout-${id}`;
+        if (! el(layoutId)) {
+            const html = await (await fetch(`/layouts/${id}.html`)).text();
+            const layout = document.createRange().createContextualFragment(html).firstChild;
+            el('layout').replaceChildren(layout);
+            document.body.style.visibility = 'visible';
+        }
     }
 
 

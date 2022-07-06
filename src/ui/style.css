@@ -40,9 +40,15 @@ body {
     background: #101010;
 }
 
+#layout {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+
 
 /*
- * Top bar - options and status messages
+ * Top bar - options and status message
  */
 
 #top-bar {
@@ -129,76 +135,26 @@ body {
     border-radius: 4px;
 }
 
-#about {
+#modal-about {
     display: flex;
     flex-direction: column;
     gap: 40px;
     padding: 10px 30px 20px 30px;
 }
 
-#about a {
+#modal-about a {
     color: #fff;
 }
 
-#about-text {
+#modal-about-text {
     display: flex;
     flex-direction: column;
     gap: 0.5em;
 }
 
-#about-title {
+#modal-about-title {
     font-family: Satisfy;
     font-size: 2em;
-}
-
-
-/*
- * Control surfaces
- */
-
-#mixer { 
-    display: grid; 
-    grid-template-columns: repeat(8, 1fr); 
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-}
-
-.strip {
-    display: grid;
-    grid-template-rows: 1fr 1fr 0.66fr 0.66fr 4fr;
-}
-
-.cell {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-g-knob {
-    width: 56px;
-    height: 60px;
-    --body-color: #333;
-    --range-color: #1a1a1a;
-    --pointer-off-color: #000;
-    --pointer-on-color: #eee;
-}
-
-#mixer g-button {
-    width: 74px;
-    height: 37px;
-    border-radius: 4px;
-    background: #333;
-}
-
-.fader-cell {
-    padding: 15px 0 10px 0;
-}
-
-g-fader {
-    max-width: 37px;
-    height: 100%;
-    --body-color: #333;
 }
 
 
@@ -251,20 +207,6 @@ g-fader {
 }
 
 
-/**
- * Custom fonts
- */
-
-@font-face {
-    font-family: 'UbuntuMono';
-    src: url('UbuntuMono-Regular.ttf') format('truetype');
-}
-
-@font-face {
-    font-family: 'Satisfy';
-    src: url('Satisfy-Regular.ttf') format('truetype');
-}
-
 
 /*
  * Phone layout tweaks
@@ -279,112 +221,22 @@ g-fader {
         width: 400px;
     }
 
-    #mixer:not(.force-landscape) {
-        grid-template-columns: repeat(4, 1fr); 
-    }
-    
     .landscape:not(.force-landscape) {
         display: none;
     }
 }
 
 
-/*
- * Color palette
+/**
+ * Custom fonts
  */
 
-#strip-1 g-knob {
-    --value-color: #7f3fff;
+@font-face {
+    font-family: 'UbuntuMono';
+    src: url('fonts/UbuntuMono-Regular.ttf') format('truetype');
 }
 
-#strip-1 g-button {
-    color: #7f3fff;
-}
-
-#strip-1 g-fader {
-    --value-color: #7f3fff;
-}
-
-#strip-2 g-knob {
-    --value-color: #ff7f3f;
-}
-
-#strip-2 g-button {
-    color: #ff7f3f;
-}
-
-#strip-2 g-fader {
-    --value-color: #ff7f3f;
-}
-
-#strip-3 g-knob {
-    --value-color: #7fff3f;
-}
-
-#strip-3 g-button {
-    color: #7fff3f;
-}
-
-#strip-3 g-fader {
-    --value-color: #7fff3f;
-}
-
-#strip-4 g-knob {
-    --value-color: #ff3f7f;
-}
-
-#strip-4 g-button {
-    color: #ff3f7f;
-}
-
-#strip-4 g-fader {
-    --value-color: #ff3f7f;
-}
-
-#strip-5 g-knob {
-    --value-color: #3f7fff;
-}
-
-#strip-5 g-button {
-    color: #3f7fff;
-}
-
-#strip-5 g-fader {
-    --value-color: #3f7fff;
-}
-
-#strip-6 g-knob {
-    --value-color: #ff7f7f;
-}
-
-#strip-6 g-button {
-    color: #ff7f7f;
-}
-
-#strip-6 g-fader {
-    --value-color: #ff7f7f;
-}
-
-#strip-7 g-knob {
-    --value-color: #3fff7f;
-}
-
-#strip-7 g-button {
-    color: #3fff7f;
-}
-
-#strip-7 g-fader {
-    --value-color: #3fff7f;
-}
-
-#strip-8 g-knob {
-    --value-color: #ffffff;
-}
-
-#strip-8 g-button {
-    color: #ffffff;
-}
-
-#strip-8 g-fader {
-    --value-color: #ffffff;
+@font-face {
+    font-family: 'Satisfy';
+    src: url('fonts/Satisfy-Regular.ttf') format('truetype');
 }
