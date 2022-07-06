@@ -51,30 +51,36 @@ body {
     flex-direction: row;
     align-items: center;
     height: 37px;
-    padding-right: 20px;
     background: #000;
 }
 
-#menu {
-    display: flex;
-    flex-direction: row;
-}
-
-#menu g-button {
+#top-bar g-button {
     height: 37px;
     padding: 0 20px;
     overflow: hidden;
 }
 
-#show-about {
-    font-family: Satisfy;
-    font-size: 1.25em;
+#top-bar-left {
+    display: flex;
+    justify-content: left;
+    flex: 0.25;
+}
+
+#top-bar-right {
+    display: flex;
+    justify-content: right;
+    flex: 0.25;
 }
 
 #status {
-    flex: 1.0;
+    flex: 0.5;
     white-space: pre;
     text-align: center;
+}
+
+#show-about {
+    font-family: Satisfy;
+    font-size: 1.25em;
 }
 
 #modal-root {
@@ -104,8 +110,9 @@ body {
 }
 
 #modal-btns {
+    display: flex;
+    justify-content: right;
     width: 100%;
-    text-align: right;
 }
 
 #modal-ok {

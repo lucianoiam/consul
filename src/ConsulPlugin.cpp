@@ -94,7 +94,6 @@ public:
 
     void setState(const char* key, const char* value) override
     {
-        //d_stderr("cpp setState() : %s = %s", key, value);
         PluginEx::setState(key, value);
 
         if ((::strcmp(key, "midi") == 0) && (::strlen(value) > 0)) {

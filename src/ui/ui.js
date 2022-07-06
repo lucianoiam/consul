@@ -58,7 +58,6 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     stateChanged(key, value) {
-        //console.log(`JS stateChanged() : ${key} = ${value}`);
         switch (key) {
             case 'config':
                 if (value) {
@@ -81,6 +80,91 @@ class ConsulUI extends DISTRHO.UI {
         if ((args[0] == 'control') && (args.length == 3)) {
             el(args[1]).value = args[2];
         }
+    }
+
+
+    //
+    // View
+    //
+
+    _initView() {
+        // CSS media query unusuable on Linux WebKitGTK
+        if (env.noReliableScreenSize) {
+            const className = 'force-landscape';
+            document.body.classList.add(className);
+            el('main').classList.add(className);
+            el('mixer').classList.add(className);
+            document.querySelectorAll('.landscape').forEach(el => {
+                el.classList.add(className);
+            });
+        }
+        
+        if (this._isMobile) {
+            this._zoomView();
+            window.addEventListener('resize', _ => this._zoomView());
+        } else if (! env.plugin) { // desktop browser
+            el('main').style.borderRadius = '10px';
+        }
+
+        if (env.dev) {
+            this._showView();
+        }
+    }
+
+    _zoomView() {
+        // Zoom interface to take up full window height
+        const main = el('main');
+        const dv = window.innerHeight - main.clientHeight; // can be negative
+        const scale = 1.0 + dv / main.clientHeight;
+        main.style.width = window.innerWidth / scale + 'px';
+        main.style.transform = `scale(${100 * scale}%)`;
+        
+        // Remove minimum size restrictions
+        document.body.style.minWidth = 'auto';
+        document.body.style.minHeight = 'auto';
+    }
+
+    _showView() {
+        document.body.style.visibility = 'visible';
+    }
+
+    _showStatus(message) {
+        const apply = () => {
+            this._showStatusTimer = null;
+
+            const status = el('status');
+            status.textContent = message;
+            status.style.transition = 'none';
+            status.style.opacity = '1';
+
+            if (this._hideStatusTimer) {
+                clearTimeout(this._hideStatusTimer);
+            }
+
+            this._hideStatusTimer = setTimeout(() => {
+                this._hideStatusTimer = null;
+
+                status.style.transition = 'opacity 150ms';
+                status.style.opacity = '0';
+            }, 1500);
+        };
+
+        // For some reason setting status.textContent takes abnormally long
+        // on Linux WebKitGTK. Issue not reproducible on Firefox or Chromium
+        // running on the same hardware/OS combination.
+        if (env.noReliableScreenSize) {
+            if (this._showStatusTimer) {
+                clearTimeout(this._showStatusTimer);
+            }
+
+            this._showStatusTimer = setTimeout(() => {
+                apply();
+            }, 20);
+
+            return;
+        }
+
+        apply();
     }
 
 
@@ -136,90 +220,6 @@ class ConsulUI extends DISTRHO.UI {
 
 
     //
-    // View related
-    //
-
-    _initView() {
-        // CSS media query unusuable on Linux WebKitGTK
-        if (env.noReliableScreenSize) {
-            const className = 'force-landscape';
-            document.body.classList.add(className);
-            el('main').classList.add(className);
-            el('mixer').classList.add(className);
-            document.querySelectorAll('.landscape').forEach(el => {
-                el.classList.add(className);
-            });
-        }
-        
-        if (this._isMobile) {
-            this._zoomView();
-            window.addEventListener('resize', _ => this._zoomView());
-        } else if (! env.plugin) { // desktop browser
-            el('main').style.borderRadius = '10px';
-        }
-
-        if (env.dev) {
-            this._showView();
-        }
-    }
-
-    _zoomView() {
-        // Zoom interface to take up full window height
-        const main = el('main');
-        const dv = window.innerHeight - main.clientHeight; // can be negative
-        const scale = 1.0 + dv / main.clientHeight;
-        main.style.width = window.innerWidth / scale + 'px';
-        main.style.transform = `scale(${100 * scale}%)`;
-        // Remove minimum size restrictions
-        document.body.style.minWidth = 'auto';
-        document.body.style.minHeight = 'auto';
-    }
-
-    _showView() {
-        document.body.style.visibility = 'visible';
-    }
-
-    _showStatus(message) {
-        const apply = () => {
-            this._showStatusTimer = null;
-
-            const status = el('status');
-            status.textContent = message;
-            status.style.transition = 'none';
-            status.style.opacity = '1';
-
-            if (this._hideStatusTimer) {
-                clearTimeout(this._hideStatusTimer);
-            }
-
-            this._hideStatusTimer = setTimeout(() => {
-                this._hideStatusTimer = null;
-
-                status.style.transition = 'opacity 150ms';
-                status.style.opacity = '0';
-            }, 1500);
-        };
-
-        // For some reason setting status.textContent takes abnormally long
-        // on Linux WebKitGTK. Issue not reproducible on Firefox or Chromium
-        // running on the same hardware/OS combination.
-        if (env.noReliableScreenSize) {
-            if (this._showStatusTimer) {
-                clearTimeout(this._showStatusTimer);
-            }
-
-            this._showStatusTimer = setTimeout(() => {
-                apply();
-            }, 20);
-
-            return;
-        }
-
-        apply();
-    }
-
-
-    //
     // Modal dialogs
     //
 
@@ -228,7 +228,7 @@ class ConsulUI extends DISTRHO.UI {
         helper.enableSystemBrowser(this, modal.querySelector('#homepage'));
 
         if (env.plugin) {
-            modal.appendChild(await helper.getQRCodeElement(this));
+            modal.appendChild(await helper.getNetworkDetailsElement(this));
         }
 
         this._showModal(modal);
