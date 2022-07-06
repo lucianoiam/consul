@@ -1,12 +1,6 @@
-@font-face {
-    font-family: 'UbuntuMono';
-    src: url('UbuntuMono-Regular.ttf') format('truetype');
-}
-
-@font-face {
-    font-family: 'Satisfy';
-    src: url('Satisfy-Regular.ttf') format('truetype');
-}
+/*
+ * Base layout
+ */
 
 * {
     box-sizing: border-box;
@@ -46,6 +40,11 @@ body {
     background: #101010;
 }
 
+
+/*
+ * Top bar - options and status messages
+ */
+
 #top-bar {
     display: flex;
     flex-direction: row;
@@ -72,27 +71,34 @@ body {
     flex: 0.25;
 }
 
+#show-about {
+    font-family: Satisfy;
+    font-size: 1.25em;
+}
+
 #status {
     flex: 0.5;
     white-space: pre;
     text-align: center;
 }
 
-#show-about {
-    font-family: Satisfy;
-    font-size: 1.25em;
-}
+
+/*
+ * Modal dialogs
+ */
 
 #modal-root {
-    display: none;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.66);
+    background: rgba(0,0,0,0.7);
+    display: flex;
     justify-content: center;
     align-items: center;
+    visibility: hidden;
+    animation-fill-mode: forwards;
 }
 
 #modal-box {
@@ -103,6 +109,7 @@ body {
     border: solid 1px #1a1a1a;
     border-radius: 4px;
     background: #000;
+    animation-fill-mode: forwards;
 }
 
 #modal-elem {
@@ -129,6 +136,10 @@ body {
     padding: 10px 30px 20px 30px;
 }
 
+#about a {
+    color: #fff;
+}
+
 #about-text {
     display: flex;
     flex-direction: column;
@@ -140,9 +151,10 @@ body {
     font-size: 2em;
 }
 
-#about a {
-    color: #fff;
-}
+
+/*
+ * Control surfaces
+ */
 
 #mixer { 
     display: grid; 
@@ -191,7 +203,71 @@ g-fader {
 
 
 /*
- * Phones
+ * Animations
+ */
+
+@keyframes fadeIn {
+    0% {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    100% {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    100% {
+        visibility: hidden;
+        opacity: 0;
+    }
+}
+
+@keyframes modalBoxIn {
+    0% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        transform: scale(1.0);
+    }
+}
+
+@keyframes modalBoxOut {
+    0% {
+        transform: scale(1.0);
+    }
+
+    100% {
+        transform: scale(0.9);
+    }
+}
+
+
+/**
+ * Custom fonts
+ */
+
+@font-face {
+    font-family: 'UbuntuMono';
+    src: url('UbuntuMono-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Satisfy';
+    src: url('Satisfy-Regular.ttf') format('truetype');
+}
+
+
+/*
+ * Phone layout tweaks
  */
 
 @media (orientation: portrait) {

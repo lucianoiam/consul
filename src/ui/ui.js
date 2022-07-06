@@ -118,7 +118,7 @@ class ConsulUI extends DISTRHO.UI {
         const scale = 1.0 + dv / main.clientHeight;
         main.style.width = window.innerWidth / scale + 'px';
         main.style.transform = `scale(${100 * scale}%)`;
-        
+
         // Remove minimum size restrictions
         document.body.style.minWidth = 'auto';
         document.body.style.minHeight = 'auto';
@@ -248,12 +248,29 @@ class ConsulUI extends DISTRHO.UI {
 
     _showModal(elem) {
         el('modal-elem').appendChild(elem);
-        el('modal-root').style.display = 'flex';
+        const t = '0.2s';
+        
+        const root = el('modal-root');
+        root.style.animationName = 'fadeIn';
+        root.style.animationDuration = t;
+        
+        const box = el('modal-box');
+        box.style.animationName = 'modalBoxIn';
+        box.style.animationDuration = t;
     }
 
     _hideModal() {
-        el('modal-root').style.display = 'none';
-        el('modal-elem').innerHTML = '';
+        const t = '0.1s';
+
+        const root = el('modal-root');
+        root.style.animationName = 'fadeOut';
+        root.style.animationDuration = t;
+        
+        const box = el('modal-box');
+        box.style.animationName = 'modalBoxOut';
+        box.style.animationDuration = t;
+
+        setTimeout(() => el('modal-elem').innerHTML = '', 100);
     }
     
 
