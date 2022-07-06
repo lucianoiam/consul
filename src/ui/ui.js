@@ -51,9 +51,8 @@ class ConsulUI extends DISTRHO.UI {
     constructor() {
         super();
 
-        this._config = {};
-        this._hasUiState = false;
-
+        this._config = null;
+        this._uiState = null;
         this._showStatusTimer = null;
         this._hideStatusTimer = null;
         
@@ -70,17 +69,12 @@ class ConsulUI extends DISTRHO.UI {
                 break;
             case 'ui':
                 if (value) {
-                    const ui = JSON.parse(value);
-                    for (const id in ui) {
-                        el(id).value = ui[id];
-                    }
-                    this._hasUiState = true;
+                    this._uiState = JSON.parse(value);
                 }
                 break;
         }
 
-        if (this._config && this._hasUiState) {
-            this._hasUiState = false;
+        if (this._config && this._uiState) {
             this._loadLayout(this._config.layout || DEFAULT_LAYOUT);
         }
     }
@@ -258,6 +252,10 @@ class ConsulUI extends DISTRHO.UI {
             layout.querySelectorAll('.control').forEach(el => {
                 el.addEventListener('input', _ => this._handleControlInput(el));
             });
+
+            for (const controlId in this._uiState) {
+                el(controlId).value = this._uiState[controlId];
+            }
         }
 
         document.body.style.visibility = 'visible';
