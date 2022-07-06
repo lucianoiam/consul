@@ -272,6 +272,7 @@ class ConsulUI extends DISTRHO.UI {
         box.style.animationName = 'modalBoxIn';
         box.style.animationDuration = t + 's';
 
+        this.setKeyboardFocus(true);
         setTimeout(() => { el('modal-ok').focus() }, 1000 * t);
     }
 
@@ -286,6 +287,7 @@ class ConsulUI extends DISTRHO.UI {
         box.style.animationName = 'modalBoxOut';
         box.style.animationDuration = t + 's';
 
+        this.setKeyboardFocus(false);
         setTimeout(() => el('modal-elem').innerHTML = '', 1000 * t);
     }
     
