@@ -21,6 +21,17 @@ body {
     font-size: 1em;
 }
 
+g-knob {
+    --body-color: #333;
+    --range-color: #1a1a1a;
+    --pointer-off-color: #000;
+    --pointer-on-color: #eee;
+}
+
+g-fader {
+    --body-color: #333;
+}
+
 #overscan {
     display: flex;
     flex-direction: column;
@@ -48,10 +59,10 @@ body {
 
 
 /*
- * Top bar - options and status message
+ * Top bar
  */
 
-#top-bar {
+#topbar {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -59,25 +70,25 @@ body {
     background: #000;
 }
 
-#top-bar g-button {
+#topbar g-button {
     height: 37px;
     padding: 0 20px;
     overflow: hidden;
 }
 
-#top-bar-left {
+#topbar-left {
     display: flex;
     justify-content: left;
     flex: 0.25;
 }
 
-#top-bar-right {
+#topbar-right {
     display: flex;
     justify-content: right;
     flex: 0.25;
 }
 
-#show-about {
+#option-about {
     font-family: Satisfy;
     font-size: 1.25em;
 }
@@ -118,11 +129,11 @@ body {
     animation-fill-mode: forwards;
 }
 
-#modal-elem {
+#modal-content {
     flex: 1;
 }
 
-#modal-btns {
+#modal-buttons {
     display: flex;
     justify-content: right;
     width: 100%;

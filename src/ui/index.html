@@ -9,28 +9,28 @@
   <body style="visibility: hidden;" onload="new ConsulUI">
     <div id="overscan">
         <div id="main">
-            <div id="top-bar">
-                <div id="top-bar-left">
-                    <g-button id="show-about">
+            <div id="topbar">
+                <div id="topbar-left">
+                    <g-button id="option-about">
                         <div style="margin-top: 1px;">Consul</div>
                     </g-button>
                 </div>
                 <div id="status"></div>
-                <div id="top-bar-right">
-                    <g-button id="show-midi">MIDI</g-button>
-                    <g-button id="show-layout">LAYOUT</g-button>
+                <div id="topbar-right">
+                    <g-button id="option-midi">MIDI</g-button>
+                    <g-button id="option-layout">LAYOUT</g-button>
                 </div>
             </div>
             <div id="layout"></div>
             <div id="modal-root">
                 <div id="modal-box">
-                    <div id="modal-elem"></div>
-                    <div id="modal-btns">
+                    <div id="modal-content"></div>
+                    <div id="modal-buttons">
                         <g-button id="modal-ok" tabindex="0">OK</g-button>
                     </div>
                 </div>
             </div>
-            <template id="modal-temp">
+            <template id="modal-templates">
                 <div id="modal-about">
                     <div id="modal-about-text">
                         <div id="modal-about-title">Consul</div>

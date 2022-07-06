@@ -176,19 +176,19 @@ class ConsulUI extends DISTRHO.UI {
     _initController() {
         helper.enableOfflineModal(this);
 
-        el('show-about').addEventListener('input', ev => {
+        el('option-about').addEventListener('input', ev => {
             if (! ev.target.value) { // up
                 this._showAboutModal();
             }
         });
 
-        el('show-midi').addEventListener('input', ev => {
+        el('option-midi').addEventListener('input', ev => {
             if (! ev.target.value) { // up
                 this._showMidiModal();
             }
         });
 
-        el('show-layout').addEventListener('input', ev => {
+        el('option-layout').addEventListener('input', ev => {
             if (! ev.target.value) { // up
                 this._showLayoutModal();
             }
@@ -287,12 +287,12 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     _getModal(id) {
-        return el('modal-temp').content.getElementById(id).cloneNode(true);
+        return el('modal-templates').content.getElementById(`modal-${id}`).cloneNode(true);
     }
 
     _showModal(elem) {
         const t = 0.2;
-        el('modal-elem').appendChild(elem);
+        el('modal-content').appendChild(elem);
 
         const root = el('modal-root');
         root.style.animationName = 'fadeIn';
@@ -318,7 +318,7 @@ class ConsulUI extends DISTRHO.UI {
         box.style.animationDuration = t + 's';
 
         this.setKeyboardFocus(false);
-        setTimeout(() => el('modal-elem').innerHTML = '', 1000 * t);
+        setTimeout(() => el('modal-content').innerHTML = '', 1000 * t);
     }
     
 
