@@ -96,10 +96,6 @@ class ConsulUI extends DISTRHO.UI {
             const className = 'force-landscape';
             document.body.classList.add(className);
             el('main').classList.add(className);
-            el('mixer').classList.add(className);
-            document.querySelectorAll('.landscape').forEach(el => {
-                el.classList.add(className);
-            });
         }
         
         if (this._isMobile) {
@@ -248,6 +244,14 @@ class ConsulUI extends DISTRHO.UI {
             const html = await (await fetch(`/layouts/${id}.html`)).text();
             const layout = document.createRange().createContextualFragment(html).firstChild;
             el('layout').replaceChildren(layout);
+
+            if (env.noReliableScreenSize) {
+                const className = 'force-landscape';
+                layout.classList.add(className);
+                layout.querySelectorAll('.landscape').forEach(el => {
+                    el.classList.add(className);
+                });
+            }
 
             layout.querySelectorAll('.control').forEach(el => {
                 el.addEventListener('input', _ => this._handleControlInput(el));
