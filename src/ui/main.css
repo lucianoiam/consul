@@ -233,7 +233,7 @@ g-fader {
     }
 
     .landscape {
-        display: none;
+        display: none !important; /* do not allow layout styles to override */
     }
 }
 
