@@ -224,15 +224,15 @@ g-fader {
  */
 
 @media (orientation: portrait) {
-    body:not(.force-landscape) {
+    body {
         min-width: 400px;
     }
 
-    #main:not(.force-landscape) {
+    #main {
         width: 400px;
     }
 
-    .landscape:not(.force-landscape) {
+    .landscape {
         display: none;
     }
 }

@@ -47,7 +47,7 @@
  */
 
 @media (orientation: portrait) {
-    #layout-mixer:not(.force-landscape) {
+    #layout-mixer {
         grid-template-columns: repeat(4, 1fr); 
     }
 }
