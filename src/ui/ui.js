@@ -259,7 +259,7 @@ class ConsulUI extends DISTRHO.UI {
 
     async _showAboutModal() {
         const modal = this._getModal('about');
-        helper.enableSystemBrowser(this, modal.querySelector('#homepage'));
+        helper.bindSystemBrowser(this, modal.querySelector('#homepage'));
 
         if (env.plugin) {
             modal.appendChild(await helper.getNetworkDetailsElement(this));
