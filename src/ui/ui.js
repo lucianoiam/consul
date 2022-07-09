@@ -136,14 +136,12 @@ class ConsulUI extends DISTRHO.UI {
         // For some reason setting status.textContent takes abnormally long
         // on Linux WebKitGTK. Issue not reproducible on Firefox or Chromium
         // running on the same hardware/OS combination.
-        if (env.noReliableScreenSize) {
+        if (env.fakeViewport) {
             if (this._showStatusTimer) {
                 clearTimeout(this._showStatusTimer);
             }
 
-            this._showStatusTimer = setTimeout(() => {
-                apply();
-            }, 20);
+            this._showStatusTimer = setTimeout(() => { apply() }, 20);
 
             return;
         }
