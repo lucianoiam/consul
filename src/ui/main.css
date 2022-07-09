@@ -199,7 +199,7 @@ g-fader {
 
 @keyframes modalBoxIn {
     0% {
-        transform: scale(0.9);
+        transform: scale(0.95);
     }
 
     100% {
@@ -213,7 +213,7 @@ g-fader {
     }
 
     100% {
-        transform: scale(0.9);
+        transform: scale(0.95);
     }
 }
 
