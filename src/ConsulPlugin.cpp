@@ -65,6 +65,13 @@ public:
         return d_cconst('L', 'c', 's', 'l');
     }
 
+    // https://github.com/DISTRHO/DPF/issues/372
+    void initAudioPort(const bool input, uint32_t index, AudioPort& port) override
+    {
+        port.groupId = kPortGroupStereo;
+        PluginEx::initAudioPort(input, index, port);
+    }
+
     void initState(uint32_t index, State& state) override
     {
         PluginEx::initState(index, state);
@@ -120,6 +127,7 @@ public:
              const MidiEvent* /*midiEvents*/, uint32_t /*midiEventCount*/) override
     {
         MidiEvent event;
+        
         while (fMidiEvents.get(event)) {
             writeMidiEvent(event);
         }
