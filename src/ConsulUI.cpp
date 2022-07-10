@@ -24,7 +24,7 @@ class ConsulUI : public WebUI
 {
 public:
     ConsulUI()
-        : WebUI(800 /*width*/, 540 /*height*/, 0x101010ff /*background*/)
+        : WebUI(800 /*width*/, 540 /*height*/, "#101010" /*background*/)
     {}
 
     void stateChanged(const char* key, const char* value) override
@@ -48,10 +48,10 @@ public:
         }
 
         sendMidiEvent(
-            static_cast<uint8_t>(args[3].getNumber()),                // status
-            static_cast<uint8_t>(args[4].getNumber()),                // data1
-            argc > 5 ? static_cast<uint8_t>(args[5].getNumber()) : 0, // data2
-            argc - 3   // size
+            /*status*/ static_cast<uint8_t>(args[3].getNumber()),
+            /* data1*/ static_cast<uint8_t>(args[4].getNumber()),
+            /* data2*/ argc > 5 ? static_cast<uint8_t>(args[5].getNumber()) : 0,
+            /*  size*/ argc - 3
         );
 
         const JSValue& id = args[1];
