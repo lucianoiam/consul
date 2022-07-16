@@ -26,7 +26,7 @@ const env = DISTRHO.env,
 class ConsulUI extends DISTRHO.UI {
 
     //
-    // DPF + hiphop interface
+    // DPF UI interface (+ hiphop extensions)
     // 
 
     constructor() {
@@ -78,8 +78,8 @@ class ConsulUI extends DISTRHO.UI {
         if (this._isMobile) {
             this._zoomUi();
             window.addEventListener('resize', _ => this._zoomUi());
-        } else if (! env.plugin) { // desktop browser
-            el('main').style.borderRadius = '10px';
+        } else if (! env.plugin) {
+            el('main').style.borderRadius = '10px'; // desktop browser
         }
 
         if (env.dev) {
@@ -200,12 +200,10 @@ class ConsulUI extends DISTRHO.UI {
         const status = 0xb0 | (MIDI_CHANNEL - 1);
         const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
         const ccValue = descriptor.midiVal(el.value);
-
         this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
 
         const name = el.getAttribute('data-name').padEnd(10, ' ');
         const value = descriptor.strVal(el.value).padStart(4, ' ');
-
         this._showStatus(`${name}${value}`);
     }
 
@@ -215,7 +213,7 @@ class ConsulUI extends DISTRHO.UI {
     //
 
     async _loadLayout(id) {
-        // Load stylesheet
+        // Load stylesheet if needed
         const styleId = `style-${id}`;
         if (! el(styleId)) {
             await new Promise((resolve, reject) => {
@@ -229,7 +227,7 @@ class ConsulUI extends DISTRHO.UI {
             });
         }
 
-        // Load HTML
+        // Load HTML if needed
         const layoutId = `layout-${id}`;
         if (! el(layoutId)) {
             const html = await (await fetch(`/layouts/${id}.html`)).text();
