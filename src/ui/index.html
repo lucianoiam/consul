@@ -26,6 +26,7 @@
                 <div id="modal-box">
                     <div id="modal-content"></div>
                     <div id="modal-buttons">
+                        <g-button id="modal-cancel" tabindex="1">Cancel</g-button>
                         <g-button id="modal-ok" tabindex="0">OK</g-button>
                     </div>
                 </div>
@@ -43,7 +44,12 @@
                     </div>
                 </div>
                 <div id="modal-midi">MIDI mappings not yet available</div>
-                <div id="modal-layout">Layout picker not yet available</div>
+                <div id="modal-layout">
+                    <ul id="modal-layout-list">
+                        <li data-id="mixer">8-track mixer</li>
+                        <li data-id="grid">Buttons grid</li>
+                    </ul>
+                </div>
             </template>
         </div>
     </div>

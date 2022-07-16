@@ -137,9 +137,10 @@ g-fader {
     display: flex;
     justify-content: right;
     width: 100%;
+    gap: 20px;
 }
 
-#modal-ok {
+#modal-buttons > g-button {
     width: 74px;
     height: 37px;
     border: solid 1px #fff;
@@ -168,6 +169,23 @@ g-fader {
     font-size: 2em;
 }
 
+#modal-layout ul {
+    list-style: none;
+    width: 400px;
+    padding: 0;
+    margin: 0;
+}
+
+#modal-layout li {
+    font-size: 1.5em;
+    line-height: 3em;
+    height: 3em;
+    padding: 0 10px;
+}
+
+#modal-layout li:not(:first-child) {
+    border-top: solid 1px #1a1a1a;
+}
 
 /*
  * Animations

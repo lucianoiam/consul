@@ -17,26 +17,7 @@
  */
 
 const DEFAULT_LAYOUT = 'mixer';
-
 const MIDI_CHANNEL = 1;
-
-const CONTROL_DESCRIPTOR = Object.freeze({
-    'g-knob': {
-        ccBase  : 0,
-        midiVal : v => Math.floor(127 * v),
-        strVal  : v => Math.round(100 * v) + '%',
-    },
-    'g-button': { 
-        ccBase  : 0x10,
-        midiVal : v => v ? 127 : 0,
-        strVal  : v => v ? 'ON' : 'OFF'
-    },
-    'g-fader': {
-        ccBase  : 0x20,
-        midiVal : v => Math.floor(127 * v),
-        strVal  : v => Math.round(100 * v) + '%'
-    }
-});
 
 const env = DISTRHO.env,
       helper = DISTRHO.UIHelper,
@@ -51,8 +32,8 @@ class ConsulUI extends DISTRHO.UI {
     constructor() {
         super();
 
-        this._config = null;
-        this._uiState = null;
+        this._config = {};
+        this._uiState = {};
         this._showStatusTimer = null;
         this._hideStatusTimer = null;
         
@@ -184,29 +165,36 @@ class ConsulUI extends DISTRHO.UI {
                 this._showLayoutModal();
             }
         });
+                
+        el('modal-cancel').addEventListener('input', ev => {
+            if (! ev.target.value) { // up
+                this._hideModal(false);
+            }
+        });
+
+        el('modal-ok').addEventListener('input', ev => {
+            if (! ev.target.value) { // up
+                this._hideModal(true);
+            }
+        });
 
         const modalRoot = el('modal-root');
         modalRoot.addEventListener('click', ev => {
             if (ev.target == modalRoot) {
-                this._hideModal();
+                this._hideModal(false);
             }            
         });
-
-        const modalOk = el('modal-ok');
-        modalOk.addEventListener('input', ev => {
-            if (! ev.target.value) { // up
-                this._hideModal();
-            }
-        });
-        modalOk.addEventListener('keydown', ev => {
-            if (ev.key == 'Enter') {
-                this._hideModal();
+        modalRoot.addEventListener('keydown', ev => {
+            if ((ev.key == 'Enter') || (ev.key == 'Escape')) {
+                this._hideModal(false);
             }
         });
     }
 
     _handleControlInput(el) {
-        const descriptor = CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
+        this._uiState[el.id] = el.value;
+
+        const descriptor = this.constructor.CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
         const status = 0xb0 | (MIDI_CHANNEL - 1);
         const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
         const ccValue = descriptor.midiVal(el.value);
@@ -271,22 +259,36 @@ class ConsulUI extends DISTRHO.UI {
             modal.appendChild(await helper.getNetworkDetailsElement(this));
         }
 
-        this._showModal(modal);
+        this._showModal(modal, true, false);
     }
 
     _showMidiModal() {
-        this._showModal(this._getModal('midi'));
+        this._showModal(this._getModal('midi'), true, false);
     }
 
     _showLayoutModal() {
-        this._showModal(this._getModal('layout'));
+        this._showModal(this._getModal('layout'), false, true);
+
+        for (let li of el('modal-layout-list').children) {
+            li.addEventListener('mousedown', ev => {
+                li.style.color = '#000';
+                li.style.backgroundColor = '#fff';
+            });
+
+            li.addEventListener('mouseup', ev => {
+                setTimeout(_ => {
+                    this._hideModal(true);
+                    this._loadLayout(li.getAttribute('data-id'));
+                }, 150);
+            });
+        }
     }
 
     _getModal(id) {
         return el('modal-templates').content.getElementById(`modal-${id}`).cloneNode(true);
     }
 
-    _showModal(elem) {
+    _showModal(elem, ok, cancel) {
         const t = 0.2;
         el('modal-content').appendChild(elem);
 
@@ -298,17 +300,26 @@ class ConsulUI extends DISTRHO.UI {
         box.style.animationName = 'modalBoxIn';
         box.style.animationDuration = t + 's';
 
+        el('modal-ok').style.display = ok ? 'inline' : 'none';
+        el('modal-cancel').style.display = cancel ? 'inline' : 'none';
+
         this.setKeyboardFocus(true);
-        setTimeout(() => { el('modal-ok').focus() }, 1000 * t);
+        
+        setTimeout(() => {
+            const lastVisibleButton = Array.from(el('modal-buttons').children)
+                .filter(el => el.style.display != 'none')
+                .pop();
+            lastVisibleButton.focus()
+        }, 1000 * t);
     }
 
-    _hideModal() {
+    _hideModal(accept) {
         const t = 0.1;
 
-        const root = el('modal-root');
+        const root = el('modal-root')
         root.style.animationName = 'fadeOut';
         root.style.animationDuration = t + 's';
-        
+
         const box = el('modal-box');
         box.style.animationName = 'modalBoxOut';
         box.style.animationDuration = t + 's';
@@ -332,3 +343,21 @@ class ConsulUI extends DISTRHO.UI {
     }
 
 }
+
+ConsulUI.CONTROL_DESCRIPTOR = Object.freeze({
+    'g-knob': {
+        ccBase  : 0,
+        midiVal : v => Math.floor(127 * v),
+        strVal  : v => Math.round(100 * v) + '%',
+    },
+    'g-fader': {
+        ccBase  : 0x20,
+        midiVal : v => Math.floor(127 * v),
+        strVal  : v => Math.round(100 * v) + '%'
+    },
+    'g-button': { 
+        ccBase  : 0x10,
+        midiVal : v => v ? 127 : 0,
+        strVal  : v => v ? 'ON' : 'OFF'
+    }
+});
