@@ -46,16 +46,18 @@ class ConsulUI extends DISTRHO.UI {
             case 'config':
                 if (value) {
                     this._config = JSON.parse(value);
+                    this._config.init = true;
                 }
                 break;
             case 'ui':
                 if (value) {
                     this._uiState = JSON.parse(value);
+                    this._uiState.init = true;
                 }
                 break;
         }
 
-        if (this._config && this._uiState) {
+        if (this._config.init && this._uiState.init) {
             this._loadLayout(this._config.layout || DEFAULT_LAYOUT);
             this._showView();
         }
@@ -277,8 +279,10 @@ class ConsulUI extends DISTRHO.UI {
 
             li.addEventListener('mouseup', ev => {
                 setTimeout(_ => {
+                    const layoutId = li.getAttribute('data-id');
+                    this._loadLayout(layoutId);
+                    this._setConfigOption('layout', layoutId);
                     this._hideModal(true);
-                    this._loadLayout(li.getAttribute('data-id'));
                 }, 150);
             });
         }
@@ -304,7 +308,7 @@ class ConsulUI extends DISTRHO.UI {
         el('modal-cancel').style.display = cancel ? 'inline' : 'none';
 
         this.setKeyboardFocus(true);
-        
+
         setTimeout(() => {
             const lastVisibleButton = Array.from(el('modal-buttons').children)
                 .filter(el => el.style.display != 'none')
@@ -338,7 +342,8 @@ class ConsulUI extends DISTRHO.UI {
         return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
     }
 
-    _saveConfig() {
+    _setConfigOption(key, value) {
+        this._config[key] = value;
         this.setState('config', JSON.stringify(this._config));
     }
 
