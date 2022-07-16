@@ -76,6 +76,7 @@ class ConsulUI extends DISTRHO.UI {
 
         if (this._config && this._uiState) {
             this._loadLayout(this._config.layout || DEFAULT_LAYOUT);
+            this._showView();
         }
     }
 
@@ -97,6 +98,15 @@ class ConsulUI extends DISTRHO.UI {
         } else if (! env.plugin) { // desktop browser
             el('main').style.borderRadius = '10px';
         }
+
+        if (env.dev) {
+            this._loadLayout(DEFAULT_LAYOUT);
+            this._showView();
+        }
+    }
+
+    _showView() {
+        document.body.style.visibility = 'visible';
     }
 
     _zoomUi() {
@@ -246,8 +256,6 @@ class ConsulUI extends DISTRHO.UI {
                 el(controlId).value = this._uiState[controlId];
             }
         }
-
-        document.body.style.visibility = 'visible';
     }
 
 
