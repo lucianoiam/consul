@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const DEFAULT_LAYOUT = 'pads';
+const DEFAULT_LAYOUT = 'mixer';
 const MIDI_CHANNEL = 1;
 
 const env = DISTRHO.env,
