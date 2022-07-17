@@ -61,7 +61,6 @@ class ConsulUI extends DISTRHO.UI {
 
         if (this._config.init && this._uiState.init) {
             this._loadLayout(this._config['layout'] || DEFAULT_LAYOUT);
-            this._showView();
         }
     }
 
@@ -85,12 +84,7 @@ class ConsulUI extends DISTRHO.UI {
 
         if (env.dev) {
             this._loadLayout(DEFAULT_LAYOUT);
-            this._showView();
         }
-    }
-
-    _showView() {
-        document.body.style.visibility = 'visible';
     }
 
     _zoomUi() {
@@ -225,6 +219,8 @@ class ConsulUI extends DISTRHO.UI {
             return;
         }
 
+        document.body.style.visibility = 'hidden';
+
         // Load stylesheet. It is necessary to remove the previous one because
         // layout stylesheets define size properties for body and #main .
         await new Promise((resolve, reject) => {
@@ -273,6 +269,8 @@ class ConsulUI extends DISTRHO.UI {
         if (this._isMobile) {
             this._zoomUi(); // relative to startup size (CSS #main)
         }
+
+        document.body.style.visibility = 'visible';
     }
 
 
@@ -306,10 +304,11 @@ class ConsulUI extends DISTRHO.UI {
 
             li.addEventListener('mouseup', ev => {
                 setTimeout(_ => {
-                    const layoutId = li.getAttribute('data-id');
-                    this._loadLayout(layoutId);
-                    this._setConfigOption('layout', layoutId);
-                    this._hideModal(true);
+                    this._hideModal(true, _ => {
+                        const layoutId = li.getAttribute('data-id');
+                        this._loadLayout(layoutId);
+                        this._setConfigOption('layout', layoutId);
+                    });
                 }, 150);
             });
         }
@@ -344,7 +343,7 @@ class ConsulUI extends DISTRHO.UI {
         }, 1000 * t);
     }
 
-    _hideModal(accept) {
+    _hideModal(accept, callback) {
         const t = 0.1;
 
         const root = el('modal-root')
@@ -356,7 +355,14 @@ class ConsulUI extends DISTRHO.UI {
         box.style.animationDuration = t + 's';
 
         this.setKeyboardFocus(false);
-        setTimeout(() => el('modal-content').innerHTML = '', 1000 * t);
+
+        setTimeout(() => {
+            el('modal-content').innerHTML = '';
+
+            if (callback) {
+                callback();
+            }
+        }, 1000 * t);
     }
     
 
