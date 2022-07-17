@@ -2,6 +2,16 @@
  * Layout: 8-track mixer
  */
 
+body {
+    min-width: 800px;
+    min-height: 540px;
+}
+
+#main {
+    width: 800px;
+    height: 540px;
+}
+
 #layout-mixer { 
     display: grid; 
     grid-template-columns: repeat(8, 1fr); 
@@ -47,6 +57,14 @@
  */
 
 @media (orientation: portrait) {
+    body {
+        min-width: 400px;
+    }
+
+    #main {
+        width: 400px;
+    }
+
     #layout-mixer {
         grid-template-columns: repeat(4, 1fr); 
     }

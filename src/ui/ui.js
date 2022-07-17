@@ -34,10 +34,11 @@ class ConsulUI extends DISTRHO.UI {
 
         this._config = {};
         this._uiState = {};
+        this._shouldShowStatus = false;
+        this._activeLayoutId = null;
         this._showStatusTimer = null;
         this._hideStatusTimer = null;
-        this._shouldShowStatus = false;
-        
+
         this._initView();
         this._initController();
     }
@@ -215,59 +216,56 @@ class ConsulUI extends DISTRHO.UI {
     //
 
     async _loadLayout(id) {
-        // Load stylesheet if needed
-        const styleId = `style-${id}`;
-        if (! el(styleId)) {
-            await new Promise((resolve, reject) => {
-                const link = document.createElement('link');
-                link.id = `style-${id}`;
-                link.rel = 'stylesheet';
-                link.type = 'text/css';
-                link.href = `/layouts/${id}.css`;
-                link.addEventListener('load', resolve);
-                document.head.appendChild(link);
-            });
+        if (this._activeLayoutId == id) {
+            return;
         }
 
-        // Load HTML if needed
-        const layoutId = `layout-${id}`;
-        if (! el(layoutId)) {
-            const html = await (await fetch(`/layouts/${id}.html`)).text();
-            const layout = document.createRange().createContextualFragment(html).firstChild;
-            el('layout').replaceChildren(layout);
+        // Load stylesheet. It is necessary to remove the previous one because
+        // layout stylesheets define size properties for body and #main .
+        await new Promise((resolve, reject) => {
+            const link = document.createElement('link');
+            link.id = `style-${id}`;
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = `/layouts/${id}.css`;
+            link.addEventListener('load', resolve);
 
-            this._shouldShowStatus = layout.getAttribute('data-show-status') == 'true';
-
-            // Connect controls
-            layout.querySelectorAll('.control').forEach(el => {
-                el.addEventListener('input', _ => this._handleControlInput(el));
-            });
-
-            // Restore state
-            for (const controlId in this._uiState) {
-                const control = el(controlId);
-                if (control) {
-                    el(controlId).value = this._uiState[controlId];
-                }
+            if (this._activeLayoutId != null) {
+                document.head.removeChild(el(`style-${this._activeLayoutId}`));
             }
 
-            // Local view size
-            const width = parseInt(layout.getAttribute('data-width'));
-            const height = parseInt(layout.getAttribute('data-height'));
+            document.head.appendChild(link);
+        });
 
-            const k = window.devicePixelRatio;
-            this.setSize(k * width, k * height);
+        // Load and replace current layout HTML
+        const html = await (await fetch(`/layouts/${id}.html`)).text();
+        const layout = document.createRange().createContextualFragment(html).firstChild;
+        el('layout').replaceChildren(layout);
 
-            // Clients view size
-            if (this._isMobile) {
-                this._zoomUi(); // relative to startup size (CSS #main)
-            } else {
-                const main = el('main');
-                main.style.width = width + 'px';
-                main.style.height = height + 'px';
-                document.body.style.minWidth = width + 'px';
-                document.body.style.minHeight = height + 'px';
+        this._shouldShowStatus = layout.getAttribute('data-show-status') == 'true';
+        this._activeLayoutId = id;
+
+        // Connect controls
+        layout.querySelectorAll('.control').forEach(el => {
+            el.addEventListener('input', _ => this._handleControlInput(el));
+        });
+
+        // Restore state
+        for (const controlId in this._uiState) {
+            const control = el(controlId);
+            if (control) {
+                el(controlId).value = this._uiState[controlId];
             }
+        }
+
+        // Plugin embedded view size
+        const main = el('main');
+        const k = window.devicePixelRatio;
+        this.setSize(k * main.clientWidth, k * main.clientHeight);
+
+        // Zoom view for mobile
+        if (this._isMobile) {
+            this._zoomUi(); // relative to startup size (CSS #main)
         }
     }
 

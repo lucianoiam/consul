@@ -47,8 +47,6 @@ g-button {
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 800px;
-    height: 540px;
     overflow: hidden;
     background: #101010;
 }
@@ -244,14 +242,6 @@ g-button {
  */
 
 @media (orientation: portrait) {
-    body {
-        min-width: 400px;
-    }
-
-    #main {
-        width: 400px;
-    }
-
     .landscape {
         display: none !important; /* do not allow layout styles to override */
     }

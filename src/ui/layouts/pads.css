@@ -2,6 +2,16 @@
  * Layout: Pads grid
  */
 
+body {
+    min-width: 600px;
+    min-height: 360px;
+}
+
+#main {
+    width: 600px;
+    height: 360px;
+}
+
 #layout-pads {
     display: grid;
     grid-template-rows: repeat(2, 128px); 
@@ -26,6 +36,14 @@
  */
 
 @media (orientation: portrait) {
+    body {
+        min-width: 300px;
+    }
+
+    #main {
+        width: 300px;
+    }
+
     #layout-pads {
         grid-template-columns: repeat(2, 128px); 
     }
