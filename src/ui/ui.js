@@ -59,6 +59,7 @@ class ConsulUI extends DISTRHO.UI {
                 break;
         }
 
+        // Will be called every time config is updated by any client
         if (this._config.init && this._uiState.init) {
             this._loadLayout(this._config['layout'] || DEFAULT_LAYOUT);
         }
@@ -261,9 +262,11 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         // Plugin embedded view size
-        const size = this._getActiveLayoutCSSSize();
-        const k = window.devicePixelRatio;
-        this.setSize(k * size.width, k * size.height);
+        if (env.plugin) {
+            const size = this._getActiveLayoutCSSSize();
+            const k = window.devicePixelRatio;
+            this.setSize(k * size.width, k * size.height);
+        }
 
         // Zoom view for mobile
         if (this._isMobile) {
