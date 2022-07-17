@@ -59,7 +59,7 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         if (this._config.init && this._uiState.init) {
-            this._loadLayout(this._config.layout || DEFAULT_LAYOUT);
+            this._loadLayout(this._config['layout'] || DEFAULT_LAYOUT);
             this._showView();
         }
     }
