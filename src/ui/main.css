@@ -32,6 +32,10 @@ g-fader {
     --body-color: #333;
 }
 
+g-button {
+    transition: background-color 0.15s ease;
+}
+
 #overscan {
     display: flex;
     flex-direction: column;

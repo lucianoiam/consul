@@ -36,6 +36,7 @@ class ConsulUI extends DISTRHO.UI {
         this._uiState = {};
         this._showStatusTimer = null;
         this._hideStatusTimer = null;
+        this._shouldShowStatus = false;
         
         this._initView();
         this._initController();
@@ -202,9 +203,11 @@ class ConsulUI extends DISTRHO.UI {
         const ccValue = descriptor.midiVal(el.value);
         this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
 
-        const name = el.getAttribute('data-name').padEnd(10, ' ');
-        const value = descriptor.strVal(el.value).padStart(4, ' ');
-        this._showStatus(`${name}${value}`);
+        if (this._shouldShowStatus) {
+            const name = el.getAttribute('data-name').padEnd(10, ' ');
+            const value = descriptor.strVal(el.value).padStart(4, ' ');
+            this._showStatus(`${name}${value}`);
+        }
     }
 
 
@@ -233,6 +236,8 @@ class ConsulUI extends DISTRHO.UI {
             const html = await (await fetch(`/layouts/${id}.html`)).text();
             const layout = document.createRange().createContextualFragment(html).firstChild;
             el('layout').replaceChildren(layout);
+
+            this._shouldShowStatus = layout.getAttribute('data-show-status') == 'true';
 
             // Connect controls
             layout.querySelectorAll('.control').forEach(el => {
@@ -347,20 +352,18 @@ class ConsulUI extends DISTRHO.UI {
 
 }
 
-ConsulUI.CONTROL_DESCRIPTOR = Object.freeze({
-    'g-knob': {
-        ccBase  : 0,
-        midiVal : v => Math.floor(127 * v),
-        strVal  : v => Math.round(100 * v) + '%',
-    },
-    'g-fader': {
-        ccBase  : 0x20,
-        midiVal : v => Math.floor(127 * v),
-        strVal  : v => Math.round(100 * v) + '%'
-    },
-    'g-button': { 
-        ccBase  : 0x10,
-        midiVal : v => v ? 127 : 0,
-        strVal  : v => v ? 'ON' : 'OFF'
-    }
-});
+(() => {
+    // Static init
+
+    const contMidiVal = v => Math.floor(127 * v);
+    const contStrVal  = v => Math.round(100 * v) + '%';
+    const boolMidiVal = v => v ? 127 : 0;
+    const boolStrVal  = v => v ? 'ON' : 'OFF';
+
+    ConsulUI.CONTROL_DESCRIPTOR = Object.freeze({
+        'g-knob'   : { ccBase: 0   , midiVal: contMidiVal, strVal: contStrVal },
+        'g-button' : { ccBase: 0x10, midiVal: boolMidiVal, strVal: boolStrVal },
+        'g-fader'  : { ccBase: 0x20, midiVal: contMidiVal, strVal: contStrVal }
+    });
+
+}) ();

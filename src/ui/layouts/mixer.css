@@ -106,39 +106,39 @@
 }
 
 #mixer-strip-5 g-knob {
-    --value-color: #3f7fff;
+    --value-color: #ffff3f;
 }
 
 #mixer-strip-5 g-button {
-    color: #3f7fff;
+    color: #ffff3f;
 }
 
 #mixer-strip-5 g-fader {
-    --value-color: #3f7fff;
+    --value-color: #ffff3f;
 }
 
 #mixer-strip-6 g-knob {
-    --value-color: #ff7f7f;
+    --value-color: #3fffff;
 }
 
 #mixer-strip-6 g-button {
-    color: #ff7f7f;
+    color: #3fffff;
 }
 
 #mixer-strip-6 g-fader {
-    --value-color: #ff7f7f;
+    --value-color: #3fffff;
 }
 
 #mixer-strip-7 g-knob {
-    --value-color: #3fff7f;
+    --value-color: #ff3fff;
 }
 
 #mixer-strip-7 g-button {
-    color: #3fff7f;
+    color: #ff3fff;
 }
 
 #mixer-strip-7 g-fader {
-    --value-color: #3fff7f;
+    --value-color: #ff3fff;
 }
 
 #mixer-strip-8 g-knob {

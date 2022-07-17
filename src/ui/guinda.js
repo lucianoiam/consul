@@ -823,8 +823,9 @@ class Button extends InputWidget {
 
     static get _attributeDescriptors() {
         return super._attributeDescriptors.concat([
-            { key: 'value', parser: ValueParser.bool  , default: false       },
-            { key: 'mode' , parser: ValueParser.string, default: 'momentary' }
+            { key: 'value'    , parser: ValueParser.bool  , default: false       },
+            { key: 'feedback' , parser: ValueParser.bool  , default: true        },
+            { key: 'mode'     , parser: ValueParser.string, default: 'momentary' }
         ]);
     }
 
@@ -838,7 +839,7 @@ class Button extends InputWidget {
     connectedCallback() {
         super.connectedCallback();
 
-        this._color = this._style('color', /*rgb(0,0,0)*/);
+        this._color = this._style('color', /*inherited*/);
         this._backgroundColor = this._style('background-color' /*rgb(0,0,0)*/);
         this._borderColor = this._style('border-color' /*rgb(0,0,0)*/);
         this._selectedColor = this._style('--selected-color', '#000');       
@@ -878,6 +879,10 @@ class Button extends InputWidget {
     }
 
     _redraw() {
+        if (! this._opt['feedback']) {
+            return;
+        }
+        
         if (this.value) {
             this.style.color = this._selectedColor;
             this.style.borderColor = this._color;
