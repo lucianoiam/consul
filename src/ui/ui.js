@@ -94,11 +94,16 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     _zoomUi() {
+        // Use mixer size as the base size for all layouts
+        const baseWidth = 800;
+        const baseHeight = 540;
+
         // Zoom interface to take up full window height
+        const dv = window.innerHeight - baseHeight; // can be negative
+        const scale = 1.0 + dv / baseHeight;
         const main = el('main');
-        const dv = window.innerHeight - main.clientHeight; // can be negative
-        const scale = 1.0 + dv / main.clientHeight;
         main.style.width = window.innerWidth / scale + 'px';
+        main.style.height = baseHeight + 'px';
         main.style.transform = `scale(${100 * scale}%)`;
 
         // Remove minimum size restrictions
@@ -231,7 +236,8 @@ class ConsulUI extends DISTRHO.UI {
             link.addEventListener('load', resolve);
 
             if (this._activeLayoutId != null) {
-                document.head.removeChild(el(`style-${this._activeLayoutId}`));
+                const prevStyle = el(`style-${this._activeLayoutId}`);
+                document.head.removeChild(prevStyle);
             }
 
             document.head.appendChild(link);
@@ -259,9 +265,9 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         // Plugin embedded view size
-        const main = el('main');
+        const size = this._getActiveLayoutCSSSize();
         const k = window.devicePixelRatio;
-        this.setSize(k * main.clientWidth, k * main.clientHeight);
+        this.setSize(k * size.width, k * size.height);
 
         // Zoom view for mobile
         if (this._isMobile) {
@@ -361,6 +367,23 @@ class ConsulUI extends DISTRHO.UI {
     get _isMobile() {
         const ua = navigator.userAgent;
         return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
+    }
+
+    _getActiveLayoutCSSSize() {
+        // Find matching CSSStyleSheet object
+        const style = Array.from(document.styleSheets).find(css => {
+            return css.href && css.href.split('/').pop().split('.').shift() == this._activeLayoutId;
+        });
+
+        // Read #main px values
+        const rule = Array.from(style.cssRules).find(r => {
+            return r.selectorText == '#main';
+        });
+
+        return {
+            width  : parseInt(rule.style.getPropertyValue('width')),
+            height : parseInt(rule.style.getPropertyValue('height'))
+        };
     }
 
     _setConfigOption(key, value) {
