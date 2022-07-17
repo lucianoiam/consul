@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const DEFAULT_LAYOUT = 'mixer';
+const DEFAULT_LAYOUT = 'pads';
 const MIDI_CHANNEL = 1;
 
 const env = DISTRHO.env,
@@ -77,7 +77,6 @@ class ConsulUI extends DISTRHO.UI {
 
     _initView() {
         if (this._isMobile) {
-            this._zoomUi();
             window.addEventListener('resize', _ => this._zoomUi());
         } else if (! env.plugin) {
             el('main').style.borderRadius = '10px'; // desktop browser
@@ -246,7 +245,28 @@ class ConsulUI extends DISTRHO.UI {
 
             // Restore state
             for (const controlId in this._uiState) {
-                el(controlId).value = this._uiState[controlId];
+                const control = el(controlId);
+                if (control) {
+                    el(controlId).value = this._uiState[controlId];
+                }
+            }
+
+            // Local view size
+            const width = parseInt(layout.getAttribute('data-width'));
+            const height = parseInt(layout.getAttribute('data-height'));
+
+            const k = window.devicePixelRatio;
+            this.setSize(k * width, k * height);
+
+            // Clients view size
+            if (this._isMobile) {
+                this._zoomUi(); // relative to startup size (CSS #main)
+            } else {
+                const main = el('main');
+                main.style.width = width + 'px';
+                main.style.height = height + 'px';
+                document.body.style.minWidth = width + 'px';
+                document.body.style.minHeight = height + 'px';
             }
         }
     }
