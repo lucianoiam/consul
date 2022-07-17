@@ -2,9 +2,17 @@
 
 *Control Surface Library*
 
+This is a VST 2/3 plugin that provides a web user interface for controlling other plugins supporting MIDI learn. The user interface is primarily designed for touch devices. The plugin is self-contained and no additional software is required; just drop it into the same chain (and before) the target plugin.
+
+Example use case: tweak Amplitube parameters from a Wi-Fi tablet.
+
+Current development status:
+
 - Backend : complete
 - Frontend : complete
 - Documentation : null for the moment
+
+Known bugs: VST3 not working on Ableton Live (VST2 on this DAW).
 
 Android users have a look at [pisco](https://github.com/lucianoiam/pisco)
 
