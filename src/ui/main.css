@@ -59,10 +59,10 @@ g-fader {
 
 
 /*
- * Top bar
+ * Menu bar
  */
 
-#topbar {
+#menubar {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -70,19 +70,19 @@ g-fader {
     background: #000;
 }
 
-#topbar g-button {
+#menubar g-button {
     height: 37px;
     padding: 0 16px;
     overflow: hidden;
 }
 
-#topbar-left {
+#menubar-left {
     display: flex;
     justify-content: left;
     flex: 0.25;
 }
 
-#topbar-right {
+#menubar-right {
     display: flex;
     justify-content: right;
     flex: 0.25;
