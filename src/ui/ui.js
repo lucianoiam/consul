@@ -158,7 +158,8 @@ class ConsulUI extends DISTRHO.UI {
         });
 
         const invertSvg = (el, val) => {
-            el.shadowRoot.querySelectorAll('path').forEach(p => p.style.fill = val ? '#000' : '#fff');
+            const fill = val ? '#000' : '#fff';
+            el.shadowRoot.querySelectorAll('path,circle').forEach(p => p.style.fill = fill);
         };
 
         el('option-layout').addEventListener('input', ev => {
