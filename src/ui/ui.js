@@ -300,14 +300,9 @@ class ConsulUI extends DISTRHO.UI {
     // Modal dialogs
     //
 
-    async _showAboutModal() {
+    _showAboutModal() {
         const modal = this._getModal('about');
         helper.bindSystemBrowser(this, modal.querySelector('#homepage'));
-
-        if (env.plugin) {
-            modal.appendChild(await helper.getNetworkDetailsElement(this));
-        }
-
         this._showModal(modal, true, false);
     }
 
@@ -336,13 +331,12 @@ class ConsulUI extends DISTRHO.UI {
         this._showModal(this._getModal('midi'), true, false);
     }
 
-    _showNetworkModal() {
-        this._showModal(this._getModal('network'), true, false);
+    async _showNetworkModal() {
+        this._showModal(await helper.getNetworkDetailsElement(this), true, false);
     }
 
     _getModal(id) {
-        const template = el('modal-templates').content.getElementById(`modal-${id}`);
-        return template ? template.cloneNode(true) : document.createElement('div');
+        return el('modal-templates').content.getElementById(`modal-${id}`).cloneNode(true);
     }
 
     _showModal(elem, ok, cancel) {
