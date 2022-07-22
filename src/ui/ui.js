@@ -338,7 +338,8 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     async _showNetworkModal() {
-        this._showModal(await helper.getNetworkDetailsElement(this), true, false);
+        const el = await helper.getNetworkDetailsElement(this, { gap: 30 });
+        this._showModal(el, true, false);
     }
 
     _getModal(id) {
