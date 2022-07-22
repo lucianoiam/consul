@@ -17,6 +17,29 @@
                 </div>
                 <div id="status"></div>
                 <div id="menubar-right">
+                    <g-button id="option-layout">
+                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                             width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
+                        <g>
+                            <g>
+                                <g>
+                                    <path fill="#FFFFFF" d="M13.901,5.874c2.384,0,4.323,1.825,4.323,4.067c0,2.242-1.939,4.066-4.323,4.066
+                                        c-2.382,0-4.32-1.824-4.32-4.066C9.581,7.698,11.519,5.874,13.901,5.874 M13.901,4.874c-2.939,0-5.32,2.267-5.32,5.067
+                                        c0,2.797,2.381,5.066,5.32,5.066c2.94,0,5.323-2.269,5.323-5.066C19.224,7.141,16.841,4.874,13.901,4.874L13.901,4.874z"/>
+                                </g>
+                                <g>
+                                    <path fill="#FFFFFF" d="M30.896,14.856v8.092h-8.597v-8.092H30.896 M31.896,13.856H21.299v10.092h10.597V13.856L31.896,13.856z"
+                                        />
+                                </g>
+                                <g>
+                                    <path fill="#FFFFFF" d="M6.572,18.427l4.615,7.693l-9.303-0.041L6.572,18.427 M6.581,16.498L0.104,27.071l12.854,0.057
+                                        L6.581,16.498L6.581,16.498z"/>
+                                </g>
+                            </g>
+                            <rect fill="none" width="32" height="32"/>
+                        </g>
+                        </svg>
+                    </g-button>
                     <g-button id="option-midi">
                         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                              width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
@@ -43,26 +66,20 @@
                         </g>
                         </svg>
                     </g-button>
-                    <g-button id="option-layout">
+                    <g-button id="option-network">
                         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                              width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
                         <g>
-                            <g>
-                                <g>
-                                    <path fill="#FFFFFF" d="M13.901,5.874c2.384,0,4.323,1.825,4.323,4.067c0,2.242-1.939,4.066-4.323,4.066
-                                        c-2.382,0-4.32-1.824-4.32-4.066C9.581,7.698,11.519,5.874,13.901,5.874 M13.901,4.874c-2.939,0-5.32,2.267-5.32,5.067
-                                        c0,2.797,2.381,5.066,5.32,5.066c2.94,0,5.323-2.269,5.323-5.066C19.224,7.141,16.841,4.874,13.901,4.874L13.901,4.874z"/>
-                                </g>
-                                <g>
-                                    <path fill="#FFFFFF" d="M30.896,14.856v8.092h-8.597v-8.092H30.896 M31.896,13.856H21.299v10.092h10.597V13.856L31.896,13.856z"
-                                        />
-                                </g>
-                                <g>
-                                    <path fill="#FFFFFF" d="M6.572,18.427l4.615,7.693l-9.303-0.041L6.572,18.427 M6.581,16.498L0.104,27.071l12.854,0.057
-                                        L6.581,16.498L6.581,16.498z"/>
-                                </g>
-                            </g>
                             <rect fill="none" width="32" height="32"/>
+                            <g>
+                                <path fill="#FFFFFF" d="M4.369,13.378C7.513,10.46,11.618,8.859,16,8.857c4.382,0,8.488,1.601,11.629,4.521l-0.756,0.756
+                                    C23.929,11.416,20.092,9.928,16,9.928c-4.094,0-7.93,1.488-10.874,4.206L4.369,13.378z"/>
+                                <path fill="#FFFFFF" d="M10.274,18.19c1.566-1.346,3.574-2.082,5.725-2.082s4.161,0.735,5.725,2.082l-0.758,0.759
+                                    c-1.368-1.154-3.109-1.782-4.966-1.782c-1.859,0-3.6,0.628-4.966,1.782L10.274,18.19z"/>
+                                <path fill="#FFFFFF" d="M7.031,15.713C9.449,13.521,12.608,12.32,16,12.32c3.392,0,6.551,1.201,8.97,3.394l-0.758,0.757
+                                    C21.991,14.473,19.1,13.379,16,13.379c-3.097,0-5.989,1.094-8.212,3.092L7.031,15.713z"/>
+                                <circle fill="#FFFFFF" cx="16" cy="21.437" r="1.706"/>
+                            </g>
                         </g>
                         </svg>
                     </g-button>
@@ -90,13 +107,13 @@
                         </div>
                     </div>
                 </div>
-                <div id="modal-midi">MIDI mappings not yet available</div>
                 <div id="modal-layout">
                     <ul id="modal-layout-list">
                         <li data-id="mixer">8-track mixer</li>
                         <li data-id="pads">Pads grid</li>
                     </ul>
                 </div>
+                <div id="modal-midi">MIDI mappings not yet available</div>
             </template>
         </div>
     </div>

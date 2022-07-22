@@ -161,6 +161,15 @@ class ConsulUI extends DISTRHO.UI {
             el.shadowRoot.querySelectorAll('path').forEach(p => p.style.fill = val ? '#000' : '#fff');
         };
 
+        el('option-layout').addEventListener('input', ev => {
+            if (ev.target.value) {
+                invertSvg(ev.target, true);
+            } else {
+                invertSvg(ev.target, false);
+                this._showLayoutModal();
+            }
+        });
+              
         el('option-midi').addEventListener('input', ev => {
             if (ev.target.value) {
                 invertSvg(ev.target, true);
@@ -170,15 +179,15 @@ class ConsulUI extends DISTRHO.UI {
             }
         });
 
-        el('option-layout').addEventListener('input', ev => {
+        el('option-network').addEventListener('input', ev => {
             if (ev.target.value) {
                 invertSvg(ev.target, true);
             } else {
                 invertSvg(ev.target, false);
-                this._showLayoutModal();
+                this._showNetworkModal();
             }
         });
-                
+
         el('modal-cancel').addEventListener('input', ev => {
             if (! ev.target.value) {
                 this._hideModal(false);
@@ -302,10 +311,6 @@ class ConsulUI extends DISTRHO.UI {
         this._showModal(modal, true, false);
     }
 
-    _showMidiModal() {
-        this._showModal(this._getModal('midi'), true, false);
-    }
-
     _showLayoutModal() {
         this._showModal(this._getModal('layout'), false, true);
 
@@ -327,8 +332,17 @@ class ConsulUI extends DISTRHO.UI {
         }
     }
 
+    _showMidiModal() {
+        this._showModal(this._getModal('midi'), true, false);
+    }
+
+    _showNetworkModal() {
+        this._showModal(this._getModal('network'), true, false);
+    }
+
     _getModal(id) {
-        return el('modal-templates').content.getElementById(`modal-${id}`).cloneNode(true);
+        const template = el('modal-templates').content.getElementById(`modal-${id}`);
+        return template ? template.cloneNode(true) : document.createElement('div');
     }
 
     _showModal(elem, ok, cancel) {
