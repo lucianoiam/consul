@@ -157,26 +157,36 @@ class ConsulUI extends DISTRHO.UI {
             }
         });
 
+        const invertSvg = (el, val) => {
+            el.shadowRoot.querySelectorAll('path').forEach(p => p.style.fill = val ? '#000' : '#fff');
+        };
+
         el('option-midi').addEventListener('input', ev => {
-            if (! ev.target.value) { // up
+            if (ev.target.value) {
+                invertSvg(ev.target, true);
+            } else {
+                invertSvg(ev.target, false);
                 this._showMidiModal();
             }
         });
 
         el('option-layout').addEventListener('input', ev => {
-            if (! ev.target.value) { // up
+            if (ev.target.value) {
+                invertSvg(ev.target, true);
+            } else {
+                invertSvg(ev.target, false);
                 this._showLayoutModal();
             }
         });
                 
         el('modal-cancel').addEventListener('input', ev => {
-            if (! ev.target.value) { // up
+            if (! ev.target.value) {
                 this._hideModal(false);
             }
         });
 
         el('modal-ok').addEventListener('input', ev => {
-            if (! ev.target.value) { // up
+            if (! ev.target.value) {
                 this._hideModal(true);
             }
         });

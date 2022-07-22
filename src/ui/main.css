@@ -30,10 +30,6 @@ g-fader {
     --body-color: #333;
 }
 
-g-button {
-    transition: background-color 0.15s ease;
-}
-
 #overscan {
     display: flex;
     flex-direction: column;
@@ -57,6 +53,10 @@ g-button {
     padding: 10px;
 }
 
+#layout g-button {
+    transition: background-color 0.15s ease;
+}
+
 
 /*
  * Top bar
@@ -72,7 +72,7 @@ g-button {
 
 #topbar g-button {
     height: 37px;
-    padding: 0 20px;
+    padding: 0 16px;
     overflow: hidden;
 }
 
