@@ -171,13 +171,13 @@ g-fader {
 
 #modal-layout ul {
     list-style: none;
-    width: 400px;
+    width: 240px;
     padding: 0;
     margin: 0;
 }
 
 #modal-layout li {
-    font-size: 1.5em;
+    font-size: 1em;
     line-height: 3em;
     height: 3em;
     padding: 0 10px;
