@@ -16,19 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const PRODUCT_VERSION = '0.2.2';
-const DEFAULT_LAYOUT = 'mixer';
-const MIDI_CHANNEL = 1;
-
-const env = DISTRHO.env,
-      helper = DISTRHO.UIHelper,
-      el = document.getElementById.bind(document);
-
 class ConsulUI extends DISTRHO.UI {
-
-    //
-    // DPF UI interface (+ hiphop extensions)
-    // 
 
     constructor() {
         super();
@@ -52,7 +40,7 @@ class ConsulUI extends DISTRHO.UI {
             this._loadLayout(DEFAULT_LAYOUT);
         }
 
-        helper.enableOfflineModal(this);
+        uiHelper.enableOfflineModal(this);
     }
 
     stateChanged(key, value) {

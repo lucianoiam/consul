@@ -129,7 +129,7 @@ class AboutModalDialog extends ModalDialog {
         super(ui, ModalDialog.getTemplate('about')); 
 
         this.el.querySelector('#modal-about-version').innerText = PRODUCT_VERSION;
-        helper.bindSystemBrowser(this.ui, this.el.querySelector('#homepage'));
+        uiHelper.bindSystemBrowser(this.ui, this.el.querySelector('#homepage'));
     }
 
 }
@@ -140,7 +140,7 @@ class NetworkModalDialog extends ModalDialog {
     // There are no async constructors in JavaScript
 
     show() {
-        helper.getNetworkDetailsElement(this.ui, { gap: 30 }).then(el => {
+        uiHelper.getNetworkDetailsElement(this.ui, { gap: 30 }).then(el => {
             this.el = el;
             super.show();
         });
