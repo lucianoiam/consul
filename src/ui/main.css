@@ -127,6 +127,7 @@ g-fader {
     border-radius: 4px;
     background: #000;
     animation-fill-mode: forwards;
+    margin-bottom: 10%;
 }
 
 #modal-content {
