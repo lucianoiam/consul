@@ -128,7 +128,7 @@ class AboutModalDialog extends ModalDialog {
     constructor(ui) {
         super(ui, ModalDialog.getTemplate('about')); 
 
-        this.el.querySelector('#modal-about-version').innerText = PRODUCT_VERSION;
+        this.el.querySelector('#modal-about-version').innerText = 'v' + PRODUCT_VERSION;
         uiHelper.bindSystemBrowser(this.ui, this.el.querySelector('#homepage'));
     }
 
