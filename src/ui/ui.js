@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const PRODUCT_VERSION = '0.2.2';
 const DEFAULT_LAYOUT = 'mixer';
 const MIDI_CHANNEL = 1;
 
@@ -327,6 +328,7 @@ class ConsulUI extends DISTRHO.UI {
         const modal = this._getModal('about');
         helper.bindSystemBrowser(this, modal.querySelector('#homepage'));
         this._showModal(modal, true, false);
+        el('modal-about-version').innerText = PRODUCT_VERSION;
     }
 
     _showLayoutModal() {
