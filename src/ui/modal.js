@@ -135,6 +135,29 @@ class AboutModalDialog extends ModalDialog {
 }
 
 
+class NetworkModalDialog extends ModalDialog {
+
+    // There are no async constructors in JavaScript
+
+    show() {
+        helper.getNetworkDetailsElement(this.ui, { gap: 30 }).then(el => {
+            this.el = el;
+            super.show();
+        });
+    }
+
+}
+
+
+class MidiModalDialog extends ModalDialog {
+
+    constructor(ui) {
+        super(ui, ModalDialog.getTemplate('midi'));
+    }
+
+}
+
+
 class LayoutModalDialog extends ModalDialog {
 
     constructor(ui, selectedLayoutId, callback) {
@@ -178,29 +201,6 @@ class LayoutModalDialog extends ModalDialog {
         if (ok && (this._nextLayoutId != this._prevLayoutId)) {
             this._callback(this._nextLayoutId);
         }
-    }
-
-}
-
-
-class MidiModalDialog extends ModalDialog {
-
-    constructor(ui) {
-        super(ui, ModalDialog.getTemplate('midi'));
-    }
-
-}
-
-
-class NetworkModalDialog extends ModalDialog {
-
-    // There are no async constructors in JavaScript
-
-    show() {
-        helper.getNetworkDetailsElement(this.ui, { gap: 30 }).then(el => {
-            this.el = el;
-            super.show();
-        });
     }
 
 }
