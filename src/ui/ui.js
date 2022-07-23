@@ -107,18 +107,19 @@ class ConsulUI extends DISTRHO.UI {
             }
         });
               
-        el('option-midi').addEventListener('input', ev => {
-            if (ev.target.value) {
-                invertSvg(ev.target, true);
-            } else {
-                invertSvg(ev.target, false);
-                new MidiModalDialog(this).show();
-            }
-        });
-
+        const optionMidi = el('option-midi');
         const optionNetwork = el('option-network');
 
         if (env.plugin) {
+            optionMidi.addEventListener('input', ev => {
+                if (ev.target.value) {
+                    invertSvg(ev.target, true);
+                } else {
+                    invertSvg(ev.target, false);
+                    new MidiModalDialog(this).show();
+                }
+            });
+
             optionNetwork.addEventListener('input', ev => {
                 if (ev.target.value) {
                     invertSvg(ev.target, true);
@@ -128,6 +129,7 @@ class ConsulUI extends DISTRHO.UI {
                 }
             });
         } else {
+            optionMidi.style.display = 'none';
             optionNetwork.style.display = 'none';
         }
     }
