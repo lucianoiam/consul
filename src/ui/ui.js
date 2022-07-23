@@ -30,7 +30,7 @@ class ConsulUI extends DISTRHO.UI {
 
         this._initMenuBar();
 
-        if (isMobile()) {
+        if (isMobileDevice()) {
             window.addEventListener('resize', _ => this._zoomUi());
         } else if (! env.plugin) {
             el('main').style.borderRadius = '10px'; // desktop browser
@@ -247,7 +247,7 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         // Zoom view for mobile
-        if (isMobile()) {
+        if (isMobileDevice()) {
             this._zoomUi(); // relative to startup size (CSS #main)
         }
 

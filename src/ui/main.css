@@ -152,6 +152,7 @@ g-fader {
     background: #000;
     animation-fill-mode: forwards;
     margin-bottom: 10%;
+    box-shadow: 0px 7px 15px 5px rgba(0,0,0,0.7);
 }
 
 #modal-content {

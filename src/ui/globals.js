@@ -25,7 +25,7 @@ const uiHelper = DISTRHO.UIHelper;
 const el = document.getElementById.bind(document);
 
 
-function isMobile() {
+function isMobileDevice() {
     const ua = navigator.userAgent;
     return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
 }
