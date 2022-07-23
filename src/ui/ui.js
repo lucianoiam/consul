@@ -40,8 +40,19 @@ class ConsulUI extends DISTRHO.UI {
         this._showStatusTimer = null;
         this._hideStatusTimer = null;
 
-        this._initView();
-        this._initController();
+        this._initMenuBar();
+
+        if (this._isMobile) {
+            window.addEventListener('resize', _ => this._zoomUi());
+        } else if (! env.plugin) {
+            el('main').style.borderRadius = '10px'; // desktop browser
+        }
+
+        if (env.dev) {
+            this._loadLayout(DEFAULT_LAYOUT);
+        }
+
+        helper.enableOfflineModal(this);
     }
 
     stateChanged(key, value) {
@@ -72,20 +83,52 @@ class ConsulUI extends DISTRHO.UI {
         }
     }
 
+    _initMenuBar() {
+        const invertSvg = (el, val) => {
+            const fill = val ? '#000' : '#fff';
+            el.shadowRoot.querySelectorAll('path,polygon,circle').forEach(p => p.style.fill = fill);
+        };
 
-    //
-    // View
-    //
+        el('option-about').addEventListener('input', ev => {
+            if (! ev.target.value) { // up
+                new AboutModalDialog(this).show();
+            }
+        });
 
-    _initView() {
-        if (this._isMobile) {
-            window.addEventListener('resize', _ => this._zoomUi());
-        } else if (! env.plugin) {
-            el('main').style.borderRadius = '10px'; // desktop browser
-        }
+        el('option-layout').addEventListener('input', ev => {
+            if (ev.target.value) {
+                invertSvg(ev.target, true);
+            } else {
+                invertSvg(ev.target, false);
+                new LayoutModalDialog(this, this._activeLayoutId, newLayoutId => {
+                    this._loadLayout(newLayoutId);
+                    this._setConfigOption('layout', newLayoutId);
+                }).show();
+            }
+        });
+              
+        el('option-midi').addEventListener('input', ev => {
+            if (ev.target.value) {
+                invertSvg(ev.target, true);
+            } else {
+                invertSvg(ev.target, false);
+                new MidiModalDialog(this).show();
+            }
+        });
 
-        if (env.dev) {
-            this._loadLayout(DEFAULT_LAYOUT);
+        const optionNetwork = el('option-network');
+
+        if (env.plugin) {
+            optionNetwork.addEventListener('input', ev => {
+                if (ev.target.value) {
+                    invertSvg(ev.target, true);
+                } else {
+                    invertSvg(ev.target, false);
+                    new NetworkModalDialog(this).show();
+                }
+            });
+        } else {
+            optionNetwork.style.display = 'none';
         }
     }
 
@@ -121,7 +164,7 @@ class ConsulUI extends DISTRHO.UI {
 
             const valueBox = el('status-value-box');
 
-            if (typeof numericValue === 'undefined') {
+            if (typeof numericValue == 'undefined') {
                 valueBox.style.display = 'none';
             } else {
                 valueBox.style.display = 'inline';
@@ -159,104 +202,6 @@ class ConsulUI extends DISTRHO.UI {
 
         apply();
     }
-
-
-    //
-    // Controller
-    //
-
-    _initController() {
-        helper.enableOfflineModal(this);
-
-        el('option-about').addEventListener('input', ev => {
-            if (! ev.target.value) { // up
-                this._showAboutModal();
-            }
-        });
-
-        const invertSvg = (el, val) => {
-            const fill = val ? '#000' : '#fff';
-            el.shadowRoot.querySelectorAll('path,polygon,circle').forEach(p => p.style.fill = fill);
-        };
-
-        el('option-layout').addEventListener('input', ev => {
-            if (ev.target.value) {
-                invertSvg(ev.target, true);
-            } else {
-                invertSvg(ev.target, false);
-                this._showLayoutModal();
-            }
-        });
-              
-        el('option-midi').addEventListener('input', ev => {
-            if (ev.target.value) {
-                invertSvg(ev.target, true);
-            } else {
-                invertSvg(ev.target, false);
-                this._showMidiModal();
-            }
-        });
-
-        const optionNetwork = el('option-network');
-
-        if (env.plugin) {
-            optionNetwork.addEventListener('input', ev => {
-                if (ev.target.value) {
-                    invertSvg(ev.target, true);
-                } else {
-                    invertSvg(ev.target, false);
-                    this._showNetworkModal();
-                }
-            });
-        } else {
-            optionNetwork.style.display = 'none';
-        }
-
-        el('modal-cancel').addEventListener('input', ev => {
-            if (! ev.target.value) {
-                this._hideModal(false);
-            }
-        });
-
-        el('modal-ok').addEventListener('input', ev => {
-            if (! ev.target.value) {
-                this._hideModal(true);
-            }
-        });
-
-        const modalRoot = el('modal-root');
-        modalRoot.addEventListener('click', ev => {
-            if (ev.target == modalRoot) {
-                this._hideModal(false);
-            }            
-        });
-        modalRoot.addEventListener('keydown', ev => {
-            if ((ev.key == 'Enter') || (ev.key == 'Escape')) {
-                this._hideModal(false);
-            }
-        });
-    }
-
-    _handleControlInput(el) {
-        this._uiState[el.id] = el.value;
-
-        const descriptor = this.constructor.CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
-        const status = 0xb0 | (MIDI_CHANNEL - 1);
-        const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
-        const ccValue = descriptor.midiVal(el.value);
-        this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
-
-        if (this._shouldShowStatus) {
-            const name = el.getAttribute('data-name').padEnd(10, ' ');
-            const value = descriptor.strVal(el.value).padStart(4, ' ');
-            this._showStatus(`${name}${value}`, descriptor.numVal ? el.value : undefined);
-        }
-    }
-
-
-    //
-    // Layouts
-    //
 
     async _loadLayout(id) {
         if (this._activeLayoutId == id) {
@@ -319,124 +264,6 @@ class ConsulUI extends DISTRHO.UI {
         document.body.style.visibility = 'visible';
     }
 
-
-    //
-    // Modal dialogs
-    //
-
-    _showAboutModal() {
-        const modal = this._getModal('about');
-        helper.bindSystemBrowser(this, modal.querySelector('#homepage'));
-        this._showModal(modal, true, false);
-        el('modal-about-version').innerText = PRODUCT_VERSION;
-    }
-
-    _showLayoutModal() {
-        const select = li => {
-            li.style.color = '#000';
-            li.style.backgroundColor = '#fff';
-        };
-
-        const deselect = li => {
-            li.style.color = '';
-            li.style.backgroundColor = '';
-        };
-
-        this._showModal(this._getModal('layout'), false, true);
-
-        const layoutList = el('modal-layout-list');
-
-        const focus = layoutList.querySelector(`[data-id=${this._activeLayoutId}]`);
-        select(focus);
-
-        for (let li of layoutList.children) {
-            li.addEventListener('mousedown', ev => {
-                deselect(focus);
-                select(li);
-            });
-
-            li.addEventListener('mouseup', ev => {
-                setTimeout(_ => {
-                    this._hideModal(true, _ => {
-                        const layoutId = li.getAttribute('data-id');
-                        this._loadLayout(layoutId);
-                        this._setConfigOption('layout', layoutId);
-                    });
-                }, 150);
-            });
-        }
-    }
-
-    _showMidiModal() {
-        this._showModal(this._getModal('midi'), true, false);
-    }
-
-    async _showNetworkModal() {
-        const el = await helper.getNetworkDetailsElement(this, { gap: 30 });
-        this._showModal(el, true, false);
-    }
-
-    _getModal(id) {
-        return el('modal-templates').content.getElementById(`modal-${id}`).cloneNode(true);
-    }
-
-    _showModal(elem, ok, cancel) {
-        const t = 0.2;
-        el('modal-content').appendChild(elem);
-
-        const root = el('modal-root');
-        root.style.animationName = 'fadeIn';
-        root.style.animationDuration = t + 's';
-        
-        const box = el('modal-box');
-        box.style.animationName = 'modalBoxIn';
-        box.style.animationDuration = t + 's';
-
-        el('modal-ok').style.display = ok ? 'inline' : 'none';
-        el('modal-cancel').style.display = cancel ? 'inline' : 'none';
-
-        this.setKeyboardFocus(true);
-
-        setTimeout(() => {
-            const lastVisibleButton = Array.from(el('modal-buttons').children)
-                .filter(el => el.style.display != 'none')
-                .pop();
-            lastVisibleButton.focus()
-        }, 1000 * t);
-    }
-
-    _hideModal(accept, callback) {
-        const t = 0.1;
-
-        const root = el('modal-root')
-        root.style.animationName = 'fadeOut';
-        root.style.animationDuration = t + 's';
-
-        const box = el('modal-box');
-        box.style.animationName = 'modalBoxOut';
-        box.style.animationDuration = t + 's';
-
-        this.setKeyboardFocus(false);
-
-        setTimeout(() => {
-            el('modal-content').innerHTML = '';
-
-            if (callback) {
-                callback();
-            }
-        }, 1000 * t);
-    }
-    
-
-    //
-    // Helper methods
-    //
-
-    get _isMobile() {
-        const ua = navigator.userAgent;
-        return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
-    }
-
     _getActiveLayoutCSSSize() {
         // Find matching CSSStyleSheet object
         const style = Array.from(document.styleSheets).find(css => {
@@ -454,9 +281,30 @@ class ConsulUI extends DISTRHO.UI {
         };
     }
 
+    _handleControlInput(el) {
+        this._uiState[el.id] = el.value;
+
+        const descriptor = this.constructor.CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
+        const status = 0xb0 | (MIDI_CHANNEL - 1);
+        const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
+        const ccValue = descriptor.midiVal(el.value);
+        this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
+
+        if (this._shouldShowStatus) {
+            const name = el.getAttribute('data-name').padEnd(10, ' ');
+            const value = descriptor.strVal(el.value).padStart(4, ' ');
+            this._showStatus(`${name}${value}`, descriptor.numVal ? el.value : undefined);
+        }
+    }
+
     _setConfigOption(key, value) {
         this._config[key] = value;
         this.setState('config', JSON.stringify(this._config));
+    }
+
+    get _isMobile() {
+        const ua = navigator.userAgent;
+        return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
     }
 
 }
