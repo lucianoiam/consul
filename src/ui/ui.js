@@ -30,7 +30,7 @@ class ConsulUI extends DISTRHO.UI {
 
         this._initMenuBar();
 
-        if (this._isMobile) {
+        if (isMobile()) {
             window.addEventListener('resize', _ => this._zoomUi());
         } else if (! env.plugin) {
             el('main').style.borderRadius = '10px'; // desktop browser
@@ -247,7 +247,7 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         // Zoom view for mobile
-        if (this._isMobile) {
+        if (isMobile()) {
             this._zoomUi(); // relative to startup size (CSS #main)
         }
 
@@ -290,11 +290,6 @@ class ConsulUI extends DISTRHO.UI {
     _setConfigOption(key, value) {
         this._config[key] = value;
         this.setState('config', JSON.stringify(this._config));
-    }
-
-    get _isMobile() {
-        const ua = navigator.userAgent;
-        return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
     }
 
 }

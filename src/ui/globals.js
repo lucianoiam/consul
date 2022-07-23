@@ -23,3 +23,9 @@ const MIDI_CHANNEL = 1;
 const env = DISTRHO.env;
 const uiHelper = DISTRHO.UIHelper;
 const el = document.getElementById.bind(document);
+
+
+function isMobile() {
+    const ua = navigator.userAgent;
+    return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
+}
