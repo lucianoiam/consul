@@ -261,9 +261,7 @@ class ConsulUI extends DISTRHO.UI {
         });
 
         // Read #main px values
-        const rule = Array.from(style.cssRules).find(r => {
-            return r.selectorText == '#main';
-        });
+        const rule = Array.from(style.cssRules).find(r => { return r.selectorText == '#main' });
 
         return {
             width  : parseInt(rule.style.getPropertyValue('width')),
