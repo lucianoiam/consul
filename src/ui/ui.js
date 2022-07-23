@@ -92,18 +92,24 @@ class ConsulUI extends DISTRHO.UI {
         // Use mixer size as the base size for all layouts
         const baseWidth = 800;
         const baseHeight = 540;
-
-        // Zoom interface to take up full window height
-        const dv = window.innerHeight - baseHeight; // can be negative
-        const scale = 1.0 + dv / baseHeight;
         const main = el('main');
-        main.style.width = window.innerWidth / scale + 'px';
-        main.style.height = baseHeight + 'px';
-        main.style.transform = `scale(${100 * scale}%)`;
+        const dv = window.innerHeight - baseHeight;
 
-        // Remove minimum size restrictions
-        document.body.style.minWidth = 'auto';
-        document.body.style.minHeight = 'auto';
+        if (dv > 0) {
+            // Zoom interface to take up full window height
+            const scale = 1.0 + dv / baseHeight;
+            main.style.width = window.innerWidth / scale + 'px';
+            main.style.height = baseHeight + 'px';
+            main.style.transform = `scale(${100 * scale}%)`;
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Viewport too small, ie. phone in portrait orientation. Since
+            // the UI elements have fixed size some of them could appear cropped.
+            main.style.width = '';
+            main.style.height = '';
+            main.style.transform = '';
+            document.body.style.overflow = 'scroll';
+        }
     }
 
     _showStatus(message, numericValue) {
