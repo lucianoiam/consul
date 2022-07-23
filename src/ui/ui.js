@@ -314,12 +314,27 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     _showLayoutModal() {
+        const select = li => {
+            li.style.color = '#000';
+            li.style.backgroundColor = '#fff';
+        };
+
+        const deselect = li => {
+            li.style.color = '';
+            li.style.backgroundColor = '';
+        };
+
         this._showModal(this._getModal('layout'), false, true);
 
-        for (let li of el('modal-layout-list').children) {
+        const layoutList = el('modal-layout-list');
+
+        const focus = layoutList.querySelector(`[data-id=${this._activeLayoutId}]`);
+        select(focus);
+
+        for (let li of layoutList.children) {
             li.addEventListener('mousedown', ev => {
-                li.style.color = '#000';
-                li.style.backgroundColor = '#fff';
+                deselect(focus);
+                select(li);
             });
 
             li.addEventListener('mouseup', ev => {
