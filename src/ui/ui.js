@@ -106,12 +106,22 @@ class ConsulUI extends DISTRHO.UI {
         document.body.style.minHeight = 'auto';
     }
 
-    _showStatus(message) {
+    _showStatus(message, numericValue) {
         const apply = () => {
             this._showStatusTimer = null;
 
+            el('status-text').textContent = message;
+
+            const valueBox = el('status-value-box');
+
+            if (typeof numericValue === 'undefined') {
+                valueBox.style.display = 'none';
+            } else {
+                valueBox.style.display = 'inline';
+                el('status-value').style.width = `${100 * numericValue}%`;
+            }
+
             const status = el('status');
-            status.textContent = message;
             status.style.transition = 'none';
             status.style.opacity = '1';
 
@@ -232,7 +242,7 @@ class ConsulUI extends DISTRHO.UI {
         if (this._shouldShowStatus) {
             const name = el.getAttribute('data-name').padEnd(10, ' ');
             const value = descriptor.strVal(el.value).padStart(4, ' ');
-            this._showStatus(`${name}${value}`);
+            this._showStatus(`${name}${value}`, descriptor.numVal ? el.value : undefined);
         }
     }
 
@@ -452,9 +462,9 @@ class ConsulUI extends DISTRHO.UI {
     const boolStrVal  = v => v ? 'ON' : 'OFF';
 
     ConsulUI.CONTROL_DESCRIPTOR = Object.freeze({
-        'g-knob'   : { ccBase: 0   , midiVal: contMidiVal, strVal: contStrVal },
-        'g-button' : { ccBase: 0x10, midiVal: boolMidiVal, strVal: boolStrVal },
-        'g-fader'  : { ccBase: 0x20, midiVal: contMidiVal, strVal: contStrVal }
+        'g-knob'   : { ccBase: 0   , numVal: true , midiVal: contMidiVal, strVal: contStrVal },
+        'g-button' : { ccBase: 0x10, numVal: false, midiVal: boolMidiVal, strVal: boolStrVal },
+        'g-fader'  : { ccBase: 0x20, numVal: true , midiVal: contMidiVal, strVal: contStrVal }
     });
 
 }) ();

@@ -94,9 +94,33 @@ g-fader {
 }
 
 #status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     flex: 0.5;
+    gap: 0.25em;
+}
+
+#status-text {
     white-space: pre;
     text-align: center;
+}
+
+#status-value-box {
+    display: none;
+    position: relative;
+    background: #333;
+    width: 140px;
+    height: 3px;
+}
+
+#status-value {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: #fff;
+    width: 50%;
+    height: 100%;
 }
 
 
