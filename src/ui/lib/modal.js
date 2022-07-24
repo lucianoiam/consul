@@ -203,16 +203,20 @@ class LayoutModalDialog extends ModalDialog {
         select(focus);
 
         for (let li of layoutList.children) {
-            li.addEventListener('mousedown', ev => {
-                deselect(focus);
-                select(li);
+            ['touchstart', 'mousedown'].forEach((evName) => {
+                this.addEventListener(li, evName, (ev) => {
+                    deselect(focus);
+                    select(li);
+                });
             });
 
-            li.addEventListener('mouseup', ev => {
-                setTimeout(_ => {
-                    this._nextLayoutId = li.getAttribute('data-id');
-                    this.hide(true);
-                }, 150);
+            ['touchend', 'mouseup'].forEach((evName) => {
+                this.addEventListener(li, evName, (ev) => {
+                    setTimeout(_ => {
+                        this._nextLayoutId = li.getAttribute('data-id');
+                        this.hide(true);
+                    }, 150);
+                });
             });
         }
     }
