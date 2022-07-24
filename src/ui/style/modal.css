@@ -73,7 +73,7 @@
     font-size: 1em;
     line-height: 3em;
     height: 3em;
-    padding: 0 10px;
+    padding: 0 20px;
 }
 
 #modal-layout li:not(:first-child) {

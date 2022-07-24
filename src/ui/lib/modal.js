@@ -119,7 +119,7 @@ class ModalDialog {
         box.style.animationDuration = t + 's';
 
         setTimeout(() => {
-            elem('modal-content').innerHTML = '';
+            elem('modal-content').removeChild(this.el);
             this.onHide(ok);
         }, 1000 * t);
     }
