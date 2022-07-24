@@ -172,7 +172,36 @@ class NetworkModalDialog extends ModalDialog {
 class MidiModalDialog extends ModalDialog {
 
     constructor() {
-        super(ModalDialog.getTemplate('midi'));
+        super(ModalDialog.getTemplate('midi'), { ok: true, cancel: true });
+
+        this.el.innerText = 'MIDI mappings not yet available';
+        return;
+        
+
+        const map = this.el.querySelector('#modal-midi-map');
+        const entryTemplate = map.querySelector('template').content;
+        const number = entryTemplate.querySelector('.midi-map-number');
+        const channel = entryTemplate.querySelector('.midi-map-channel');
+
+        for (let i = 0; i < 128; i++) {
+            const option = document.createElement('option');
+            option.innerText = '# ' + i;
+            number.appendChild(option); 
+        }
+
+        for (let i = 0; i < 16; i++) {
+            const option = document.createElement('option');
+            option.innerText = 'Ch ' + (i + 1);
+            channel.appendChild(option);
+        }
+
+        for (let target of ['Knob', 'Button', 'Fader']) {
+            for (let i = 0; i < 8; i++) {
+                const entry = entryTemplate.cloneNode(true);
+                entry.querySelector('.midi-map-target').innerText = `${target} ${i + 1}`;
+                map.appendChild(entry);
+            }
+        }
     }
 
 }
