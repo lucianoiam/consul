@@ -1,0 +1,29 @@
+<div id="modal-root">
+    <div id="modal-box">
+        <div id="modal-content"></div>
+        <div id="modal-buttons">
+            <g-button id="modal-cancel" tabindex="1">Cancel</g-button>
+            <g-button id="modal-ok" tabindex="0">OK</g-button>
+        </div>
+    </div>
+</div>
+<template id="modal-templates">
+    <div id="modal-about">
+        <div>
+            <span>Control Surface Library<span>
+            <span id="modal-about-version"></span>
+        </div>
+        <div>
+            <a href="https://github.com/lucianoiam/consul" id="homepage">
+                <span>Go to project homepage</span>
+            </a>
+        </div>
+    </div>
+    <div id="modal-layout">
+        <ul id="modal-layout-list">
+            <li data-id="mixer">8-track mixer</li>
+            <li data-id="pads">Pads grid</li>
+        </ul>
+    </div>
+    <div id="modal-midi">MIDI mappings not yet available</div>
+</template>

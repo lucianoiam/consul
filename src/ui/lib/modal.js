@@ -18,8 +18,24 @@
 
 class ModalDialog {
 
-    constructor(ui, el, opt) {
-        this.ui = ui;
+    static async init() {
+        await Promise.all([
+            loadStylesheet('style/modal.css'),
+            loadHtml('modal.html', true).then(children => {
+                for (const child of children) {
+                    // Clone nodes to avoid random errors possibly caused by the
+                    // usage of custom HTML elements.
+                    elem('main').appendChild(child.cloneNode(true));
+                };
+            })
+        ]);
+    }
+    
+    static getTemplate(id) {
+        return elem('modal-templates').content.getElementById(`modal-${id}`).cloneNode(true);
+    }
+
+    constructor(el, opt) {
         this.el = el;
         this.opt = opt || {};
 
@@ -31,22 +47,22 @@ class ModalDialog {
     }
 
     show() {
-        el('modal-content').appendChild(this.el);
+        elem('modal-content').appendChild(this.el);
 
         const t = 0.2;
 
-        const root = el('modal-root');
+        const root = elem('modal-root');
         root.style.animationName = 'fadeIn';
         root.style.animationDuration = t + 's';
 
-        const box = el('modal-box');
+        const box = elem('modal-box');
         box.style.animationName = 'modalBoxIn';
         box.style.animationDuration = t + 's';
 
-        const ok = el('modal-ok'); 
+        const ok = elem('modal-ok'); 
         ok.style.display = this.opt.ok ? 'inline' : 'none';
 
-        const cancel = el('modal-cancel')
+        const cancel = elem('modal-cancel')
         cancel.style.display = this.opt.cancel ? 'inline' : 'none';
 
         this.addEventListener(root, 'click', ev => {
@@ -73,10 +89,10 @@ class ModalDialog {
             }
         });
 
-        this.ui.setKeyboardFocus(true);
+        this._ui.setKeyboardFocus(true);
 
         setTimeout(() => {
-            const lastVisibleButton = Array.from(el('modal-buttons').children)
+            const lastVisibleButton = Array.from(elem('modal-buttons').children)
                 .filter(el => el.style.display != 'none')
                 .pop();
 
@@ -87,23 +103,23 @@ class ModalDialog {
     }
 
     hide(ok) {
-        this.ui.setKeyboardFocus(false);
+        this._ui.setKeyboardFocus(false);
 
         for (let o of this._listeners) {
             o.target.removeEventListener(o.type, o.listener);
         }
 
         const t = 0.1;
-        const root = el('modal-root')
+        const root = elem('modal-root')
         root.style.animationName = 'fadeOut';
         root.style.animationDuration = t + 's';
 
-        const box = el('modal-box');
+        const box = elem('modal-box');
         box.style.animationName = 'modalBoxOut';
         box.style.animationDuration = t + 's';
 
         setTimeout(() => {
-            el('modal-content').innerHTML = '';
+            elem('modal-content').innerHTML = '';
             this.onHide(ok);
         }, 1000 * t);
     }
@@ -115,9 +131,9 @@ class ModalDialog {
 
     onShow() {}
     onHide(ok) {}
-    
-    static getTemplate(id) {
-        return el('modal-templates').content.getElementById(`modal-${id}`).cloneNode(true);
+
+    get _ui() {
+        return DISTRHO.UI.sharedInstance;
     }
 
 }
@@ -125,11 +141,11 @@ class ModalDialog {
 
 class AboutModalDialog extends ModalDialog {
 
-    constructor(ui) {
-        super(ui, ModalDialog.getTemplate('about')); 
+    constructor() {
+        super(ModalDialog.getTemplate('about')); 
 
         this.el.querySelector('#modal-about-version').innerText = 'v' + PRODUCT_VERSION;
-        uiHelper.bindSystemBrowser(this.ui, this.el.querySelector('#homepage'));
+        uiHelper.bindSystemBrowser(this._ui, this.el.querySelector('#homepage'));
     }
 
 }
@@ -140,7 +156,7 @@ class NetworkModalDialog extends ModalDialog {
     // There are no async constructors in JavaScript
 
     show() {
-        uiHelper.getNetworkDetailsElement(this.ui, { gap: 30 }).then(el => {
+        uiHelper.getNetworkDetailsElement(this._ui, { gap: 30 }).then(el => {
             this.el = el;
             super.show();
         });
@@ -151,8 +167,8 @@ class NetworkModalDialog extends ModalDialog {
 
 class MidiModalDialog extends ModalDialog {
 
-    constructor(ui) {
-        super(ui, ModalDialog.getTemplate('midi'));
+    constructor() {
+        super(ModalDialog.getTemplate('midi'));
     }
 
 }
@@ -160,8 +176,8 @@ class MidiModalDialog extends ModalDialog {
 
 class LayoutModalDialog extends ModalDialog {
 
-    constructor(ui, selectedLayoutId, callback) {
-        super(ui, ModalDialog.getTemplate('layout'), { ok: false, cancel: true });
+    constructor(selectedLayoutId, callback) {
+        super(ModalDialog.getTemplate('layout'), { ok: false, cancel: true });
 
         this._callback = callback;
         this._prevLayoutId = selectedLayoutId;

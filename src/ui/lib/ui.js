@@ -18,6 +18,28 @@
 
 class ConsulUI extends DISTRHO.UI {
 
+    static async init() {
+        const contMidiVal = v => Math.floor(127 * v);
+        const contStrVal  = v => Math.round(100 * v) + '%';
+        const boolMidiVal = v => v ? 127 : 0;
+        const boolStrVal  = v => v ? 'ON' : 'OFF';
+
+        this.CONTROL_DESCRIPTOR = Object.freeze({
+            'g-knob'   : { ccBase: 0   , numVal: true , midiVal: contMidiVal, strVal: contStrVal },
+            'g-button' : { ccBase: 0x10, numVal: false, midiVal: boolMidiVal, strVal: boolStrVal },
+            'g-fader'  : { ccBase: 0x20, numVal: true , midiVal: contMidiVal, strVal: contStrVal }
+        });
+        
+        await Promise.all([
+            loadScript('lib/guinda.js'),
+            loadScript('lib/modal.js')
+        ]);
+
+        await ModalDialog.init();
+
+        DISTRHO.UI.sharedInstance = new ConsulUI;
+    }
+
     constructor() {
         super();
 
@@ -33,7 +55,7 @@ class ConsulUI extends DISTRHO.UI {
         if (isMobileDevice()) {
             window.addEventListener('resize', _ => this._zoomUi());
         } else if (! env.plugin) {
-            el('main').style.borderRadius = '10px'; // desktop browser
+            elem('main').style.borderRadius = '10px'; // desktop browser
         }
 
         if (env.dev) {
@@ -67,7 +89,7 @@ class ConsulUI extends DISTRHO.UI {
 
     messageReceived(args) {
         if ((args[0] == 'control') && (args.length == 3)) {
-            el(args[1]).value = args[2];
+            elem(args[1]).value = args[2];
         }
     }
 
@@ -77,26 +99,26 @@ class ConsulUI extends DISTRHO.UI {
             el.shadowRoot.querySelectorAll('path,polygon,circle').forEach(p => p.style.fill = fill);
         };
 
-        el('option-about').addEventListener('input', ev => {
+        elem('option-about').addEventListener('input', ev => {
             if (! ev.target.value) { // up
-                new AboutModalDialog(this).show();
+                new AboutModalDialog().show();
             }
         });
 
-        el('option-layout').addEventListener('input', ev => {
+        elem('option-layout').addEventListener('input', ev => {
             if (ev.target.value) {
                 invertSvg(ev.target, true);
             } else {
                 invertSvg(ev.target, false);
-                new LayoutModalDialog(this, this._activeLayoutId, newLayoutId => {
+                new LayoutModalDialog(this._activeLayoutId, newLayoutId => {
                     this._loadLayout(newLayoutId);
                     this._setConfigOption('layout', newLayoutId);
                 }).show();
             }
         });
               
-        const optionMidi = el('option-midi');
-        const optionNetwork = el('option-network');
+        const optionMidi = elem('option-midi');
+        const optionNetwork = elem('option-network');
 
         if (env.plugin) {
             optionMidi.addEventListener('input', ev => {
@@ -104,7 +126,7 @@ class ConsulUI extends DISTRHO.UI {
                     invertSvg(ev.target, true);
                 } else {
                     invertSvg(ev.target, false);
-                    new MidiModalDialog(this).show();
+                    new MidiModalDialog().show();
                 }
             });
 
@@ -113,7 +135,7 @@ class ConsulUI extends DISTRHO.UI {
                     invertSvg(ev.target, true);
                 } else {
                     invertSvg(ev.target, false);
-                    new NetworkModalDialog(this).show();
+                    new NetworkModalDialog().show();
                 }
             });
         } else {
@@ -126,7 +148,7 @@ class ConsulUI extends DISTRHO.UI {
         // Use mixer size as the base size for all layouts
         const baseWidth = 800;
         const baseHeight = 540;
-        const main = el('main');
+        const main = elem('main');
         const dv = window.innerHeight - baseHeight;
 
         if (dv > 0) {
@@ -150,18 +172,18 @@ class ConsulUI extends DISTRHO.UI {
         const apply = () => {
             this._showStatusTimer = null;
 
-            el('status-text').textContent = message;
+            elem('status-text').textContent = message;
 
-            const valueBox = el('status-value-box');
+            const valueBox = elem('status-value-box');
 
             if (typeof numericValue == 'undefined') {
                 valueBox.style.display = 'none';
             } else {
                 valueBox.style.display = 'inline';
-                el('status-value').style.width = `${100 * numericValue}%`;
+                elem('status-value').style.width = `${100 * numericValue}%`;
             }
 
-            const status = el('status');
+            const status = elem('status');
             status.style.transition = 'none';
             status.style.opacity = '1';
 
@@ -206,12 +228,12 @@ class ConsulUI extends DISTRHO.UI {
         style.id = `style-${id}`;
 
         if (this._activeLayoutId != null) {
-            document.head.removeChild(el(`style-${this._activeLayoutId}`));
+            document.head.removeChild(elem(`style-${this._activeLayoutId}`));
         }
 
         // Load and replace current layout HTML
         const layout = await loadHtml(`/layouts/${id}.html`);
-        el('layout').replaceChildren(layout);
+        elem('layout').replaceChildren(layout);
 
         this._shouldShowStatus = layout.getAttribute('data-show-status') == 'true';
         this._activeLayoutId = id;
@@ -223,9 +245,9 @@ class ConsulUI extends DISTRHO.UI {
 
         // Restore state
         for (const controlId in this._uiState) {
-            const control = el(controlId);
+            const control = elem(controlId);
             if (control) {
-                el(controlId).value = this._uiState[controlId];
+                elem(controlId).value = this._uiState[controlId];
             }
         }
 
@@ -281,19 +303,3 @@ class ConsulUI extends DISTRHO.UI {
     }
 
 }
-
-(() => {
-    // Static init
-
-    const contMidiVal = v => Math.floor(127 * v);
-    const contStrVal  = v => Math.round(100 * v) + '%';
-    const boolMidiVal = v => v ? 127 : 0;
-    const boolStrVal  = v => v ? 'ON' : 'OFF';
-
-    ConsulUI.CONTROL_DESCRIPTOR = Object.freeze({
-        'g-knob'   : { ccBase: 0   , numVal: true , midiVal: contMidiVal, strVal: contStrVal },
-        'g-button' : { ccBase: 0x10, numVal: false, midiVal: boolMidiVal, strVal: boolStrVal },
-        'g-fader'  : { ccBase: 0x20, numVal: true , midiVal: contMidiVal, strVal: contStrVal }
-    });
-
-}) ();

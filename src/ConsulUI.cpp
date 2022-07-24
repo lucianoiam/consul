@@ -24,7 +24,7 @@ class ConsulUI : public WebUI
 {
 public:
     ConsulUI()
-        : WebUI(800 /*width*/, 540 /*height*/, "#101010" /*background*/)
+        : WebUI(800 /*width*/, 540 /*height*/, "#1a1a1a" /*background*/)
     {}
 
     void stateChanged(const char* key, const char* value) override

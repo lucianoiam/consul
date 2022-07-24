@@ -16,23 +16,49 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+//
+// Globals
+//
+
 const PRODUCT_VERSION = '0.2.2';
 const DEFAULT_LAYOUT = 'mixer';
 const MIDI_CHANNEL = 1;
 
 const env = DISTRHO.env;
 const uiHelper = DISTRHO.UIHelper;
-const el = document.getElementById.bind(document);
+const elem = document.getElementById.bind(document);
 
+
+//
+// Load and start UI
+//
+
+loadScript('lib/ui.js').then(_ => ConsulUI.init());
+
+
+//
+// Helper functions
+//
 
 function isMobileDevice() {
     const ua = navigator.userAgent;
     return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
 }
 
-async function loadHtml(url) {
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script'); 
+        script.src = url;
+        script.onerror = reject;
+        script.onload = resolve;
+        document.body.appendChild(script);
+    });
+}
+
+async function loadHtml(url, allChildren) {
     const html = await (await fetch(url)).text();
-    return document.createRange().createContextualFragment(html).firstChild;
+    const frag = document.createRange().createContextualFragment(html);
+    return allChildren ? frag.children : frag.firstChild;
 }
 
 function loadStylesheet(url) {
@@ -41,8 +67,8 @@ function loadStylesheet(url) {
         link.rel = 'stylesheet';
         link.type = 'text/css';
         link.href = url;
-        link.onload = _ => resolve(link);
         link.onerror = reject;
+        link.onload = _ => resolve(link);
         document.head.appendChild(link);
     });
 }
