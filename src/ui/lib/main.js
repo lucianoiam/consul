@@ -17,16 +17,12 @@
  */
 
 //
-// Globals
+// Constants
 //
 
 const PRODUCT_VERSION = '0.2.2';
 const DEFAULT_LAYOUT = 'mixer';
 const MIDI_CHANNEL = 1;
-
-const env = DISTRHO.env;
-const uiHelper = DISTRHO.UIHelper;
-const elem = document.getElementById.bind(document);
 
 
 //
@@ -39,6 +35,10 @@ loadScript('lib/ui.js').then(_ => ConsulUI.init());
 //
 // Helper functions
 //
+
+function elem(id) {
+    return document.getElementById(id);
+}
 
 function isMobileDevice() {
     const ua = navigator.userAgent;
@@ -55,12 +55,6 @@ function loadScript(url) {
     });
 }
 
-async function loadHtml(url, allChildren) {
-    const html = await (await fetch(url)).text();
-    const frag = document.createRange().createContextualFragment(html);
-    return allChildren ? frag.children : frag.firstChild;
-}
-
 function loadStylesheet(url) {
     return new Promise((resolve, reject) => {
         const link = document.createElement('link');
@@ -71,4 +65,10 @@ function loadStylesheet(url) {
         link.onload = _ => resolve(link);
         document.head.appendChild(link);
     });
+}
+
+async function loadHtml(url, allChildren) {
+    const html = await (await fetch(url)).text();
+    const frag = document.createRange().createContextualFragment(html);
+    return allChildren ? frag.children : frag.firstChild;
 }

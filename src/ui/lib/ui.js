@@ -54,15 +54,15 @@ class ConsulUI extends DISTRHO.UI {
 
         if (isMobileDevice()) {
             window.addEventListener('resize', _ => this._zoomUi());
-        } else if (! env.plugin) {
+        } else if (! this._env.plugin) {
             elem('main').style.borderRadius = '10px'; // desktop browser
         }
 
-        if (env.dev) {
+        if (this._env.dev) {
             this._loadLayout(DEFAULT_LAYOUT);
         }
 
-        uiHelper.enableOfflineModal(this);
+        DISTRHO.UIHelper.enableOfflineModal(this);
     }
 
     stateChanged(key, value) {
@@ -120,7 +120,7 @@ class ConsulUI extends DISTRHO.UI {
         const optionMidi = elem('option-midi');
         const optionNetwork = elem('option-network');
 
-        if (env.plugin) {
+        if (this._env.plugin) {
             optionMidi.addEventListener('input', ev => {
                 if (ev.target.value) {
                     invertSvg(ev.target, true);
@@ -202,7 +202,7 @@ class ConsulUI extends DISTRHO.UI {
         // For some reason setting status.textContent takes abnormally long
         // on Linux WebKitGTK. Issue not reproducible on Firefox or Chromium
         // running on the same hardware/OS combination.
-        if (env.fakeViewport) {
+        if (this._env.fakeViewport) {
             if (this._showStatusTimer) {
                 clearTimeout(this._showStatusTimer);
             }
@@ -252,7 +252,7 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         // Plugin embedded view size
-        if (env.plugin) {
+        if (this._env.plugin) {
             const size = this._getActiveLayoutCSSSize();
             const k = window.devicePixelRatio;
             this.setSize(k * size.width, k * size.height);
@@ -300,6 +300,10 @@ class ConsulUI extends DISTRHO.UI {
     _setConfigOption(key, value) {
         this._config[key] = value;
         this.setState('config', JSON.stringify(this._config));
+    }
+
+    get _env() {
+        return DISTRHO.env;
     }
 
 }

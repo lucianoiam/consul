@@ -136,6 +136,10 @@ class ModalDialog {
         return DISTRHO.UI.sharedInstance;
     }
 
+    get _uiHelper() {
+        return DISTRHO.UIHelper;
+    }
+
 }
 
 
@@ -145,7 +149,7 @@ class AboutModalDialog extends ModalDialog {
         super(ModalDialog.getTemplate('about')); 
 
         this.el.querySelector('#modal-about-version').innerText = 'v' + PRODUCT_VERSION;
-        uiHelper.bindSystemBrowser(this._ui, this.el.querySelector('#homepage'));
+        this._uiHelper.bindSystemBrowser(this._ui, this.el.querySelector('#homepage'));
     }
 
 }
@@ -156,7 +160,7 @@ class NetworkModalDialog extends ModalDialog {
     // There are no async constructors in JavaScript
 
     show() {
-        uiHelper.getNetworkDetailsElement(this._ui, { gap: 30 }).then(el => {
+        this._uiHelper.getNetworkDetailsElement(this._ui, { gap: 30 }).then(el => {
             this.el = el;
             super.show();
         });
