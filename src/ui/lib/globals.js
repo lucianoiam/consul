@@ -29,3 +29,20 @@ function isMobileDevice() {
     const ua = navigator.userAgent;
     return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
 }
+
+async function loadHtml(url) {
+    const html = await (await fetch(url)).text();
+    return document.createRange().createContextualFragment(html).firstChild;
+}
+
+function loadStylesheet(url) {
+    return new Promise((resolve, reject) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = url;
+        link.onload = _ => resolve(link);
+        link.onerror = reject;
+        document.head.appendChild(link);
+    });
+}

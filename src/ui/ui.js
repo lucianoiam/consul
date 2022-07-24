@@ -200,27 +200,17 @@ class ConsulUI extends DISTRHO.UI {
 
         document.body.style.visibility = 'hidden';
 
-        // Load stylesheet. It is necessary to remove the previous one because
-        // layout stylesheets define size properties for body and #main .
-        await new Promise((resolve, reject) => {
-            const link = document.createElement('link');
-            link.id = `style-${id}`;
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = `/layouts/${id}.css`;
-            link.addEventListener('load', resolve);
+        // Load layout stylesheet. It is necessary to remove the previous one
+        // because layout stylesheets define size properties for body and #main.
+        const style = await loadStylesheet(`/layouts/${id}.css`);
+        style.id = `style-${id}`;
 
-            if (this._activeLayoutId != null) {
-                const prevStyle = el(`style-${this._activeLayoutId}`);
-                document.head.removeChild(prevStyle);
-            }
-
-            document.head.appendChild(link);
-        });
+        if (this._activeLayoutId != null) {
+            document.head.removeChild(el(`style-${this._activeLayoutId}`));
+        }
 
         // Load and replace current layout HTML
-        const html = await (await fetch(`/layouts/${id}.html`)).text();
-        const layout = document.createRange().createContextualFragment(html).firstChild;
+        const layout = await loadHtml(`/layouts/${id}.html`);
         el('layout').replaceChildren(layout);
 
         this._shouldShowStatus = layout.getAttribute('data-show-status') == 'true';
