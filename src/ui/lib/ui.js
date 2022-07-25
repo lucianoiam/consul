@@ -83,6 +83,15 @@ class ConsulUI extends DISTRHO.UI {
         }
     }
 
+    get _env() {
+        return DISTRHO.env;
+    }
+
+    _setConfigOption(key, value) {
+        this._config[key] = value;
+        this.setState('config', JSON.stringify(this._config));
+    }
+
     _initMenuBar() {
         const invertSvg = (el, val) => {
             const fill = val ? '#000' : '#fff';
@@ -292,15 +301,6 @@ class ConsulUI extends DISTRHO.UI {
 
             this._showStatus(`${name}${value}`, desc.continuous ? el.value : undefined);
         }
-    }
-
-    _setConfigOption(key, value) {
-        this._config[key] = value;
-        this.setState('config', JSON.stringify(this._config));
-    }
-
-    get _env() {
-        return DISTRHO.env;
     }
 
 }
