@@ -174,12 +174,11 @@ class MidiModalDialog extends ModalDialog {
     constructor() {
         super(ModalDialog.getTemplate('midi'), { ok: true, cancel: true });
 
-        this.el.innerText = 'MIDI mappings not yet available';
-        return;
+        this.el.innerText = 'MIDI mappings not yet available'; return;
         
 
         const map = this.el.querySelector('#modal-midi-map');
-        const entryTemplate = map.querySelector('template').content;
+        const entryTemplate = map.querySelector('template').content.firstElementChild;
         const number = entryTemplate.querySelector('.midi-map-number');
         const channel = entryTemplate.querySelector('.midi-map-channel');
 
@@ -195,10 +194,12 @@ class MidiModalDialog extends ModalDialog {
             channel.appendChild(option);
         }
 
-        for (let target of ['Knob', 'Button', 'Fader']) {
+        for (let desc of CONTROL_DESCRIPTOR) {
             for (let i = 0; i < 8; i++) {
                 const entry = entryTemplate.cloneNode(true);
-                entry.querySelector('.midi-map-target').innerText = `${target} ${i + 1}`;
+                const id = desc.idPrefix + '-' + (i + 1).toString().padStart(2, '0');
+                entry.setAttribute('data-id', id);
+                entry.querySelector('.midi-map-target').innerText = `${desc.name} ${i + 1}`;
                 map.appendChild(entry);
             }
         }

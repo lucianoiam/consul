@@ -19,17 +19,6 @@
 class ConsulUI extends DISTRHO.UI {
 
     static async init() {
-        const contMidiVal = v => Math.floor(127 * v);
-        const contStrVal  = v => Math.round(100 * v) + '%';
-        const boolMidiVal = v => v ? 127 : 0;
-        const boolStrVal  = v => v ? 'ON' : 'OFF';
-
-        this.CONTROL_DESCRIPTOR = Object.freeze({
-            'g-knob'   : { ccBase: 0   , numVal: true , midiVal: contMidiVal, strVal: contStrVal },
-            'g-button' : { ccBase: 0x10, numVal: false, midiVal: boolMidiVal, strVal: boolStrVal },
-            'g-fader'  : { ccBase: 0x20, numVal: true , midiVal: contMidiVal, strVal: contStrVal }
-        });
-        
         await Promise.all([
             loadScript('lib/guinda.js'),
             loadScript('lib/modal.js')
@@ -284,16 +273,21 @@ class ConsulUI extends DISTRHO.UI {
     _handleControlInput(el) {
         this._uiState[el.id] = el.value;
 
-        const descriptor = this.constructor.CONTROL_DESCRIPTOR[el.nodeName.toLowerCase()];
+        const desc = CONTROL_DESCRIPTOR.find(cd => cd.idPrefix == el.id[0]);
+        const midiVal = desc.continuous ? v => Math.floor(127 * v)       : v => v ? 127 : 0;
+        const strVal  = desc.continuous ? v => Math.round(100 * v) + '%' : v => v ? 'ON' : 'OFF';
+
         const status = 0xb0 | (MIDI_CHANNEL - 1);
-        const ccIndex = descriptor.ccBase + parseInt(el.id.split('-')[1]) - 1;
-        const ccValue = descriptor.midiVal(el.value);
+        const ccIndex = desc.defaultBaseCC + parseInt(el.id.split('-')[1]) - 1;
+        const ccValue = midiVal(el.value);
+
         this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
 
         if (this._shouldShowStatus) {
             const name = el.getAttribute('data-name').padEnd(10, ' ');
-            const value = descriptor.strVal(el.value).padStart(4, ' ');
-            this._showStatus(`${name}${value}`, descriptor.numVal ? el.value : undefined);
+            const value = strVal(el.value).padStart(4, ' ');
+
+            this._showStatus(`${name}${value}`, desc.continuous ? el.value : undefined);
         }
     }
 
