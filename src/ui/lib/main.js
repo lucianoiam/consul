@@ -22,9 +22,9 @@ function main() {
             productVersion    : '0.2.2',
             defaultLayout     : 'mixer',
             controlDescriptor : [
-                { name: 'Knob'  , idPrefix: 'k', continuous: true , defaultBaseCC: 0    },
-                { name: 'Button', idPrefix: 'b', continuous: false, defaultBaseCC: 0x10 },
-                { name: 'Fader' , idPrefix: 'f', continuous: true , defaultBaseCC: 0x20 }
+                { name: 'Knob'  , idPrefix: 'k', count: 16, continuous: true , default: { base: 0   , channel: 1 } },
+                { name: 'Button', idPrefix: 'b', count: 16, continuous: false, default: { base: 0   , channel: 1 } },
+                { name: 'Fader' , idPrefix: 'f', count: 8 , continuous: true , default: { base: 0x10, channel: 1 } }
             ]
         }));
     });

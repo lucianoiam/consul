@@ -195,7 +195,7 @@ class MidiModalDialog extends ModalDialog {
         }
 
         for (let desc of controlDescriptor) {
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < desc.count; i++) {
                 const entry = entryTemplate.cloneNode(true);
                 const id = desc.idPrefix + '-' + (i + 1).toString().padStart(2, '0');
                 entry.setAttribute('data-id', id);

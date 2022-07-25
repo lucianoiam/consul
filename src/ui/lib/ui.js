@@ -49,7 +49,7 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         if (this._env.dev) {
-            this._loadLayout(this._opt.defaultLayout);
+            this._start(); // stateChanged() will not be called for dev
         }
 
         DISTRHO.UIHelper.enableOfflineModal(this);
@@ -73,7 +73,7 @@ class ConsulUI extends DISTRHO.UI {
 
         // Will be called every time config is updated by any client
         if (this._config.init && this._uiState.init) {
-            this._loadLayout(this._config['layout'] || this._opt.defaultLayout);
+            this._start();
         }
     }
 
@@ -85,6 +85,14 @@ class ConsulUI extends DISTRHO.UI {
 
     get _env() {
         return DISTRHO.env;
+    }
+    
+    _start() {
+        if (! this._config['map']) {
+            this._setConfigOption('map', this._buildDefaultMidiMap());
+        }
+
+        this._loadLayout(this._config['layout'] || this._opt.defaultLayout);
     }
 
     _setConfigOption(key, value) {
@@ -280,20 +288,33 @@ class ConsulUI extends DISTRHO.UI {
         };
     }
 
+    _buildDefaultMidiMap() {
+        let map = {};
+
+        for (let desc of this._opt.controlDescriptor) {
+            const statusOn = (desc.continuous ? /*cc*/0xb0 : /*note on*/0x90)
+                                | (desc.default.channel - 1);
+            const statusOff = desc.continuous ? null : (/*note off*/0x80 | (desc.default.channel - 1));
+
+            for (let i = 0; i < desc.count; i++) {
+                const id = desc.idPrefix + '-' + (i + 1).toString().padStart(2, '0');
+                map[id] = [statusOn, statusOff, /*index*/desc.default.base + i];
+            }
+        }
+
+        return map;
+    }
+
     _handleControlInput(el) {
         this._uiState[el.id] = el.value;
 
-        const DEFAULT_MIDI_CHANNEL = 1;
-
-        const desc = this._opt.controlDescriptor.find(cd => cd.idPrefix == el.id[0]);
+        const map     = this._config['map'][el.id];
+        const desc    = this._opt.controlDescriptor.find(cd => cd.idPrefix == el.id[0]);
+        const status  = desc.continuous ? /*on*/map[0] : (el.value ? /*on*/map[0] : /*off*/map[1]);
         const midiVal = desc.continuous ? v => Math.floor(127 * v)       : v => v ? 127 : 0;
         const strVal  = desc.continuous ? v => Math.round(100 * v) + '%' : v => v ? 'ON' : 'OFF';
 
-        const status = 0xb0 | (DEFAULT_MIDI_CHANNEL - 1);
-        const ccIndex = desc.defaultBaseCC + parseInt(el.id.split('-')[1]) - 1;
-        const ccValue = midiVal(el.value);
-
-        this.postMessage('control', el.id, el.value, status, ccIndex, ccValue);
+        this.postMessage('control', el.id, el.value, status, /*index*/map[2], midiVal(el.value));
 
         if (this._shouldShowStatus) {
             const name = el.getAttribute('data-name').padEnd(10, ' ');
