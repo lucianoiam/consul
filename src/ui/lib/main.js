@@ -16,31 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-//
-// Constants
-//
-
-const PRODUCT_VERSION = '0.2.2';
-const DEFAULT_LAYOUT = 'mixer';
-const MIDI_CHANNEL = 1;
-
-const CONTROL_DESCRIPTOR = Object.freeze([
-    { name: 'Knob'  , idPrefix: 'k', continuous: true , defaultBaseCC: 0    },
-    { name: 'Button', idPrefix: 'b', continuous: false, defaultBaseCC: 0x10 },
-    { name: 'Fader' , idPrefix: 'f', continuous: true , defaultBaseCC: 0x20 }
-]);
-
-
-//
-// Load and start UI
-//
-
-loadScript('lib/ui.js').then(_ => ConsulUI.init());
-
-
-//
-// Helper functions
-//
+function main() {
+    loadScript('lib/ui.js').then(_ => {
+        ConsulUI.init(Object.freeze({
+            productVersion    : '0.2.2',
+            defaultLayout     : 'mixer',
+            controlDescriptor : [
+                { name: 'Knob'  , idPrefix: 'k', continuous: true , defaultBaseCC: 0    },
+                { name: 'Button', idPrefix: 'b', continuous: false, defaultBaseCC: 0x10 },
+                { name: 'Fader' , idPrefix: 'f', continuous: true , defaultBaseCC: 0x20 }
+            ]
+        }));
+    });
+}
 
 function elem(id) {
     return document.getElementById(id);
@@ -78,3 +66,5 @@ async function loadHtml(url, allChildren) {
     const frag = document.createRange().createContextualFragment(html);
     return allChildren ? frag.children : frag.firstChild;
 }
+
+main();

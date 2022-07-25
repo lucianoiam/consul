@@ -18,7 +18,7 @@
 
 class ConsulUI extends DISTRHO.UI {
 
-    static async init() {
+    static async init(opt) {
         await Promise.all([
             loadScript('lib/guinda.js'),
             loadScript('lib/modal.js')
@@ -26,12 +26,13 @@ class ConsulUI extends DISTRHO.UI {
 
         await ModalDialog.init();
 
-        DISTRHO.UI.sharedInstance = new ConsulUI;
+        DISTRHO.UI.sharedInstance = new ConsulUI(opt);
     }
 
-    constructor() {
+    constructor(opt) {
         super();
 
+        this._opt = opt;
         this._config = {};
         this._uiState = {};
         this._shouldShowStatus = false;
@@ -48,7 +49,7 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         if (this._env.dev) {
-            this._loadLayout(DEFAULT_LAYOUT);
+            this._loadLayout(this._opt.defaultLayout);
         }
 
         DISTRHO.UIHelper.enableOfflineModal(this);
@@ -72,7 +73,7 @@ class ConsulUI extends DISTRHO.UI {
 
         // Will be called every time config is updated by any client
         if (this._config.init && this._uiState.init) {
-            this._loadLayout(this._config['layout'] || DEFAULT_LAYOUT);
+            this._loadLayout(this._config['layout'] || this._opt.defaultLayout);
         }
     }
 
@@ -90,7 +91,7 @@ class ConsulUI extends DISTRHO.UI {
 
         elem('option-about').addEventListener('input', ev => {
             if (! ev.target.value) { // up
-                new AboutModalDialog().show();
+                new AboutModalDialog(this._opt.productVersion).show();
             }
         });
 
@@ -115,7 +116,7 @@ class ConsulUI extends DISTRHO.UI {
                     invertSvg(ev.target, true);
                 } else {
                     invertSvg(ev.target, false);
-                    new MidiModalDialog().show();
+                    new MidiModalDialog(this._opt.controlDescriptor).show();
                 }
             });
 
@@ -273,11 +274,13 @@ class ConsulUI extends DISTRHO.UI {
     _handleControlInput(el) {
         this._uiState[el.id] = el.value;
 
-        const desc = CONTROL_DESCRIPTOR.find(cd => cd.idPrefix == el.id[0]);
+        const DEFAULT_MIDI_CHANNEL = 1;
+
+        const desc = this._opt.controlDescriptor.find(cd => cd.idPrefix == el.id[0]);
         const midiVal = desc.continuous ? v => Math.floor(127 * v)       : v => v ? 127 : 0;
         const strVal  = desc.continuous ? v => Math.round(100 * v) + '%' : v => v ? 'ON' : 'OFF';
 
-        const status = 0xb0 | (MIDI_CHANNEL - 1);
+        const status = 0xb0 | (DEFAULT_MIDI_CHANNEL - 1);
         const ccIndex = desc.defaultBaseCC + parseInt(el.id.split('-')[1]) - 1;
         const ccValue = midiVal(el.value);
 

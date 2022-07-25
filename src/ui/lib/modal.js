@@ -145,10 +145,10 @@ class ModalDialog {
 
 class AboutModalDialog extends ModalDialog {
 
-    constructor() {
+    constructor(version) {
         super(ModalDialog.getTemplate('about')); 
 
-        this.el.querySelector('#modal-about-version').innerText = 'v' + PRODUCT_VERSION;
+        this.el.querySelector('#modal-about-version').innerText = 'v' + version;
         this._uiHelper.bindSystemBrowser(this._ui, this.el.querySelector('#homepage'));
     }
 
@@ -171,7 +171,7 @@ class NetworkModalDialog extends ModalDialog {
 
 class MidiModalDialog extends ModalDialog {
 
-    constructor() {
+    constructor(controlDescriptor) {
         super(ModalDialog.getTemplate('midi'), { ok: true, cancel: true });
 
         this.el.innerText = 'MIDI mappings not yet available'; return;
@@ -194,7 +194,7 @@ class MidiModalDialog extends ModalDialog {
             channel.appendChild(option);
         }
 
-        for (let desc of CONTROL_DESCRIPTOR) {
+        for (let desc of controlDescriptor) {
             for (let i = 0; i < 8; i++) {
                 const entry = entryTemplate.cloneNode(true);
                 const id = desc.idPrefix + '-' + (i + 1).toString().padStart(2, '0');
