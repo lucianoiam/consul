@@ -19,12 +19,12 @@
 function main() {
     loadScript('lib/ui.js').then(_ => {
         ConsulUI.init(Object.freeze({
-            productVersion    : '0.2.2',
+            productVersion    : '0.9.0',
             defaultLayout     : 'mixer',
             controlDescriptor : [
-                { name: 'Knob'  , idPrefix: 'k', count: 16, continuous: true , default: { base: 0   , channel: 1 } },
-                { name: 'Button', idPrefix: 'b', count: 16, continuous: false, default: { base: 0   , channel: 1 } },
-                { name: 'Fader' , idPrefix: 'f', count: 8 , continuous: true , default: { base: 0x10, channel: 1 } }
+                { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },
+                { name: 'Knob'  , id: 'k', n: 16, cont: true , def: { base: 0   , ch: 1 } },
+                { name: 'Fader' , id: 'f', n: 8 , cont: true , def: { base: 0x10, ch: 1 } }
             ]
         }));
     });

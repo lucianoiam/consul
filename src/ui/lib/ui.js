@@ -133,7 +133,9 @@ class ConsulUI extends DISTRHO.UI {
                     invertSvg(ev.target, true);
                 } else {
                     invertSvg(ev.target, false);
-                    new MidiModalDialog(this._opt.controlDescriptor).show();
+                    new MidiModalDialog(this._opt.controlDescriptor, this._config['map'], newMap => {
+                        this._setConfigOption('map', newMap);
+                    }).show();
                 }
             });
 
@@ -292,13 +294,12 @@ class ConsulUI extends DISTRHO.UI {
         let map = {};
 
         for (let desc of this._opt.controlDescriptor) {
-            const statusOn = (desc.continuous ? /*cc*/0xb0 : /*note on*/0x90)
-                                | (desc.default.channel - 1);
-            const statusOff = desc.continuous ? null : (/*note off*/0x80 | (desc.default.channel - 1));
+            const statusOn = (desc.cont ? /*cc*/0xb0 : /*note on*/0x90) | (desc.def.ch - 1);
+            const statusOff = desc.cont ? null : (/*note off*/0x80 | (desc.def.ch - 1));
 
-            for (let i = 0; i < desc.count; i++) {
-                const id = desc.idPrefix + '-' + (i + 1).toString().padStart(2, '0');
-                map[id] = [statusOn, statusOff, /*index*/desc.default.base + i];
+            for (let i = 0; i < desc.n; i++) {
+                const id = desc.id + '-' + (i + 1).toString().padStart(2, '0');
+                map[id] = [statusOn, statusOff, /*index*/desc.def.base + i];
             }
         }
 
@@ -309,10 +310,10 @@ class ConsulUI extends DISTRHO.UI {
         this._uiState[el.id] = el.value;
 
         const map     = this._config['map'][el.id];
-        const desc    = this._opt.controlDescriptor.find(cd => cd.idPrefix == el.id[0]);
-        const status  = desc.continuous ? /*on*/map[0] : (el.value ? /*on*/map[0] : /*off*/map[1]);
-        const midiVal = desc.continuous ? v => Math.floor(127 * v)       : v => v ? 127 : 0;
-        const strVal  = desc.continuous ? v => Math.round(100 * v) + '%' : v => v ? 'ON' : 'OFF';
+        const desc    = this._opt.controlDescriptor.find(cd => cd.id == el.id[0]);
+        const midiVal = desc.cont ? v => Math.floor(127 * v)       : v => v ? 127 : 0;
+        const strVal  = desc.cont ? v => Math.round(100 * v) + '%' : v => v ? 'ON' : 'OFF';
+        const status  = (map[0] ^ 0xb0) == 0 /*cc*/? map[0] : (el.value ? /*on*/map[0] : /*off*/map[1]);
 
         this.postMessage('control', el.id, el.value, status, /*index*/map[2], midiVal(el.value));
 
@@ -320,7 +321,7 @@ class ConsulUI extends DISTRHO.UI {
             const name = el.getAttribute('data-name').padEnd(10, ' ');
             const value = strVal(el.value).padStart(4, ' ');
 
-            this._showStatus(`${name}${value}`, desc.continuous ? el.value : undefined);
+            this._showStatus(`${name}${value}`, desc.cont ? el.value : undefined);
         }
     }
 

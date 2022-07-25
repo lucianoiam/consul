@@ -171,38 +171,81 @@ class NetworkModalDialog extends ModalDialog {
 
 class MidiModalDialog extends ModalDialog {
 
-    constructor(controlDescriptor) {
+    constructor(controlDescriptor, map, callback) {
         super(ModalDialog.getTemplate('midi'), { ok: true, cancel: true });
 
-        this.el.innerText = 'MIDI mappings not yet available'; return;
-        
+        this._map = map;
+        this._callback = callback;
 
-        const map = this.el.querySelector('#modal-midi-map');
-        const entryTemplate = map.querySelector('template').content.firstElementChild;
-        const number = entryTemplate.querySelector('.midi-map-number');
-        const channel = entryTemplate.querySelector('.midi-map-channel');
+        const mapElem = this.el.querySelector('#modal-midi-map');
+        const entryTmpl = this.el.querySelector('template').content.firstElementChild;
+        const indexTmpl = entryTmpl.querySelector('.midi-map-index');
+        const channelTmpl = entryTmpl.querySelector('.midi-map-channel');
 
         for (let i = 0; i < 128; i++) {
             const option = document.createElement('option');
+            option.setAttribute('value', i.toString());
             option.innerText = '# ' + i;
-            number.appendChild(option); 
+            indexTmpl.appendChild(option); 
         }
 
         for (let i = 0; i < 16; i++) {
             const option = document.createElement('option');
+            option.setAttribute('value', i.toString());
             option.innerText = 'Ch ' + (i + 1);
-            channel.appendChild(option);
+            channelTmpl.appendChild(option);
         }
 
         for (let desc of controlDescriptor) {
-            for (let i = 0; i < desc.count; i++) {
-                const entry = entryTemplate.cloneNode(true);
-                const id = desc.idPrefix + '-' + (i + 1).toString().padStart(2, '0');
+            for (let i = 0; i < desc.n; i++) {
+                const entry = entryTmpl.cloneNode(true);
+                const id = desc.id + '-' + (i + 1).toString().padStart(2, '0');
+                const map = this._map[id];
+                
                 entry.setAttribute('data-id', id);
                 entry.querySelector('.midi-map-target').innerText = `${desc.name} ${i + 1}`;
-                map.appendChild(entry);
+
+                const status = entry.querySelector('.midi-map-status');
+                status.value = (map[0] ^ 0x90) == 0 ? 'note' : 'cc';
+
+                if (desc.cont) {
+                    status.setAttribute('disabled', true);
+                    status.style.border = 'none';
+                }
+
+                entry.querySelector('.midi-map-index').value = map[2].toString();
+                entry.querySelector('.midi-map-channel').value = (map[0] & 0x0f).toString();
+
+                mapElem.appendChild(entry);
             }
         }
+    }
+
+    onHide(ok) {
+        if (! ok) {
+            return;
+        }
+
+        const mapElem = this.el.querySelector('#modal-midi-map').children;
+
+        for (let entry of mapElem) {
+            const id = entry.getAttribute('data-id');
+
+            if (!id) {
+                continue; // skip template
+            }
+
+            const statusType = entry.querySelector('.midi-map-status').value;
+            const channel = parseInt(entry.querySelector('.midi-map-channel').value);
+
+            const statusOn = (statusType == 'cc' ? 0xb0 : 0x90) | channel;
+            const statusOff = statusType == 'cc' ? null : 0x80 | channel; 
+            const index = parseInt(entry.querySelector('.midi-map-index').value);
+
+            this._map[id] = [statusOn, statusOff, index];
+        }
+
+        this._callback(this._map);
     }
 
 }
