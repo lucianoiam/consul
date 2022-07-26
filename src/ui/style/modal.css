@@ -33,7 +33,8 @@
 #modal-content {
     flex: 1;
     padding: 5px;
-    overflow-y: scroll;
+    overflow: auto;
+    overflow-x: hidden;
 }
 
 #modal-buttons {
