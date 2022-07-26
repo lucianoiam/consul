@@ -19,7 +19,7 @@
 function main() {
     loadScript('lib/ui.js').then(_ => {
         ConsulUI.init(Object.freeze({
-            productVersion    : '0.9.0',
+            productVersion    : '1.0.0',
             defaultLayout     : 'mixer',
             controlDescriptor : [
                 { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },

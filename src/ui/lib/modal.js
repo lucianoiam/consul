@@ -78,13 +78,13 @@ class ModalDialog {
         });
 
         this.addEventListener(ok, 'input', ev => {
-            if (! ev.target.value) { // up
+            if (! ev.target.value) {
                 this.hide(true);
             }
         });
 
         this.addEventListener(cancel, 'input', ev => {
-            if (! ev.target.value) { // up
+            if (! ev.target.value) {
                 this.hide(false);
             }
         });

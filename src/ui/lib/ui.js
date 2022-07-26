@@ -40,7 +40,7 @@ class ConsulUI extends DISTRHO.UI {
         this._showStatusTimer = null;
         this._hideStatusTimer = null;
 
-        this._initMenuBar();
+        this._initMenuBarController();
 
         if (isMobileDevice()) {
             window.addEventListener('resize', _ => this._zoomUi());
@@ -49,7 +49,8 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         if (this._env.dev) {
-            this._start(); // stateChanged() will not be called for dev
+            this.stateChanged('config', '{}');
+            this.stateChanged('ui', '{}');
         }
 
         DISTRHO.UIHelper.enableOfflineModal(this);
@@ -60,54 +61,48 @@ class ConsulUI extends DISTRHO.UI {
             case 'config':
                 if (value) {
                     this._config = JSON.parse(value);
-                    this._config.init = true;
+                    
+                    if (Object.keys(this._config).length == 0) {
+                        this._config['map'] = this._buildDefaultMidiMap();
+                        this._config['layout'] = this._opt.defaultLayout;
+                        this._saveConfig();
+                    }
+
+                    this._applyConfig();
                 }
+
                 break;
             case 'ui':
                 if (value) {
                     this._uiState = JSON.parse(value);
-                    this._uiState.init = true;
+                    this._applyUiState();
                 }
-                break;
-        }
 
-        // Will be called every time config is updated by any client
-        if (this._config.init && this._uiState.init) {
-            this._start();
+                break;
         }
     }
 
     messageReceived(args) {
         if ((args[0] == 'control') && (args.length == 3)) {
-            elem(args[1]).value = args[2];
+            const id = args[1];
+            const value = args[2];
+            this._uiState[id] = value;
+            elem(id).value = value;
         }
     }
 
     get _env() {
         return DISTRHO.env;
     }
-    
-    _start() {
-        if (! this._config['map']) {
-            this._setConfigOption('map', this._buildDefaultMidiMap());
-        }
 
-        this._loadLayout(this._config['layout'] || this._opt.defaultLayout);
-    }
-
-    _setConfigOption(key, value) {
-        this._config[key] = value;
-        this.setState('config', JSON.stringify(this._config));
-    }
-
-    _initMenuBar() {
+    _initMenuBarController() {
         const invertSvg = (el, val) => {
             const fill = val ? '#000' : '#fff';
             el.shadowRoot.querySelectorAll('path,polygon,circle').forEach(p => p.style.fill = fill);
         };
 
         elem('option-about').addEventListener('input', ev => {
-            if (! ev.target.value) { // up
+            if (! ev.target.value) {
                 new AboutModalDialog(this._opt.productVersion).show();
             }
         });
@@ -119,7 +114,7 @@ class ConsulUI extends DISTRHO.UI {
                 invertSvg(ev.target, false);
                 new LayoutModalDialog(this._activeLayoutId, newLayoutId => {
                     this._loadLayout(newLayoutId);
-                    this._setConfigOption('layout', newLayoutId);
+                    this._setConfigEntry('layout', newLayoutId);
                 }).show();
             }
         });
@@ -134,7 +129,7 @@ class ConsulUI extends DISTRHO.UI {
                 } else {
                     invertSvg(ev.target, false);
                     new MidiModalDialog(this._opt.controlDescriptor, this._config['map'], newMap => {
-                        this._setConfigOption('map', newMap);
+                        this._setConfigEntry('map', newMap);
                     }).show();
                 }
             });
@@ -150,30 +145,6 @@ class ConsulUI extends DISTRHO.UI {
         } else {
             optionMidi.style.display = 'none';
             optionNetwork.style.display = 'none';
-        }
-    }
-
-    _zoomUi() {
-        // Use mixer size as the base size for all layouts
-        const baseWidth = 800;
-        const baseHeight = 540;
-        const main = elem('main');
-        const dv = window.innerHeight - baseHeight;
-
-        if (dv > 0) {
-            // Zoom interface to take up full window height
-            const scale = 1.0 + dv / baseHeight;
-            main.style.width = window.innerWidth / scale + 'px';
-            main.style.height = baseHeight + 'px';
-            main.style.transform = `scale(${100 * scale}%)`;
-            document.body.style.overflow = 'hidden';
-        } else {
-            // Viewport too small, ie. phone in portrait orientation. Since
-            // the UI elements have fixed size some of them could appear cropped.
-            main.style.width = '';
-            main.style.height = '';
-            main.style.transform = '';
-            document.body.style.overflow = 'scroll';
         }
     }
 
@@ -224,6 +195,30 @@ class ConsulUI extends DISTRHO.UI {
         apply();
     }
 
+    _zoomUi() {
+        // Use mixer size as the base size for all layouts
+        const baseWidth = 800;
+        const baseHeight = 540;
+        const main = elem('main');
+        const dv = window.innerHeight - baseHeight;
+
+        if (dv > 0) {
+            // Zoom interface to take up full window height
+            const scale = 1.0 + dv / baseHeight;
+            main.style.width = window.innerWidth / scale + 'px';
+            main.style.height = baseHeight + 'px';
+            main.style.transform = `scale(${100 * scale}%)`;
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Viewport too small, ie. phone in portrait orientation. Since
+            // the UI elements have fixed size some of them could appear cropped.
+            main.style.width = '';
+            main.style.height = '';
+            main.style.transform = '';
+            document.body.style.overflow = 'scroll';
+        }
+    }
+
     async _loadLayout(id) {
         if (this._activeLayoutId == id) {
             return;
@@ -252,14 +247,6 @@ class ConsulUI extends DISTRHO.UI {
             el.addEventListener('input', _ => this._handleControlInput(el));
         });
 
-        // Restore state
-        for (const controlId in this._uiState) {
-            const control = elem(controlId);
-            if (control) {
-                elem(controlId).value = this._uiState[controlId];
-            }
-        }
-
         // Plugin embedded view size
         if (this._env.plugin) {
             const size = this._getActiveLayoutCSSSize();
@@ -271,6 +258,8 @@ class ConsulUI extends DISTRHO.UI {
         if (isMobileDevice()) {
             this._zoomUi(); // relative to startup size (CSS #main)
         }
+
+        this._applyUiState();
 
         document.body.style.visibility = 'visible';
     }
@@ -323,6 +312,28 @@ class ConsulUI extends DISTRHO.UI {
 
             this._showStatus(`${name}${value}`, desc.cont ? el.value : undefined);
         }
+    }
+
+    _applyUiState() {
+        for (const controlId in this._uiState) {
+            const control = elem(controlId);
+            if (control) {
+                elem(controlId).value = this._uiState[controlId];
+            }
+        }
+    }
+
+    _applyConfig() {
+        this._loadLayout(this._config['layout']);
+    }
+
+    _saveConfig() {
+        this.setState('config', JSON.stringify(this._config));
+    }
+
+    _setConfigEntry(key, value) {
+        this._config[key] = value;
+        this._saveConfig();
     }
 
 }

@@ -2,20 +2,18 @@
 
 *Control Surface Library*
 
-This is a VST 2/3 plugin that provides a web user interface for controlling other plugins supporting MIDI learn. The user interface is primarily designed for touch devices. The plugin is self-contained and no additional software is required; just drop it into the same chain (and before) the target plugin.
+This is a VST2 & VST3 plugin providing a web user interface for controlling other plugins that support MIDI learn. The user interface is primarily designed for touch devices. The plugin is self-contained and no additional software is required; just insert it into the target plugin's chain (and before the target, so it receives MIDI events) and make sure the computer and client devices are connected to the same network.
 
-Example use case: tweak Amplitube parameters from a Wi-Fi tablet.
+Example use case: tweak a virtual guitar amp parameters from a Wi-Fi tablet.
 
-Current development status:
+<img width="1706" alt="Screen Shot 2022-07-26 at 09 58 17" src="https://user-images.githubusercontent.com/930494/180954979-4089c388-fdb9-48ff-9434-b007a8b4a65f.png">
 
-- Backend : complete
-- Frontend : complete
-- Documentation : null for the moment
+Remotely accessing the UI is easy, with three options available:
 
-Known bugs: VST3 not working on Ableton Live (VST2 on this DAW).
+- Scan the plugin QR code available from the menu bar
+- Use a Zeroconf/Bonjour app for discovery on [Android](https://play.google.com/store/apps/details?id=de.wellenvogel.bonjourbrowser) or [iOS](https://apps.apple.com/us/app/bonjour-search-for-http-web-in-wi-fi/id1097517829)
+- Use a minimal dedicated app called [pisco](https://github.com/lucianoiam/pisco) (Android only)
 
-Android users can have a look at [pisco](https://github.com/lucianoiam/pisco). iOS users can scan a QR code or use [this app](https://apps.apple.com/us/app/bonjour-search-for-http-web-in-wi-fi/id1097517829) for discovering the plugin user interface in the local network.
+![IMG_1883](https://user-images.githubusercontent.com/930494/180954991-4a5f0d41-a07c-4394-a493-6f7f341ed7cf.jpg)
 
-<img width="1706" alt="Screen Shot 2022-07-17 at 13 20 45" src="https://user-images.githubusercontent.com/930494/179395742-a3a6befa-fad6-41bf-a65f-6b341c0adc14.png">
-
-![IMG_1818](https://user-images.githubusercontent.com/930494/176409115-e6e00ee2-612e-45f7-9796-c1eedde0214f.jpg)
+Known bugs: VST3 not working on Ableton Live, use the VST2 version on this DAW instead.
