@@ -19,16 +19,16 @@
 class ModalDialog {
 
     static async init() {
-        await Promise.all([
-            loadStylesheet('style/modal.css'),
-            loadHtml('modal.html', true).then(children => {
-                for (const child of children) {
-                    // Clone nodes to avoid random errors possibly caused by the
-                    // usage of custom HTML elements.
-                    elem('main').appendChild(child.cloneNode(true));
-                };
-            })
-        ]);
+        const res = await load(
+            'modal.html',
+            'style/modal.css'
+        );
+
+        for (const child of res[0]) {
+            // Clone nodes to avoid random errors apparently 
+            // caused by the inclusion of custom HTML elements.
+            elem('main').appendChild(child.cloneNode(true));
+        };
     }
     
     static getTemplate(id) {

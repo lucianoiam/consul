@@ -17,11 +17,11 @@
  */
 
 async function main() {
-    await loadScript('dpf.js');
-    await loadScript('lib/ui.js');
+    await load('dpf.js');
+    await load('lib/ui.js');
 
     ConsulUI.init(Object.freeze({
-        productVersion    : '1.0.1',
+        productVersion    : '1.0.2',
         defaultLayout     : 'mixer',
         controlDescriptor : [
             { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },
@@ -62,10 +62,31 @@ function loadStylesheet(url) {
     });
 }
 
-async function loadHtml(url, allChildren) {
+async function loadHtml(url) {
     const html = await (await fetch(url)).text();
     const frag = document.createRange().createContextualFragment(html);
-    return allChildren ? frag.children : frag.firstChild;
+    return frag.children.length == 1 ? frag.firstChild : frag.children;
+}
+
+async function load(...urls) {
+    function promise(url) {
+        switch (url.split('.').pop()) {
+            case 'js':
+                return loadScript(url);
+            case 'css':
+                return loadStylesheet(url);
+            case 'html':
+                return loadHtml(url);
+            default:
+                throw new TypeError('Unrecognized script or resource type');
+        }
+    }
+
+    if (urls.length == 1) {
+        return await promise(urls[0]);
+    } else {
+        return await Promise.all(urls.map((url) => promise(url)));
+    }
 }
 
 main();

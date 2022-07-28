@@ -19,11 +19,14 @@
 class ConsulUI extends DISTRHO.UI {
 
     static async init(opt) {
-        await Promise.all([
-            loadStylesheet('style/ui.css'),
-            loadScript('lib/guinda.js'),
-            loadScript('lib/modal.js')
-        ]);
+        await load(
+            'style/ui.css'
+        );
+
+        await load(
+            'lib/guinda.js',
+            'lib/modal.js'
+        );
 
         await ModalDialog.init();
 
