@@ -45,6 +45,7 @@ g-fader {
     display: flex;
     flex-direction: column;
     background: #101010;
+    overflow: hidden;
 }
 
 #layout {
