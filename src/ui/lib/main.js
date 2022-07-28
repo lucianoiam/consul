@@ -16,18 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-function main() {
-    loadScript('lib/ui.js').then(_ => {
-        ConsulUI.init(Object.freeze({
-            productVersion    : '1.0.0',
-            defaultLayout     : 'mixer',
-            controlDescriptor : [
-                { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },
-                { name: 'Knob'  , id: 'k', n: 16, cont: true , def: { base: 0   , ch: 1 } },
-                { name: 'Fader' , id: 'f', n: 8 , cont: true , def: { base: 0x10, ch: 1 } }
-            ]
-        }));
-    });
+async function main() {
+    await loadScript('dpf.js');
+    await loadScript('lib/ui.js');
+
+    ConsulUI.init(Object.freeze({
+        productVersion    : '1.0.0',
+        defaultLayout     : 'mixer',
+        controlDescriptor : [
+            { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },
+            { name: 'Knob'  , id: 'k', n: 16, cont: true , def: { base: 0   , ch: 1 } },
+            { name: 'Fader' , id: 'f', n: 8 , cont: true , def: { base: 0x10, ch: 1 } }
+        ]
+    }));
 }
 
 function elem(id) {

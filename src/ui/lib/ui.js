@@ -20,6 +20,7 @@ class ConsulUI extends DISTRHO.UI {
 
     static async init(opt) {
         await Promise.all([
+            loadStylesheet('style/ui.css'),
             loadScript('lib/guinda.js'),
             loadScript('lib/modal.js')
         ]);
