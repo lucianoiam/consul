@@ -4,9 +4,11 @@
 
 This is a VST2 & VST3 plugin providing a web user interface for controlling other plugins that support MIDI learn. The user interface is primarily designed for touch devices. The plugin is self-contained and no additional software is required; just insert it into the target plugin's chain (and before the target, so it receives MIDI events) and make sure the computer and client devices are connected to the same network.
 
-Example use case: tweak a virtual guitar amp parameters from a Wi-Fi tablet.
-
 <img width="1706" alt="Screen Shot 2022-07-26 at 09 58 17" src="https://user-images.githubusercontent.com/930494/180954979-4089c388-fdb9-48ff-9434-b007a8b4a65f.png">
+
+Example use case: tweak a virtual guitar amp's parameters from a Wi-Fi tablet.
+
+![demo](https://user-images.githubusercontent.com/930494/181484970-1d439e1c-4f45-40f8-afb9-02b49b325a5d.gif)
 
 Remotely accessing the UI is easy, with three options available:
 
