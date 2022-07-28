@@ -17,6 +17,7 @@ body {
     color: #fff;
     font-family: UbuntuMono;
     font-size: 1em;
+    overflow: hidden;
 }
 
 g-knob {
@@ -43,7 +44,6 @@ g-fader {
     position: relative;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
     background: #101010;
 }
 
