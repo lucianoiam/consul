@@ -21,7 +21,7 @@ async function main() {
     await load('lib/ui.js');
 
     ConsulUI.init(Object.freeze({
-        productVersion    : '1.0.2',
+        productVersion    : '1.0.3',
         defaultLayout     : 'mixer',
         controlDescriptor : [
             { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },
