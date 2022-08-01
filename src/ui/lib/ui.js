@@ -149,7 +149,7 @@ export default class ConsulUI extends DISTRHO.UI {
         }
     }
 
-    _showStatus(message, numericValue) {
+    _showStatus(message, numericValue, delay) {
         const apply = () => {
             this._showStatusTimer = null;
 
@@ -180,20 +180,15 @@ export default class ConsulUI extends DISTRHO.UI {
             }, 1500);
         };
 
-        // For some reason setting status.textContent takes abnormally long
-        // on Linux WebKitGTK. Issue not reproducible on Firefox or Chromium
-        // running on the same hardware/OS combination.
-        if (this._env.fakeViewport) {
+        if (delay) {
             if (this._showStatusTimer) {
                 clearTimeout(this._showStatusTimer);
             }
 
-            this._showStatusTimer = setTimeout(() => { apply() }, 20);
-
-            return;
+            this._showStatusTimer = setTimeout(() => { apply() }, delay);
+        } else {
+            apply();
         }
-
-        apply();
     }
 
     _zoomUi() {
@@ -308,10 +303,18 @@ export default class ConsulUI extends DISTRHO.UI {
         this.postMessage('control', el.id, el.value, status, /*index*/map[2], midiVal(el.value));
 
         if (this._shouldShowStatus) {
-            const name = el.getAttribute('data-name').padEnd(10, ' ');
-            const value = strVal(el.value).padStart(4, ' ');
+            const message = el.getAttribute('data-name').padEnd(10, ' ')
+                            + strVal(el.value).padStart(4, ' ');
+            const numericValue = desc.cont ? el.value : undefined;
 
-            this._showStatus(`${name}${value}`, desc.cont ? el.value : undefined);
+            // For some reason modifying the DOM here takes abnormally long on
+            // Linux WebKitGTK especially when doing so in response to a touch
+            // input event (probably touch events resolution > mouse events
+            // resolution). Issue not reproducible on Firefox or Chromium
+            // running on the same hardware and OS combination.
+            const delay = this._env.fakeViewport ? 20 : 0;
+
+            this._showStatus(message, numericValue, delay);
         }
     }
 

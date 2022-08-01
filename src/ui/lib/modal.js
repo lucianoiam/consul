@@ -68,10 +68,16 @@ class ModalDialog {
         const cancel = elem('modal-cancel')
         cancel.style.display = this.opt.cancel ? 'inline' : 'none';
 
-        this.addEventListener(root, 'click', ev => {
-            if (ev.target == root) {
-                this.hide(false);
-            }            
+        ['touchstart', 'mousedown'].forEach((evName) => {
+            this.addEventListener(root, evName, (ev) => {
+                if (ev.target == root) {
+                    this.hide(false);
+                }        
+
+                if (ev.cancelable) {
+                    ev.preventDefault();
+                }
+            });
         });
 
         this.addEventListener(root, 'keydown', ev => {
