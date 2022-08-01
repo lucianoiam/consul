@@ -72,10 +72,6 @@ class ModalDialog {
             this.addEventListener(root, evName, (ev) => {
                 if (ev.target == root) {
                     this.hide(false);
-                }        
-
-                if (ev.cancelable) {
-                    ev.preventDefault();
                 }
             });
         });
