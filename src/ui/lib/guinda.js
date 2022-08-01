@@ -839,11 +839,6 @@ class Button extends InputWidget {
     connectedCallback() {
         super.connectedCallback();
 
-        this._color = this._style('color', /*inherited*/);
-        this._backgroundColor = this._style('background-color' /*rgb(0,0,0)*/);
-        this._borderColor = this._style('border-color' /*rgb(0,0,0)*/);
-        this._selectedColor = this._style('--selected-color', '#000');       
-
         this._root.innerHTML = `<div style="
                                   width: 100%;
                                   height: 100%;
@@ -874,6 +869,21 @@ class Button extends InputWidget {
 
         this._root.appendChild(slot);
         this.style.display = 'inline-block';
+
+        this.reset();
+    }
+
+    reset() {
+        // Reset inline styles
+        this.style.color = '';
+        this.style.borderColor = '';
+        this.style.backgroundColor = '';
+
+        // Read computed styles
+        this._color = this._style('color', /*inherited*/);
+        this._backgroundColor = this._style('background-color' /*rgb(0,0,0)*/);
+        this._borderColor = this._style('border-color' /*rgb(0,0,0)*/);
+        this._selectedColor = this._style('--selected-color', '#000');
 
         this._redraw();
     }

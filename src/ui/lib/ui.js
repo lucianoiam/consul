@@ -16,27 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-class ConsulUI extends DISTRHO.UI {
+import '../dpf.js';
+import './guinda.js';
+import { elem, isMobileDevice, loadHtml, loadStylesheet } from './main.js';
+import { AboutDialog, NetworkDialog, MidiDialog, LayoutDialog } from './modal.js';
 
-    static async init(opt) {
-        await load(
-            'style/ui.css'
-        );
+export default class ConsulUI extends DISTRHO.UI {
 
-        await load(
-            'lib/guinda.js',
-            'lib/modal.js'
-        );
-
-        await ModalDialog.init();
-
-        DISTRHO.UI.sharedInstance = new ConsulUI(opt);
+    static async _init() {
+        await loadStylesheet('style/ui.css');
+        document.querySelectorAll('g-button').forEach(el => el.reset()); // reload colors
     }
 
     constructor(opt) {
         super();
 
-        this._opt = opt;
+        this._opt = Object.freeze(opt);
         this._config = {};
         this._uiState = {};
         this._shouldShowStatus = false;
@@ -105,26 +100,28 @@ class ConsulUI extends DISTRHO.UI {
             el.shadowRoot.querySelectorAll('path,polygon,circle').forEach(p => p.style.fill = fill);
         };
 
-        elem('option-about').addEventListener('input', ev => {
+        const optionAbout = elem('option-about'),
+              optionLayout = elem('option-layout'),
+              optionMidi = elem('option-midi'),
+              optionNetwork = elem('option-network');
+
+        optionAbout.addEventListener('input', ev => {
             if (! ev.target.value) {
-                new AboutModalDialog(this._opt.productVersion).show();
+                new AboutDialog(this._opt.productVersion).show();
             }
         });
 
-        elem('option-layout').addEventListener('input', ev => {
+        optionLayout.addEventListener('input', ev => {
             if (ev.target.value) {
                 invertSvg(ev.target, true);
             } else {
                 invertSvg(ev.target, false);
-                new LayoutModalDialog(this._activeLayoutId, newLayoutId => {
+                new LayoutDialog(this._activeLayoutId, newLayoutId => {
                     this._loadLayout(newLayoutId);
                     this._setConfigEntry('layout', newLayoutId);
                 }).show();
             }
         });
-              
-        const optionMidi = elem('option-midi');
-        const optionNetwork = elem('option-network');
 
         if (this._env.plugin) {
             optionMidi.addEventListener('input', ev => {
@@ -132,7 +129,7 @@ class ConsulUI extends DISTRHO.UI {
                     invertSvg(ev.target, true);
                 } else {
                     invertSvg(ev.target, false);
-                    new MidiModalDialog(this._opt.controlDescriptor, this._config['map'], newMap => {
+                    new MidiDialog(this._opt.controlDescriptor, this._config['map'], newMap => {
                         this._setConfigEntry('map', newMap);
                     }).show();
                 }
@@ -143,7 +140,7 @@ class ConsulUI extends DISTRHO.UI {
                     invertSvg(ev.target, true);
                 } else {
                     invertSvg(ev.target, false);
-                    new NetworkModalDialog().show();
+                    new NetworkDialog().show();
                 }
             });
         } else {
@@ -341,3 +338,5 @@ class ConsulUI extends DISTRHO.UI {
     }
 
 }
+
+await ConsulUI._init();

@@ -16,13 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { elem, loadHtml, loadStylesheet } from './main.js';
+
 class ModalDialog {
 
-    static async init() {
-        const res = await load(
-            'modal.html',
-            'style/modal.css'
-        );
+    static async _init() {
+        const res = await Promise.all([
+            loadHtml('modal.html'),
+            loadStylesheet('style/modal.css')
+        ]);
 
         for (const child of res[0]) {
             // Clone nodes to avoid random errors apparently 
@@ -119,7 +121,7 @@ class ModalDialog {
         box.style.animationDuration = t + 's';
 
         setTimeout(() => {
-            elem('modal-content').removeChild(this.el);
+            this.el.parentNode.removeChild(this.el);
             this.onHide(ok);
         }, 1000 * t);
     }
@@ -142,8 +144,10 @@ class ModalDialog {
 
 }
 
+await ModalDialog._init();
 
-class AboutModalDialog extends ModalDialog {
+
+export class AboutDialog extends ModalDialog {
 
     constructor(version) {
         super(ModalDialog.getTemplate('about')); 
@@ -155,7 +159,7 @@ class AboutModalDialog extends ModalDialog {
 }
 
 
-class NetworkModalDialog extends ModalDialog {
+export class NetworkDialog extends ModalDialog {
 
     // There are no async constructors in JavaScript
 
@@ -169,7 +173,7 @@ class NetworkModalDialog extends ModalDialog {
 }
 
 
-class MidiModalDialog extends ModalDialog {
+export class MidiDialog extends ModalDialog {
 
     constructor(controlDescriptor, map, callback) {
         super(ModalDialog.getTemplate('midi'), { ok: true, cancel: true });
@@ -251,7 +255,7 @@ class MidiModalDialog extends ModalDialog {
 }
 
 
-class LayoutModalDialog extends ModalDialog {
+export class LayoutDialog extends ModalDialog {
 
     constructor(selectedLayoutId, callback) {
         super(ModalDialog.getTemplate('layout'), { ok: false, cancel: true });
@@ -280,6 +284,10 @@ class LayoutModalDialog extends ModalDialog {
                 this.addEventListener(li, evName, (ev) => {
                     deselect(focus);
                     select(li);
+
+                    if (ev.cancelable) {
+                        ev.preventDefault();
+                    }
                 });
             });
 
@@ -288,6 +296,10 @@ class LayoutModalDialog extends ModalDialog {
                     setTimeout(_ => {
                         this._nextLayoutId = li.getAttribute('data-id');
                         this.hide(true);
+
+                        if (ev.cancelable) {
+                            ev.preventDefault();
+                        }
                     }, 150);
                 });
             });
