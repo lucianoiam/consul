@@ -21,7 +21,7 @@ import ConsulUI from './ui.js';
 
 // Entry point
 DISTRHO.UI.sharedInstance = await new ConsulUI({
-    productVersion    : '1.0.5',
+    productVersion    : '1.1.0',
     defaultLayout     : 'mixer',
     controlDescriptor : [
         { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },

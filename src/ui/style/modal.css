@@ -13,8 +13,8 @@
     align-items: center;
     visibility: hidden;
     animation-fill-mode: forwards;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
 }
 
 #modal-box {
