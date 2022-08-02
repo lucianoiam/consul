@@ -42,20 +42,7 @@ export default class ConsulUI extends DISTRHO.UI {
         this._initMenuBarController();
 
         if (! this._env.plugin) {
-            DISTRHO.UIHelper.enableOfflineModal(this);
-
-            document.body.style.backgroundColor = '#1a1a1a';
-
-            if (isMobileDevice()) {
-                window.addEventListener('resize', _ => this._zoomUi());
-            } else {
-                elem('main').style.borderRadius = '10px'; // desktop browser
-            }
-
-            if (this._env.dev) {
-                this.stateChanged('config', '{}');
-                this.stateChanged('ui', '{}');
-            }
+            this._initNonPlugin();
         }
     }
 
@@ -150,6 +137,23 @@ export default class ConsulUI extends DISTRHO.UI {
         } else {
             optionMidi.style.display = 'none';
             optionNetwork.style.display = 'none';
+        }
+    }
+
+    _initNonPlugin() {
+        DISTRHO.UIHelper.enableOfflineModal(this);
+
+        document.body.style.backgroundColor = '#1a1a1a';
+
+        if (isMobileDevice()) {
+            window.addEventListener('resize', _ => this._zoomUi());
+        } else {
+            elem('main').style.borderRadius = '10px'; // desktop browser
+        }
+
+        if (this._env.dev) {
+            this.stateChanged('config', '{}');
+            this.stateChanged('ui', '{}');
         }
     }
 
