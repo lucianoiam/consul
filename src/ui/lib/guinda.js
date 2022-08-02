@@ -267,9 +267,9 @@ class RangeInputWidget extends InputWidget {
 
     static get _attributeDescriptors() {
         return super._attributeDescriptors.concat([
-            { key: 'value', parser: ValueParser.float, default: 0                 },
-            { key: 'min'  , parser: ValueParser.float, default: 0                 },
-            { key: 'max'  , parser: ValueParser.float, default: 1                 },
+            { key: 'value', parser: ValueParser.float, default: 0 },
+            { key: 'min'  , parser: ValueParser.float, default: 0 },
+            { key: 'max'  , parser: ValueParser.float, default: 1 },
             { key: 'scale', parser: ValueParser.scale, default: ValueScale.linear }
         ]);
     }

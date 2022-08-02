@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import '../dpf.js';
+import '/dpf.js';
 import './guinda.js';
 import { elem, isMobileDevice, loadHtml, loadStylesheet } from './main.js';
 import { AboutDialog, NetworkDialog, MidiDialog, LayoutDialog } from './modal.js';
@@ -41,18 +41,22 @@ export default class ConsulUI extends DISTRHO.UI {
 
         this._initMenuBarController();
 
-        if (isMobileDevice()) {
-            window.addEventListener('resize', _ => this._zoomUi());
-        } else if (! this._env.plugin) {
-            elem('main').style.borderRadius = '10px'; // desktop browser
-        }
+        if (! this._env.plugin) {
+            DISTRHO.UIHelper.enableOfflineModal(this);
 
-        if (this._env.dev) {
-            this.stateChanged('config', '{}');
-            this.stateChanged('ui', '{}');
-        }
+            document.body.style.backgroundColor = '#1a1a1a';
 
-        DISTRHO.UIHelper.enableOfflineModal(this);
+            if (isMobileDevice()) {
+                window.addEventListener('resize', _ => this._zoomUi());
+            } else {
+                elem('main').style.borderRadius = '10px'; // desktop browser
+            }
+
+            if (this._env.dev) {
+                this.stateChanged('config', '{}');
+                this.stateChanged('ui', '{}');
+            }
+        }
     }
 
     stateChanged(key, value) {

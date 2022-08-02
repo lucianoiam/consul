@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import '../dpf.js';
+import '/dpf.js';
 import ConsulUI from './ui.js';
 
 // Entry point
