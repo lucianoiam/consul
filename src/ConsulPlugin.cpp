@@ -57,7 +57,7 @@ public:
 
     uint32_t getVersion() const override
     {
-        return d_version(1, 1, 0);
+        return d_version(1, 1, 2);
     }
 
     int64_t getUniqueId() const override
