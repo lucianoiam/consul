@@ -36,14 +36,12 @@
    Number of audio inputs the plugin has.
    @note This macro is required.
  */
-// Setting inputs to 0 breaks VST3 on Live
 #define DISTRHO_PLUGIN_NUM_INPUTS 0
 
 /**
    Number of audio outputs the plugin has.
    @note This macro is required.
  */
-// Setting output to 0 breaks VST3 on Live
 #define DISTRHO_PLUGIN_NUM_OUTPUTS 0
 
 /**
@@ -80,8 +78,6 @@
    @note DO NOT USE THIS UNLESS STRICTLY NECESSARY!!
          Try to avoid it at all costs!
  */
-// Enable to allow VST3 on Ableton Live until a final solution is found
-// https://github.com/DISTRHO/DPF/issues/372
 #define DISTRHO_PLUGIN_WANT_DIRECT_ACCESS 0
 
 /**
