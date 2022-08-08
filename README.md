@@ -4,7 +4,7 @@
 
 This is a VST2 & VST3 plugin providing a LAN accessible web user interface for controlling plugins that support MIDI learn. The user interface is primarily designed for touch devices. The plugin is self-contained and no additional software is required; just insert it into the target plugin's chain (and before the target, so it receives MIDI events) and make sure the computer and client devices are connected to the same network.
 
-<img width="1706" alt="Screen Shot 2022-07-26 at 09 58 17" src="https://user-images.githubusercontent.com/930494/180954979-4089c388-fdb9-48ff-9434-b007a8b4a65f.png">
+<img width="1706" alt="Screen Shot 2022-08-08 at 21 21 51" src="https://user-images.githubusercontent.com/930494/183497638-e4ba0099-f273-425c-ae7b-5914a82c26c9.png">
 
 Example use case: tweak a virtual guitar amp's parameters from a Wi-Fi tablet.
 
@@ -17,5 +17,3 @@ Remotely accessing the UI is easy, with three options available:
 - Use a minimal dedicated app called [pisco](https://github.com/lucianoiam/pisco) (Android only)
 
 ![IMG_1883](https://user-images.githubusercontent.com/930494/180954991-4a5f0d41-a07c-4394-a493-6f7f341ed7cf.jpg)
-
-Known bugs: VST3 not working on Ableton Live, use the VST2 version on this DAW instead.
