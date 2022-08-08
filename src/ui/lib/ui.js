@@ -18,13 +18,25 @@
 
 import '/dpf.js';
 import './guinda.js';
-import { elem, isMobileDevice, loadHtml, loadStylesheet } from './main.js';
+import * as U from './util.js';
 import { AboutDialog, NetworkDialog, MidiDialog, LayoutDialog } from './modal.js';
+
+function main() {
+    DISTRHO.UI.sharedInstance = new ConsulUI({
+        productVersion    : '1.1.3',
+        defaultLayout     : 'mixer',
+        controlDescriptor : [
+            { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },
+            { name: 'Knob'  , id: 'k', n: 16, cont: true , def: { base: 0   , ch: 1 } },
+            { name: 'Fader' , id: 'f', n: 8 , cont: true , def: { base: 0x10, ch: 1 } }
+        ]
+    });
+}
 
 export default class ConsulUI extends DISTRHO.UI {
 
     static async _init() {
-        await loadStylesheet('style/ui.css');
+        await U.loadStylesheet('style/ui.css');
         document.querySelectorAll('g-button').forEach(el => el.reset()); // reload colors
     }
 
@@ -77,7 +89,7 @@ export default class ConsulUI extends DISTRHO.UI {
             const id = args[1];
             const value = args[2];
             this._uiState[id] = value;
-            elem(id).value = value;
+            U.el(id).value = value;
         }
     }
 
@@ -91,10 +103,10 @@ export default class ConsulUI extends DISTRHO.UI {
             el.shadowRoot.querySelectorAll('path,polygon,circle').forEach(p => p.style.fill = fill);
         };
 
-        const optionAbout = elem('option-about'),
-              optionLayout = elem('option-layout'),
-              optionMidi = elem('option-midi'),
-              optionNetwork = elem('option-network');
+        const optionAbout = U.el('option-about'),
+              optionLayout = U.el('option-layout'),
+              optionMidi = U.el('option-midi'),
+              optionNetwork = U.el('option-network');
 
         optionAbout.addEventListener('input', ev => {
             if (! ev.target.value) {
@@ -145,10 +157,10 @@ export default class ConsulUI extends DISTRHO.UI {
 
         document.body.style.backgroundColor = '#1a1a1a';
 
-        if (isMobileDevice()) {
+        if (U.isMobileDevice()) {
             window.addEventListener('resize', _ => this._zoomUi());
         } else {
-            elem('main').style.borderRadius = '10px'; // desktop browser
+            U.el('main').style.borderRadius = '10px'; // desktop browser
         }
 
         if (this._env.dev) {
@@ -161,18 +173,18 @@ export default class ConsulUI extends DISTRHO.UI {
         const apply = () => {
             this._showStatusTimer = null;
 
-            elem('status-text').textContent = message;
+            U.el('status-text').textContent = message;
 
-            const valueBox = elem('status-value-box');
+            const valueBox = U.el('status-value-box');
 
             if (typeof numericValue == 'undefined') {
                 valueBox.style.display = 'none';
             } else {
                 valueBox.style.display = 'inline';
-                elem('status-value').style.width = `${100 * numericValue}%`;
+                U.el('status-value').style.width = `${100 * numericValue}%`;
             }
 
-            const status = elem('status');
+            const status = U.el('status');
             status.style.transition = 'none';
             status.style.opacity = '1';
 
@@ -203,7 +215,7 @@ export default class ConsulUI extends DISTRHO.UI {
         // Use mixer size as the base size for all layouts
         const baseWidth = 800;
         const baseHeight = 540;
-        const main = elem('main');
+        const main = U.el('main');
         const dv = window.innerHeight - baseHeight;
 
         if (dv > 0) {
@@ -232,16 +244,16 @@ export default class ConsulUI extends DISTRHO.UI {
 
         // Load layout stylesheet. It is necessary to remove the previous one
         // because layout stylesheets define size properties for body and #main.
-        const style = await loadStylesheet(`/layouts/${id}.css`);
+        const style = await U.loadStylesheet(`/layouts/${id}.css`);
         style.id = `style-${id}`;
 
         if (this._activeLayoutId != null) {
-            document.head.removeChild(elem(`style-${this._activeLayoutId}`));
+            document.head.removeChild(U.el(`style-${this._activeLayoutId}`));
         }
 
         // Load and replace current layout HTML
-        const layout = await loadHtml(`/layouts/${id}.html`);
-        elem('layout').replaceChildren(layout);
+        const layout = await U.loadHtml(`/layouts/${id}.html`);
+        U.el('layout').replaceChildren(layout);
 
         this._shouldShowStatus = layout.getAttribute('data-show-status') == 'true';
         this._activeLayoutId = id;
@@ -259,7 +271,7 @@ export default class ConsulUI extends DISTRHO.UI {
         }
 
         // Zoom view for mobile
-        if (isMobileDevice()) {
+        if (U.isMobileDevice()) {
             this._zoomUi(); // relative to startup size (CSS #main)
         }
 
@@ -328,9 +340,9 @@ export default class ConsulUI extends DISTRHO.UI {
 
     _applyUiState() {
         for (const controlId in this._uiState) {
-            const control = elem(controlId);
+            const control = U.el(controlId);
             if (control) {
-                elem(controlId).value = this._uiState[controlId];
+                U.el(controlId).value = this._uiState[controlId];
             }
         }
     }
@@ -351,3 +363,5 @@ export default class ConsulUI extends DISTRHO.UI {
 }
 
 await ConsulUI._init();
+
+main();

@@ -17,25 +17,25 @@
  */
  
 import '/dpf.js';
-import { elem, loadHtml, loadStylesheet } from './main.js';
+import * as U from './util.js';
 
 class ModalDialog {
 
     static async _init() {
         const res = await Promise.all([
-            loadHtml('modal.html'),
-            loadStylesheet('style/modal.css')
+            U.loadHtml('modal.html'),
+            U.loadStylesheet('style/modal.css')
         ]);
 
         for (const child of res[0]) {
             // Clone nodes to avoid random errors apparently 
             // caused by the inclusion of custom HTML elements.
-            elem('main').appendChild(child.cloneNode(true));
+            U.el('main').appendChild(child.cloneNode(true));
         };
     }
     
     static getTemplate(id) {
-        return elem('modal-templates').content.getElementById(`modal-${id}`).cloneNode(true);
+        return U.el('modal-templates').content.getElementById(`modal-${id}`).cloneNode(true);
     }
 
     constructor(el, opt) {
@@ -50,22 +50,22 @@ class ModalDialog {
     }
 
     show() {
-        elem('modal-content').appendChild(this.el);
+        U.el('modal-content').appendChild(this.el);
 
         const t = 0.2;
 
-        const root = elem('modal-root');
+        const root = U.el('modal-root');
         root.style.animationName = 'fadeIn';
         root.style.animationDuration = t + 's';
 
-        const box = elem('modal-box');
+        const box = U.el('modal-box');
         box.style.animationName = 'modalBoxIn';
         box.style.animationDuration = t + 's';
 
-        const ok = elem('modal-ok'); 
+        const ok = U.el('modal-ok'); 
         ok.style.display = this.opt.ok ? 'inline' : 'none';
 
-        const cancel = elem('modal-cancel')
+        const cancel = U.el('modal-cancel')
         cancel.style.display = this.opt.cancel ? 'inline' : 'none';
 
         ['touchstart', 'mousedown'].forEach((evName) => {
@@ -97,7 +97,7 @@ class ModalDialog {
         this._ui.setKeyboardFocus(true);
 
         setTimeout(() => {
-            const lastVisibleButton = Array.from(elem('modal-buttons').children)
+            const lastVisibleButton = Array.from(U.el('modal-buttons').children)
                 .filter(el => el.style.display != 'none')
                 .pop();
 
@@ -115,11 +115,11 @@ class ModalDialog {
         }
 
         const t = 0.1;
-        const root = elem('modal-root')
+        const root = U.el('modal-root')
         root.style.animationName = 'fadeOut';
         root.style.animationDuration = t + 's';
 
-        const box = elem('modal-box');
+        const box = U.el('modal-box');
         box.style.animationName = 'modalBoxOut';
         box.style.animationDuration = t + 's';
 

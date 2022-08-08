@@ -16,21 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import '/dpf.js';
-import ConsulUI from './ui.js';
-
-// Entry point
-DISTRHO.UI.sharedInstance = await new ConsulUI({
-    productVersion    : '1.1.3',
-    defaultLayout     : 'mixer',
-    controlDescriptor : [
-        { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },
-        { name: 'Knob'  , id: 'k', n: 16, cont: true , def: { base: 0   , ch: 1 } },
-        { name: 'Fader' , id: 'f', n: 8 , cont: true , def: { base: 0x10, ch: 1 } }
-    ]
-});
-
-export function elem(id) {
+export function el(id) {
     return document.getElementById(id);
 }
 
