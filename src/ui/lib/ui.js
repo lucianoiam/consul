@@ -206,7 +206,7 @@ class ConsulUI extends DISTRHO.UI {
             if (typeof numericValue == 'undefined') {
                 valueBox.style.display = 'none';
             } else {
-                valueBox.style.display = '';
+                valueBox.style.display = 'inline';
                 U.el('status-value').style.width = `${100 * numericValue}%`;
             }
 
