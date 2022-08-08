@@ -313,7 +313,7 @@ export default class ConsulUI extends DISTRHO.UI {
         });
 
         // Plugin embedded view size
-        if (this._env.plugin) {
+        if (this._env.plugin && ! this._config['collapsed']) {
             this._applyLayoutSize();
         }
 
