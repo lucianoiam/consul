@@ -33,7 +33,7 @@ function main() {
     });
 }
 
-export default class ConsulUI extends DISTRHO.UI {
+class ConsulUI extends DISTRHO.UI {
 
     static async _init() {
         await U.loadStylesheet('style/ui.css');
