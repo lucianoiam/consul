@@ -100,14 +100,15 @@ export default class ConsulUI extends DISTRHO.UI {
     _initMenuBarController() {
         const invertSvg = (el, val) => {
             const fill = val ? '#000' : '#fff';
-            el.shadowRoot.querySelectorAll('path,polygon,circle').forEach(p => p.style.fill = fill);
+            el.shadowRoot.querySelectorAll('path,rect,polygon,circle').forEach(p => p.style.fill = fill);
         };
 
-        const optionAbout = U.el('option-about'),
-              optionNetwork = U.el('option-network'),
-              optionMidi = U.el('option-midi'),
-              optionLayout = U.el('option-layout'),
-              optionToggleUi = U.el('option-toggle-ui');
+        const optionAbout    = U.el('option-about'),
+              optionNetwork  = U.el('option-network'),
+              optionMidi     = U.el('option-midi'),
+              optionLayout   = U.el('option-layout'),
+              optionCollapse = U.el('option-collapse'),
+              optionExpand   = U.el('option-expand');
 
         optionAbout.addEventListener('input', ev => {
             if (! ev.target.value) {
@@ -127,14 +128,23 @@ export default class ConsulUI extends DISTRHO.UI {
             }
         });
 
-        optionToggleUi.addEventListener('input', ev => {
+        optionCollapse.addEventListener('input', ev => {
             if (ev.target.value) {
                 invertSvg(ev.target, true);
             } else {
                 invertSvg(ev.target, false);
-                const collapsed = ! this._config['collapsed'];
-                this._setConfigEntry('collapsed', collapsed);
-                this._toggleUi(collapsed);
+                this._setConfigEntry('collapsed', true);
+                this._toggleUi(true);
+            }
+        });
+
+        optionExpand.addEventListener('input', ev => {
+            if (ev.target.value) {
+                invertSvg(ev.target, true);
+            } else {
+                invertSvg(ev.target, false);
+                this._setConfigEntry('collapsed', false);
+                this._toggleUi(false);
             }
         });
 
@@ -159,9 +169,10 @@ export default class ConsulUI extends DISTRHO.UI {
                 }
             });
         } else {
-            optionMidi.style.display = 'none';
-            optionNetwork.style.display = 'none';
-            optionToggleUi.style.display = 'none';
+            optionMidi.style.display     = 'none';
+            optionNetwork.style.display  = 'none';
+            optionCollapse.style.display = 'none';
+            optionExpand.style.display   = 'none';
         }
     }
 
@@ -253,14 +264,15 @@ export default class ConsulUI extends DISTRHO.UI {
     }
 
     async _toggleUi(collapsed) {
-        const menubar = U.el('menubar'),
-              menubarLeft = U.el('menubar-left'),
-              menubarRight = U.el('menubar-right'),
-              optionToggleUi = U.el('option-toggle-ui');
+        const menubar        = U.el('menubar'),
+              menubarLeft    = U.el('menubar-left'),
+              menubarRight   = U.el('menubar-right'),
+              optionCollapse = U.el('option-collapse'),
+              optionExpand   = U.el('option-expand');
 
         menubar.querySelectorAll('g-button').forEach(el => {
-            if (el == optionToggleUi) {
-                el.textContent = collapsed ? '+' : '-'; 
+            if (el == optionExpand) {
+                el.style.display = collapsed ? '' : 'none';
             } else {
                 el.style.display = collapsed ? 'none' : ''; 
             }
