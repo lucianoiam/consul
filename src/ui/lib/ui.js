@@ -23,7 +23,7 @@ import { AboutDialog, NetworkDialog, MidiDialog, LayoutDialog } from './modal.js
 
 function main() {
     DISTRHO.UI.sharedInstance = new ConsulUI({
-        productVersion    : '1.1.3',
+        productVersion    : '1.2.0',
         defaultLayout     : 'mixer',
         controlDescriptor : [
             { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },
@@ -104,9 +104,10 @@ export default class ConsulUI extends DISTRHO.UI {
         };
 
         const optionAbout = U.el('option-about'),
-              optionLayout = U.el('option-layout'),
+              optionNetwork = U.el('option-network'),
               optionMidi = U.el('option-midi'),
-              optionNetwork = U.el('option-network');
+              optionLayout = U.el('option-layout'),
+              optionToggleUi = U.el('option-toggle-ui');
 
         optionAbout.addEventListener('input', ev => {
             if (! ev.target.value) {
@@ -123,6 +124,17 @@ export default class ConsulUI extends DISTRHO.UI {
                     this._loadLayout(newLayoutId);
                     this._setConfigEntry('layout', newLayoutId);
                 }).show();
+            }
+        });
+
+        optionToggleUi.addEventListener('input', ev => {
+            if (ev.target.value) {
+                invertSvg(ev.target, true);
+            } else {
+                invertSvg(ev.target, false);
+                const collapsed = ! this._config['collapsed'];
+                this._setConfigEntry('collapsed', collapsed);
+                this._toggleUi(collapsed);
             }
         });
 
@@ -149,6 +161,7 @@ export default class ConsulUI extends DISTRHO.UI {
         } else {
             optionMidi.style.display = 'none';
             optionNetwork.style.display = 'none';
+            optionToggleUi.style.display = 'none';
         }
     }
 
@@ -169,7 +182,9 @@ export default class ConsulUI extends DISTRHO.UI {
         }
     }
 
-    _showStatus(message, numericValue, delay) {
+    _showStatus(message, numericValue, delay, timeout) {
+        timeout = timeout || 1500;
+
         const apply = () => {
             this._showStatusTimer = null;
 
@@ -180,7 +195,7 @@ export default class ConsulUI extends DISTRHO.UI {
             if (typeof numericValue == 'undefined') {
                 valueBox.style.display = 'none';
             } else {
-                valueBox.style.display = 'inline';
+                valueBox.style.display = '';
                 U.el('status-value').style.width = `${100 * numericValue}%`;
             }
 
@@ -192,12 +207,14 @@ export default class ConsulUI extends DISTRHO.UI {
                 clearTimeout(this._hideStatusTimer);
             }
 
-            this._hideStatusTimer = setTimeout(() => {
-                this._hideStatusTimer = null;
+            if (timeout > 0) {
+                this._hideStatusTimer = setTimeout(() => {
+                    this._hideStatusTimer = null;
 
-                status.style.transition = 'opacity 150ms';
-                status.style.opacity = '0';
-            }, 1500);
+                    status.style.transition = 'opacity 150ms';
+                    status.style.opacity = '0';
+                }, timeout);
+            }
         };
 
         if (delay) {
@@ -235,6 +252,38 @@ export default class ConsulUI extends DISTRHO.UI {
         }
     }
 
+    async _toggleUi(collapsed) {
+        const menubar = U.el('menubar'),
+              menubarLeft = U.el('menubar-left'),
+              menubarRight = U.el('menubar-right'),
+              optionToggleUi = U.el('option-toggle-ui');
+
+        menubar.querySelectorAll('g-button').forEach(el => {
+            if (el == optionToggleUi) {
+                el.textContent = collapsed ? '+' : '-'; 
+            } else {
+                el.style.display = collapsed ? 'none' : ''; 
+            }
+        });
+
+        if (collapsed) {
+            const k = window.devicePixelRatio, width = 320;
+            this.setSize(k * width, k * menubar.clientHeight);
+            
+            menubar.style.width = `${width}px`;
+            menubarLeft.style.minWidth = menubarRight.style.minWidth = '0px';
+
+            this._showStatus(await this.getZeroconfName(), undefined, undefined, /*forever*/-1);
+        } else {
+            this._applyLayoutSize();
+
+            menubar.style.width = '';
+            menubarLeft.style.minWidth = menubarRight.style.minWidth = '';
+
+            this._showStatus('');
+        }
+    }
+
     async _loadLayout(id) {
         if (this._activeLayoutId == id) {
             return;
@@ -265,9 +314,7 @@ export default class ConsulUI extends DISTRHO.UI {
 
         // Plugin embedded view size
         if (this._env.plugin) {
-            const size = this._getActiveLayoutCSSSize();
-            const k = window.devicePixelRatio;
-            this.setSize(k * size.width, k * size.height);
+            this._applyLayoutSize();
         }
 
         // Zoom view for mobile
@@ -278,6 +325,12 @@ export default class ConsulUI extends DISTRHO.UI {
         this._applyUiState();
 
         document.body.style.visibility = 'visible';
+    }
+
+    _applyLayoutSize() {
+        const size = this._getActiveLayoutCSSSize();
+        const k = window.devicePixelRatio;
+        this.setSize(k * size.width, k * size.height);
     }
 
     _getActiveLayoutCSSSize() {
@@ -347,8 +400,12 @@ export default class ConsulUI extends DISTRHO.UI {
         }
     }
 
-    _applyConfig() {
-        this._loadLayout(this._config['layout']);
+    async _applyConfig() {
+        await this._loadLayout(this._config['layout']);
+
+        if (this._env.plugin) {
+            this._toggleUi(this._config['collapsed']);
+        }
     }
 
     _saveConfig() {

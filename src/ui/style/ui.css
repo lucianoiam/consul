@@ -56,13 +56,13 @@
 #menubar-left {
     display: flex;
     justify-content: left;
-    flex: 0.25;
+    min-width: 80px;
 }
 
 #menubar-right {
     display: flex;
     justify-content: right;
-    flex: 0.25;
+    min-width: 80px;
 }
 
 #option-about {
@@ -75,13 +75,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 0.5;
+    flex: 1;
     gap: 0.25em;
 }
 
 #status-text {
     white-space: pre;
     text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 240px;
 }
 
 #status-value-box {
