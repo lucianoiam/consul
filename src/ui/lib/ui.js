@@ -98,8 +98,8 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     _initMenuBarController() {
-        const invertSvg = (el, val) => {
-            const fill = val ? '#000' : '#fff';
+        const updateButtonImage = (el) => {
+            const fill = el.value ? '#000' : '#fff';
             el.shadowRoot.querySelectorAll('path,rect,polygon,circle').forEach(p => p.style.fill = fill);
         };
 
@@ -111,16 +111,17 @@ class ConsulUI extends DISTRHO.UI {
               optionExpand   = U.el('option-expand');
 
         optionAbout.addEventListener('input', ev => {
+            updateButtonImage(ev.target);
+
             if (! ev.target.value) {
                 new AboutDialog(this._opt.productVersion).show();
             }
         });
 
         optionLayout.addEventListener('input', ev => {
-            if (ev.target.value) {
-                invertSvg(ev.target, true);
-            } else {
-                invertSvg(ev.target, false);
+            updateButtonImage(ev.target);
+
+            if (! ev.target.value) {
                 new LayoutDialog(this._activeLayoutId, newLayoutId => {
                     this._loadLayout(newLayoutId);
                     this._setConfigEntry('layout', newLayoutId);
@@ -129,20 +130,18 @@ class ConsulUI extends DISTRHO.UI {
         });
 
         optionCollapse.addEventListener('input', ev => {
-            if (ev.target.value) {
-                invertSvg(ev.target, true);
-            } else {
-                invertSvg(ev.target, false);
+            updateButtonImage(ev.target);
+
+            if (! ev.target.value) {
                 this._setConfigEntry('collapsed', true);
                 this._toggleUi(true);
             }
         });
 
         optionExpand.addEventListener('input', ev => {
-            if (ev.target.value) {
-                invertSvg(ev.target, true);
-            } else {
-                invertSvg(ev.target, false);
+            updateButtonImage(ev.target);
+
+            if (! ev.target.value) {
                 this._setConfigEntry('collapsed', false);
                 this._toggleUi(false);
             }
@@ -150,10 +149,9 @@ class ConsulUI extends DISTRHO.UI {
 
         if (this._env.plugin) {
             optionMidi.addEventListener('input', ev => {
-                if (ev.target.value) {
-                    invertSvg(ev.target, true);
-                } else {
-                    invertSvg(ev.target, false);
+                updateButtonImage(ev.target);
+
+                if (! ev.target.value) {
                     new MidiDialog(this._opt.controlDescriptor, this._config['map'], newMap => {
                         this._setConfigEntry('map', newMap);
                     }).show();
@@ -161,10 +159,9 @@ class ConsulUI extends DISTRHO.UI {
             });
 
             optionNetwork.addEventListener('input', ev => {
-                if (ev.target.value) {
-                    invertSvg(ev.target, true);
-                } else {
-                    invertSvg(ev.target, false);
+                updateButtonImage(ev.target);
+
+                if (! ev.target.value) {
                     new NetworkDialog().show();
                 }
             });
