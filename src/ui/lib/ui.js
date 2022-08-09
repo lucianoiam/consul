@@ -406,8 +406,9 @@ class ConsulUI extends DISTRHO.UI {
     _applyUiState() {
         for (const controlId in this._uiState) {
             const control = U.el(controlId);
+            
             if (control) {
-                U.el(controlId).value = this._uiState[controlId];
+                control.value = this._uiState[controlId];
             }
         }
     }
