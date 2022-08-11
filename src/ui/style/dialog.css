@@ -2,7 +2,7 @@
  * Modal dialogs
  */
 
-#modal-root {
+#dialog-root {
     position: absolute;
     top: 0;
     left: 0;
@@ -17,7 +17,7 @@
     -webkit-backdrop-filter: blur(1.5px);
 }
 
-#modal-box {
+#dialog-box {
     display: flex;
     flex-direction: column;
     padding: 15px;
@@ -31,45 +31,45 @@
     max-height: 80%;
 }
 
-#modal-content {
+#dialog-content {
     flex: 1;
     padding: 5px;
     overflow: auto;
     overflow-x: hidden;
 }
 
-#modal-buttons {
+#dialog-buttons {
     display: flex;
     justify-content: right;
     width: 100%;
     gap: 20px;
 }
 
-#modal-buttons > g-button {
+#dialog-buttons > g-button {
     width: 74px;
     height: 37px;
     border: solid 1px #fff;
     border-radius: 4px;
 }
 
-#modal-about {
+#dialog-about {
     display: flex;
     flex-direction: column;
     gap: 0.5em;
     width: 320px;
 }
 
-#modal-midi {
+#dialog-midi {
     width: 360px;
 }
 
-#modal-midi-map {
+#dialog-midi-map {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-#modal-midi-map select {
+#dialog-midi-map select {
     appearance: none;
     background: #000;
     color: #fff;
@@ -95,27 +95,27 @@
     text-align: center;
 }
 
-#modal-about a {
+#dialog-about a {
     color: #fff;
 }
 
-#modal-layout {
+#dialog-layout {
     width: 240px;
 }
 
-#modal-layout ul {
+#dialog-layout ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-#modal-layout li {
+#dialog-layout li {
     font-size: 1em;
     line-height: 3em;
     height: 3em;
     padding: 0 20px;
 }
 
-#modal-layout li:not(:first-child) {
+#dialog-layout li:not(:first-child) {
     border-top: solid 1px #1a1a1a;
 }

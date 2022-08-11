@@ -1,17 +1,17 @@
-<div id="modal-root">
-    <div id="modal-box">
-        <div id="modal-content"></div>
-        <div id="modal-buttons">
-            <g-button id="modal-cancel" tabindex="1">Cancel</g-button>
-            <g-button id="modal-ok" tabindex="0">OK</g-button>
+<div id="dialog-root">
+    <div id="dialog-box">
+        <div id="dialog-content"></div>
+        <div id="dialog-buttons">
+            <g-button id="dialog-cancel" tabindex="1">Cancel</g-button>
+            <g-button id="dialog-ok" tabindex="0">OK</g-button>
         </div>
     </div>
 </div>
-<template id="modal-templates">
-    <div id="modal-about">
+<template id="dialog-templates">
+    <div id="dialog-about">
         <div>
             <span>Control Surface Library<span>
-            <span id="modal-about-version"></span>
+            <span id="dialog-about-version"></span>
         </div>
         <div>
             <a href="https://github.com/lucianoiam/consul" id="homepage">
@@ -19,14 +19,14 @@
             </a>
         </div>
     </div>
-    <div id="modal-layout">
-        <ul id="modal-layout-list">
+    <div id="dialog-layout">
+        <ul id="dialog-layout-list">
             <li data-id="mixer">8-track mixer</li>
             <li data-id="pads">Pads grid</li>
         </ul>
     </div>
-    <div id="modal-midi">
-        <div id="modal-midi-map">
+    <div id="dialog-midi">
+        <div id="dialog-midi-map">
             <template>
                 <div class="midi-map-entry">
                     <div class="midi-map-target"></div>

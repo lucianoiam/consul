@@ -19,12 +19,12 @@
 import '/dpf.js';
 import * as U from './util.js';
 
-class ModalDialog {
+class Dialog {
 
     static async _init() {
         const res = await Promise.all([
-            U.loadHtml('modal.html'),
-            U.loadStylesheet('style/modal.css')
+            U.loadHtml('dialog.html'),
+            U.loadStylesheet('style/dialog.css')
         ]);
 
         for (const child of res[0]) {
@@ -35,7 +35,7 @@ class ModalDialog {
     }
     
     static getTemplate(id) {
-        return U.el('modal-templates').content.getElementById(`modal-${id}`).cloneNode(true);
+        return U.el('dialog-templates').content.getElementById(`dialog-${id}`).cloneNode(true);
     }
 
     constructor(el, opt) {
@@ -50,22 +50,22 @@ class ModalDialog {
     }
 
     show() {
-        U.el('modal-content').appendChild(this.el);
+        U.el('dialog-content').appendChild(this.el);
 
         const t = 0.2;
 
-        const root = U.el('modal-root');
+        const root = U.el('dialog-root');
         root.style.animationName = 'fadeIn';
         root.style.animationDuration = t + 's';
 
-        const box = U.el('modal-box');
-        box.style.animationName = 'modalBoxIn';
+        const box = U.el('dialog-box');
+        box.style.animationName = 'dialogBoxIn';
         box.style.animationDuration = t + 's';
 
-        const ok = U.el('modal-ok'); 
+        const ok = U.el('dialog-ok'); 
         ok.style.display = this.opt.ok ? 'inline' : 'none';
 
-        const cancel = U.el('modal-cancel')
+        const cancel = U.el('dialog-cancel')
         cancel.style.display = this.opt.cancel ? 'inline' : 'none';
 
         ['touchstart', 'mousedown'].forEach((evName) => {
@@ -97,7 +97,7 @@ class ModalDialog {
         this._ui.setKeyboardFocus(true);
 
         setTimeout(() => {
-            const lastVisibleButton = Array.from(U.el('modal-buttons').children)
+            const lastVisibleButton = Array.from(U.el('dialog-buttons').children)
                 .filter(el => el.style.display != 'none')
                 .pop();
 
@@ -115,12 +115,12 @@ class ModalDialog {
         }
 
         const t = 0.1;
-        const root = U.el('modal-root')
+        const root = U.el('dialog-root')
         root.style.animationName = 'fadeOut';
         root.style.animationDuration = t + 's';
 
-        const box = U.el('modal-box');
-        box.style.animationName = 'modalBoxOut';
+        const box = U.el('dialog-box');
+        box.style.animationName = 'dialogBoxOut';
         box.style.animationDuration = t + 's';
 
         setTimeout(() => {
@@ -147,22 +147,22 @@ class ModalDialog {
 
 }
 
-await ModalDialog._init();
+await Dialog._init();
 
 
-export class AboutDialog extends ModalDialog {
+export class AboutDialog extends Dialog {
 
     constructor(version) {
-        super(ModalDialog.getTemplate('about')); 
+        super(Dialog.getTemplate('about')); 
 
-        this.el.querySelector('#modal-about-version').innerText = 'v' + version;
+        this.el.querySelector('#dialog-about-version').innerText = 'v' + version;
         this._uiHelper.bindSystemBrowser(this._ui, this.el.querySelector('#homepage'));
     }
 
 }
 
 
-export class NetworkDialog extends ModalDialog {
+export class NetworkDialog extends Dialog {
 
     // There are no async constructors in JavaScript
 
@@ -176,15 +176,15 @@ export class NetworkDialog extends ModalDialog {
 }
 
 
-export class MidiDialog extends ModalDialog {
+export class MidiDialog extends Dialog {
 
     constructor(controlDescriptor, map, callback) {
-        super(ModalDialog.getTemplate('midi'), { ok: true, cancel: true });
+        super(Dialog.getTemplate('midi'), { ok: true, cancel: true });
 
         this._map = map;
         this._callback = callback;
 
-        const mapElem = this.el.querySelector('#modal-midi-map');
+        const mapElem = this.el.querySelector('#dialog-midi-map');
         const entryTmpl = this.el.querySelector('template').content.firstElementChild;
         const indexTmpl = entryTmpl.querySelector('.midi-map-index');
         const channelTmpl = entryTmpl.querySelector('.midi-map-channel');
@@ -233,7 +233,7 @@ export class MidiDialog extends ModalDialog {
             return;
         }
 
-        const mapElem = this.el.querySelector('#modal-midi-map').children;
+        const mapElem = this.el.querySelector('#dialog-midi-map').children;
 
         for (let entry of mapElem) {
             const id = entry.getAttribute('data-id');
@@ -258,10 +258,10 @@ export class MidiDialog extends ModalDialog {
 }
 
 
-export class LayoutDialog extends ModalDialog {
+export class LayoutDialog extends Dialog {
 
     constructor(selectedLayoutId, callback) {
-        super(ModalDialog.getTemplate('layout'), { ok: false, cancel: true });
+        super(Dialog.getTemplate('layout'), { ok: false, cancel: true });
 
         this._callback = callback;
         this._prevLayoutId = selectedLayoutId;
@@ -277,7 +277,7 @@ export class LayoutDialog extends ModalDialog {
             li.style.backgroundColor = '';
         };
 
-        const layoutList = this.el.querySelector('#modal-layout-list');
+        const layoutList = this.el.querySelector('#dialog-layout-list');
 
         const focus = layoutList.querySelector(`[data-id=${this._prevLayoutId}]`);
         select(focus);

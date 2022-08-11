@@ -19,7 +19,7 @@
 import '/dpf.js';
 import './guinda.js';
 import * as U from './util.js';
-import { AboutDialog, NetworkDialog, MidiDialog, LayoutDialog } from './modal.js';
+import { AboutDialog, NetworkDialog, MidiDialog, LayoutDialog } from './dialog.js';
 
 function main() {
     DISTRHO.UI.sharedInstance = new ConsulUI({
