@@ -53,7 +53,16 @@ include hiphop/Makefile.plugins.mk
 # --------------------------------------------------------------
 # Enable all possible plugin types
 
+ifeq ($(PLUGIN_FORMAT),)
 TARGETS += lv2_sep vst vst3
+else
+TARGETS += $(PLUGIN_FORMAT)
+endif
+
+ifeq (,$(wildcard src/DistrhoPluginInfo.h))
+_ := $(shell cp src/DistrhoPluginInfo_vst2.h src/DistrhoPluginInfo.h)
+endif
+
 CXXFLAGS += -std=c++17
 BASE_FLAGS += -Isrc
 LXHELPER_CPPFLAGS += -Isrc
