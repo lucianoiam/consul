@@ -23,7 +23,7 @@ import { AboutDialog, NetworkDialog, MidiDialog, LayoutDialog } from './dialog.j
 
 function main() {
     DISTRHO.UI.sharedInstance = new ConsulUI({
-        productVersion    : '1.2.0',
+        productVersion    : '1.2.1',
         defaultLayout     : 'mixer',
         controlDescriptor : [
             { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },
@@ -86,8 +86,7 @@ class ConsulUI extends DISTRHO.UI {
 
     messageReceived(args) {
         if ((args[0] == 'control') && (args.length == 3)) {
-            const id = args[1];
-            const value = args[2];
+            const id = args[1], value = args[2];
             this._uiState[id] = value;
             U.el(id).value = value;
         }
@@ -238,10 +237,10 @@ class ConsulUI extends DISTRHO.UI {
 
     _zoomUi() {
         // Use mixer size as the base size for all layouts
-        const baseWidth = 800;
-        const baseHeight = 540;
-        const main = U.el('main');
-        const dv = window.innerHeight - baseHeight;
+        const baseWidth = 800,
+              baseHeight = 540,
+              main = U.el('main'),
+              dv = window.innerHeight - baseHeight;
 
         if (dv > 0) {
             // Zoom interface to take up full window height
@@ -337,8 +336,8 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     _applyLayoutSize() {
-        const size = this._getActiveLayoutCSSSize();
-        const k = window.devicePixelRatio;
+        const size = this._getActiveLayoutCSSSize(),
+              k = window.devicePixelRatio;
         this.setSize(k * size.width, k * size.height);
     }
 
@@ -361,8 +360,8 @@ class ConsulUI extends DISTRHO.UI {
         let map = {};
 
         for (let desc of this._opt.controlDescriptor) {
-            const statusOn = (desc.cont ? /*cc*/0xb0 : /*note on*/0x90) | (desc.def.ch - 1);
-            const statusOff = desc.cont ? null : (/*note off*/0x80 | (desc.def.ch - 1));
+            const statusOn = (desc.cont ? /*cc*/0xb0 : /*note on*/0x90) | (desc.def.ch - 1),
+                  statusOff = desc.cont ? null : (/*note off*/0x80 | (desc.def.ch - 1));
 
             for (let i = 0; i < desc.n; i++) {
                 const id = desc.id + '-' + (i + 1).toString().padStart(2, '0');
@@ -376,25 +375,24 @@ class ConsulUI extends DISTRHO.UI {
     _handleControlInput(el) {
         this._uiState[el.id] = el.value;
 
-        const map     = this._config['map'][el.id];
-        const desc    = this._opt.controlDescriptor.find(cd => cd.id == el.id[0]);
-        const midiVal = desc.cont ? v => Math.floor(127 * v)       : v => v ? 127 : 0;
-        const strVal  = desc.cont ? v => Math.round(100 * v) + '%' : v => v ? 'ON' : 'OFF';
-        const status  = (map[0] ^ 0xb0) == 0 /*cc*/? map[0] : (el.value ? /*on*/map[0] : /*off*/map[1]);
+        const map = this._config['map'][el.id],
+              desc = this._opt.controlDescriptor.find(cd => cd.id == el.id[0]),
+              midiVal = desc.cont ? v => Math.floor(127 * v)       : v => v ? 127 : 0,
+              strVal = desc.cont ? v => Math.round(100 * v) + '%' : v => v ? 'ON' : 'OFF',
+              status = (map[0] ^ 0xb0) == 0 /*cc*/? map[0] : (el.value ? /*on*/map[0] : /*off*/map[1]);
 
         this.postMessage('control', el.id, el.value, status, /*index*/map[2], midiVal(el.value));
 
         if (this._shouldShowStatus) {
-            const message = el.getAttribute('data-name').padEnd(10, ' ')
-                            + strVal(el.value).padStart(4, ' ');
-            const numericValue = desc.cont ? el.value : undefined;
-
             // For some reason modifying the DOM here takes abnormally long on
             // Linux WebKitGTK especially when doing so in response to a touch
-            // input event (probably touch events resolution > mouse events
+            // input event (likely touch events resolution > mouse events
             // resolution). Issue not reproducible on Firefox or Chromium
             // running on the same hardware and OS combination.
-            const delay = this._env.fakeViewport ? 20 : 0;
+            const message = el.getAttribute('data-name').padEnd(10, ' ')
+                            + strVal(el.value).padStart(4, ' '),
+                  numericValue = desc.cont ? el.value : undefined,
+                  delay = this._env.fakeViewport ? 20 : 0;
 
             this._showStatus(message, numericValue, delay);
         }

@@ -108,13 +108,14 @@ class Dialog {
     }
 
     hide(ok) {
+        const t = 0.1;
+
         this._ui.setKeyboardFocus(false);
 
         for (let o of this._listeners) {
             o.target.removeEventListener(o.type, o.listener);
         }
-
-        const t = 0.1;
+ 
         const root = U.el('dialog-root')
         root.style.animationName = 'fadeOut';
         root.style.animationDuration = t + 's';
@@ -184,10 +185,10 @@ export class MidiDialog extends Dialog {
         this._map = map;
         this._callback = callback;
 
-        const mapElem = this.el.querySelector('#dialog-midi-map');
-        const entryTmpl = this.el.querySelector('template').content.firstElementChild;
-        const indexTmpl = entryTmpl.querySelector('.midi-map-index');
-        const channelTmpl = entryTmpl.querySelector('.midi-map-channel');
+        const mapElem = this.el.querySelector('#dialog-midi-map'),
+              entryTmpl = this.el.querySelector('template').content.firstElementChild,
+              indexTmpl = entryTmpl.querySelector('.midi-map-index'),
+              channelTmpl = entryTmpl.querySelector('.midi-map-channel');
 
         for (let i = 0; i < 128; i++) {
             const option = document.createElement('option');
@@ -205,9 +206,9 @@ export class MidiDialog extends Dialog {
 
         for (let desc of controlDescriptor) {
             for (let i = 0; i < desc.n; i++) {
-                const entry = entryTmpl.cloneNode(true);
-                const id = desc.id + '-' + (i + 1).toString().padStart(2, '0');
-                const map = this._map[id];
+                const entry = entryTmpl.cloneNode(true),
+                      id = desc.id + '-' + (i + 1).toString().padStart(2, '0'),
+                      map = this._map[id];
                 
                 entry.setAttribute('data-id', id);
                 entry.querySelector('.midi-map-target').innerText = `${desc.name} ${i + 1}`;
@@ -242,12 +243,11 @@ export class MidiDialog extends Dialog {
                 continue; // skip template
             }
 
-            const statusType = entry.querySelector('.midi-map-status').value;
-            const channel = parseInt(entry.querySelector('.midi-map-channel').value);
-
-            const statusOn = (statusType == 'cc' ? 0xb0 : 0x90) | channel;
-            const statusOff = statusType == 'cc' ? null : 0x80 | channel; 
-            const index = parseInt(entry.querySelector('.midi-map-index').value);
+            const statusType = entry.querySelector('.midi-map-status').value,
+                  channel = parseInt(entry.querySelector('.midi-map-channel').value),
+                  statusOn = (statusType == 'cc' ? 0xb0 : 0x90) | channel,
+                  statusOff = statusType == 'cc' ? null : 0x80 | channel,
+                  index = parseInt(entry.querySelector('.midi-map-index').value);
 
             this._map[id] = [statusOn, statusOff, index];
         }

@@ -26,19 +26,19 @@ export function isMobileDevice() {
 }
 
 export async function loadHtml(url) {
-    const html = await (await fetch(url)).text();
-    const frag = document.createRange().createContextualFragment(html);
+    const html = await (await fetch(url)).text(),
+          frag = document.createRange().createContextualFragment(html);
     return frag.children.length == 1 ? frag.firstChild : frag.children;
 }
 
 export function loadStylesheet(url) {
     return new Promise((resolve, reject) => {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.type = 'text/css';
-        link.href = url;
-        link.onerror = reject;
-        link.onload = _ => resolve(link);
-        document.head.appendChild(link);
+        const el = document.createElement('link');
+        el.rel = 'stylesheet';
+        el.type = 'text/css';
+        el.href = url;
+        el.onerror = reject;
+        el.onload = _ => resolve(el);
+        document.head.appendChild(el);
     });
 }

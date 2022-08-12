@@ -36,7 +36,7 @@ public:
         }
     }
 
-    void onMessageReceived(const JSValue& args, uintptr_t context) override
+    void onMessageReceived(const JSValue& args, uintptr_t origin) override
     {
         if (args[0].getString() != "control") {
             return;
@@ -57,19 +57,19 @@ public:
         const JSValue& id = args[1];
         const JSValue& value = args[2];
 
-        // Persist UI state
+        // Save UI state
         fState.setObjectItem(id.getString(), value);
         setState("ui", fState.toJSON());
 
         // Keep all connected UIs in sync
-        broadcastMessage({"control", id, value}, /*exclude*/reinterpret_cast<Client>(context));
+        broadcastMessage({"control", id, value}, /*exclude*/reinterpret_cast<Client>(origin));
     }
 
     // DPF UI provides sendNote() only, see also ConsulPlugin.cpp .
     void sendMidiEvent(uint8_t status, uint8_t data1, uint8_t data2, uint32_t size)
     {
         MidiEvent event;
-        event.frame = 0; // hardcoded position
+        event.frame = 0;
         event.size = size;
         event.data[0] = status;
         event.data[1] = data1;
