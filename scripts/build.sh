@@ -46,10 +46,10 @@ cp src/DistrhoPluginInfo_vst3.h src/DistrhoPluginInfo.h
 make clean && make PLUGIN_FORMAT=vst3
 cp -r bin/* $temp_bin_dir
 
-zip_path="$(pwd)/$dist_dir/$NAME-$arch-$version.zip"
-pushd $temp_bin_dir
-zip -r $zip_path * -x "*.DS_Store"
-popd
+repo_dir=$(pwd)
+cd $temp_bin_dir
+zip -r "$repo_dir/$dist_dir/$NAME-$arch-$version.zip" * -x "*.DS_Store"
+cd $repo_dir
 
 rm -rf $temp_bin_dir
 rm src/DistrhoPluginInfo.h
