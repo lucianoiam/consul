@@ -30,7 +30,7 @@ temp_bin_dir=/tmp/$NAME-bin
 rm -rf $temp_bin_dir
 mkdir -p $temp_bin_dir
 
-echo "Building MIDI-only plugin (out of VST3 spec - Ableton Live incompatible)"
+echo "Building MIDI-only VST2 plugin"
 cp src/DistrhoPluginInfo_vst2.h src/DistrhoPluginInfo.h
 make clean && make PLUGIN_FORMAT=vst
 
@@ -41,7 +41,7 @@ else
     cp -r bin/* $temp_bin_dir/VST2
 fi
 
-echo "Building MIDI + dummy audio I/O plugin (VST3 compliant)"
+echo "Building MIDI+audio VST3 plugin"
 cp src/DistrhoPluginInfo_vst3.h src/DistrhoPluginInfo.h
 make clean && make PLUGIN_FORMAT=vst3
 cp -r bin/* $temp_bin_dir
