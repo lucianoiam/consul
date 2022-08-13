@@ -12,7 +12,7 @@ NAME = consul
 # --------------------------------------------------------------
 # Project version, used for generating unique symbol names
 
-HIPHOP_PROJECT_VERSION = 2
+HIPHOP_PROJECT_VERSION = 1
 
 # --------------------------------------------------------------
 # Enable Web UI control from devices in the local network
@@ -57,10 +57,9 @@ ifeq ($(PLUGIN_FORMAT),)
 TARGETS += lv2_sep vst vst3
 else
 TARGETS += $(PLUGIN_FORMAT)
+ifeq ($(PLUGIN_FORMAT),vst3)
+BASE_FLAGS += -DDISTRHO_PLUGIN_NUM_INPUTS=2 -DDISTRHO_PLUGIN_NUM_OUTPUTS=2
 endif
-
-ifeq (,$(wildcard src/DistrhoPluginInfo.h))
-_ := $(shell cp src/DistrhoPluginInfo_vst2.h src/DistrhoPluginInfo.h)
 endif
 
 CXXFLAGS += -std=c++17

@@ -30,8 +30,7 @@ temp_bin_dir=/tmp/$NAME-bin
 rm -rf $temp_bin_dir
 mkdir -p $temp_bin_dir
 
-echo "Building MIDI-only VST2 plugin"
-cp src/DistrhoPluginInfo_vst2.h src/DistrhoPluginInfo.h
+echo "Building VST2 plugin (MIDI only)"
 make clean && make PLUGIN_FORMAT=vst
 
 if [ $arch = macos-universal ]; then
@@ -41,8 +40,7 @@ else
     cp -r bin/* $temp_bin_dir/VST2
 fi
 
-echo "Building MIDI+audio VST3 plugin"
-cp src/DistrhoPluginInfo_vst3.h src/DistrhoPluginInfo.h
+echo "Building VST3 plugin (MIDI + dummy audio ports)"
 make clean && make PLUGIN_FORMAT=vst3
 cp -r bin/* $temp_bin_dir
 
@@ -52,4 +50,3 @@ zip -r "$repo_dir/$dist_dir/$NAME-$arch-$version.zip" * -x "*.DS_Store"
 cd $repo_dir
 
 rm -rf $temp_bin_dir
-rm src/DistrhoPluginInfo.h
