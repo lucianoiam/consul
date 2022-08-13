@@ -267,26 +267,42 @@ export class LayoutDialog extends Dialog {
         this._prevLayoutId = selectedLayoutId;
         this._nextLayoutId = null;
 
-        const select = li => {
-            li.style.color = '#000';
-            li.style.backgroundColor = '#fff';
+        const toggle = (li) => {
+            if (li.style.color) {
+                li.style.color = '';
+                li.style.backgroundColor = '';
+            } else {
+                li.style.color = '#000';
+                li.style.backgroundColor = '#fff';
+            }
         };
 
-        const deselect = li => {
-            li.style.color = '';
-            li.style.backgroundColor = '';
+        const animate = (li, callback) => {
+            let n = 3;
+
+            const step = li => {
+                toggle(li);
+
+                if (--n == 0) {
+                    callback();
+                } else {
+                    setTimeout(_ => step(li), 75);
+                }
+            };
+
+            step(li);
         };
 
         const layoutList = this.el.querySelector('#dialog-layout-list');
 
         const focus = layoutList.querySelector(`[data-id=${this._prevLayoutId}]`);
-        select(focus);
+        toggle(focus);
 
         for (let li of layoutList.children) {
             ['touchstart', 'mousedown'].forEach((evName) => {
                 this.addEventListener(li, evName, (ev) => {
-                    deselect(focus);
-                    select(li);
+                    toggle(focus);
+                    toggle(li);
 
                     if (ev.cancelable) {
                         ev.preventDefault();
@@ -296,14 +312,14 @@ export class LayoutDialog extends Dialog {
 
             ['touchend', 'mouseup'].forEach((evName) => {
                 this.addEventListener(li, evName, (ev) => {
-                    setTimeout(_ => {
+                    animate(li, _ => {
                         this._nextLayoutId = li.getAttribute('data-id');
                         this.hide(true);
+                    });
 
-                        if (ev.cancelable) {
-                            ev.preventDefault();
-                        }
-                    }, 150);
+                    if (ev.cancelable) {
+                        ev.preventDefault();
+                    }
                 });
             });
         }

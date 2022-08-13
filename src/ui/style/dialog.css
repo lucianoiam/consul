@@ -13,8 +13,8 @@
     align-items: center;
     visibility: hidden;
     animation-fill-mode: forwards;
-    backdrop-filter: blur(1.5px);
-    -webkit-backdrop-filter: blur(1.5px);
+    backdrop-filter: blur(48px);
+    -webkit-backdrop-filter: blur(48px);
 }
 
 #dialog-box {
@@ -27,7 +27,7 @@
     background: #000;
     animation-fill-mode: forwards;
     margin-bottom: 5%;
-    box-shadow: 0px 7px 15px 5px rgba(0,0,0,0.5);
+    box-shadow: 0px 7px 15px 5px rgba(0,0,0,0.2);
     max-height: 80%;
 }
 
