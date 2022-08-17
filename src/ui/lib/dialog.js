@@ -27,9 +27,9 @@ class Dialog {
             U.loadStylesheet('style/dialog.css')
         ]);
 
+        // Clone nodes to avoid random errors apparently
+        // caused by the inclusion of custom HTML elements
         for (const child of res[0]) {
-            // Clone nodes to avoid random errors apparently 
-            // caused by the inclusion of custom HTML elements.
             U.el('main').appendChild(child.cloneNode(true));
         };
     }
@@ -94,7 +94,9 @@ class Dialog {
             }
         });
 
-        this._ui.setKeyboardFocus(true);
+        if (this.opt.keyboard) {
+            this._ui.setKeyboardFocus(true);
+        }
 
         setTimeout(() => {
             const lastVisibleButton = Array.from(U.el('dialog-buttons').children)
@@ -110,7 +112,9 @@ class Dialog {
     hide(ok) {
         const t = 0.1;
 
-        this._ui.setKeyboardFocus(false);
+        if (this.opt.keyboard) {
+            this._ui.setKeyboardFocus(false);
+        }
 
         for (let o of this._listeners) {
             o.target.removeEventListener(o.type, o.listener);
@@ -165,8 +169,12 @@ export class AboutDialog extends Dialog {
 
 export class NetworkDialog extends Dialog {
 
-    // There are no async constructors in JavaScript
+    // There are no async constructors in JavaScript...
+    constructor() {
+        super(/*el*/null, { keyboard: true });
+    }
 
+    // ...so do not show immediately and wait for element to load
     show() {
         this._uiHelper.getNetworkDetailsElement(this._ui, { gap: 30 }).then(el => {
             this.el = el;
