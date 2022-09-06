@@ -1,0 +1,120 @@
+/*
+ * Layout: Knobs
+ */
+
+body {
+    min-width: 720px;
+    min-height: 220px;
+}
+
+#main {
+    width: 720px;
+    height: 220px;
+}
+
+#layout-knobs {
+    display: grid;
+    grid-template-rows: repeat(2, 60px); 
+    grid-template-columns: repeat(8, 56px); 
+    justify-content: space-around;
+    align-content: space-around;
+    width: 100%;
+    height: 100%;
+}
+
+#layout-knobs g-knob {
+    width: 100%;
+    height: 100%;
+}
+
+#dialog-box {
+    margin-bottom: 0%;
+}
+
+
+/*
+ * Phone layout tweaks
+ */
+
+@media (orientation: portrait) {
+    body {
+        min-width: 400px;
+    }
+
+    #main {
+        width: 400px;
+    }
+
+    #layout-knobs {
+        grid-template-columns: repeat(4, 72px); 
+    }
+}
+
+
+/*
+ * Color palette
+ */
+
+#knob-1 g-knob {
+    --value-color: #7f3fff;
+}
+
+#knob-2 g-knob {
+    --value-color: #ff7f3f;
+}
+
+#knob-3 g-knob {
+    --value-color: #7fff3f;
+}
+
+#knob-4 g-knob {
+    --value-color: #ff3f7f;
+}
+
+#knob-5 g-knob {
+    --value-color: #ffff3f;
+}
+
+#knob-6 g-knob {
+    --value-color: #3fffff;
+}
+
+#knob-7 g-knob {
+    --value-color: #ff3fff;
+}
+
+#knob-8 g-knob {
+    --value-color: #ffffff;
+}
+
+#knob-9 g-knob {
+    --value-color: #7f3fff;
+}
+
+#knob-10 g-knob {
+    --value-color: #ff7f3f;
+}
+
+#knob-11 g-knob {
+    --value-color: #7fff3f;
+}
+
+#knob-12 g-knob {
+    --value-color: #ff3f7f;
+}
+
+#knob-13 g-knob {
+    --value-color: #ffff3f;
+}
+
+#knob-14 g-knob {
+    --value-color: #3fffff;
+}
+
+#knob-15 g-knob {
+    --value-color: #ff3fff;
+}
+
+#knob-16 g-knob {
+    --value-color: #ffffff;
+}
