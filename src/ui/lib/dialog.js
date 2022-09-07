@@ -31,7 +31,7 @@ class Dialog {
         // caused by the inclusion of custom HTML elements
         for (const child of res[0]) {
             U.el('main').appendChild(child.cloneNode(true));
-        };
+        }
     }
     
     static getTemplate(id) {
