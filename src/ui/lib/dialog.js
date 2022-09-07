@@ -38,8 +38,16 @@ class Dialog {
         return U.el('dialog-templates').content.getElementById(`dialog-${id}`).cloneNode(true);
     }
 
-    constructor(el, opt) {
-        this.el = el;
+    get ui() {
+        return DISTRHO.UI.sharedInstance;
+    }
+
+    get uiHelper() {
+        return DISTRHO.UIHelper;
+    }
+
+    // There are no async constructors in JavaScript, use a separate build() method.
+    constructor(opt) {
         this.opt = opt || {};
 
         if (typeof this.opt.ok == 'undefined') {
@@ -49,71 +57,85 @@ class Dialog {
         this._listeners = [];
     }
 
+    async build() {}
+
+    addEventListener(target, type, listener) {
+        this._listeners.push({ target: target, type: type, listener: listener });
+        target.addEventListener(type, listener);
+    }
+
+    onShow() {}
+    onHide(ok) {}
+
     show() {
-        U.el('dialog-content').appendChild(this.el);
+        this.build().then(el => {
+            this.el = el;
 
-        const t = 0.2;
+            U.el('dialog-content').appendChild(this.el);
 
-        const root = U.el('dialog-root');
-        root.style.animationName = 'fadeIn';
-        root.style.animationDuration = t + 's';
+            const t = 0.2;
 
-        const box = U.el('dialog-box');
-        box.style.animationName = 'dialogBoxIn';
-        box.style.animationDuration = t + 's';
+            const root = U.el('dialog-root');
+            root.style.animationName = 'fadeIn';
+            root.style.animationDuration = t + 's';
 
-        const ok = U.el('dialog-ok'); 
-        ok.style.display = this.opt.ok ? 'inline' : 'none';
+            const box = U.el('dialog-box');
+            box.style.animationName = 'dialogBoxIn';
+            box.style.animationDuration = t + 's';
 
-        const cancel = U.el('dialog-cancel')
-        cancel.style.display = this.opt.cancel ? 'inline' : 'none';
+            const ok = U.el('dialog-ok'); 
+            ok.style.display = this.opt.ok ? 'inline' : 'none';
 
-        ['touchstart', 'mousedown'].forEach((evName) => {
-            this.addEventListener(root, evName, (ev) => {
-                if (ev.target == root) {
+            const cancel = U.el('dialog-cancel')
+            cancel.style.display = this.opt.cancel ? 'inline' : 'none';
+
+            ['touchstart', 'mousedown'].forEach((evName) => {
+                this.addEventListener(root, evName, (ev) => {
+                    if (ev.target == root) {
+                        this.hide(false);
+                    }
+                });
+            });
+
+            this.addEventListener(root, 'keydown', ev => {
+                if ((ev.key == 'Enter') || (ev.key == 'Escape')) {
                     this.hide(false);
                 }
             });
-        });
 
-        this.addEventListener(root, 'keydown', ev => {
-            if ((ev.key == 'Enter') || (ev.key == 'Escape')) {
-                this.hide(false);
+            this.addEventListener(ok, 'input', ev => {
+                if (! ev.target.value) {
+                    this.hide(true);
+                }
+            });
+
+            this.addEventListener(cancel, 'input', ev => {
+                if (! ev.target.value) {
+                    this.hide(false);
+                }
+            });
+
+            if (this.opt.keyboard) {
+                this.ui.setKeyboardFocus(true);
             }
-        });
 
-        this.addEventListener(ok, 'input', ev => {
-            if (! ev.target.value) {
-                this.hide(true);
-            }
-        });
+            setTimeout(() => {
+                const lastVisibleButton = Array.from(U.el('dialog-buttons').children)
+                    .filter(el => el.style.display != 'none')
+                    .pop();
 
-        this.addEventListener(cancel, 'input', ev => {
-            if (! ev.target.value) {
-                this.hide(false);
-            }
-        });
+                lastVisibleButton.focus()
 
-        if (this.opt.keyboard) {
-            this._ui.setKeyboardFocus(true);
-        }
-
-        setTimeout(() => {
-            const lastVisibleButton = Array.from(U.el('dialog-buttons').children)
-                .filter(el => el.style.display != 'none')
-                .pop();
-
-            lastVisibleButton.focus()
-
-            this.onShow();
-        }, 1000 * t);
+                this.onShow();
+            }, 1000 * t);
+        }); // build()
     }
 
     hide(ok) {
         const t = 0.1;
 
         if (this.opt.keyboard) {
-            this._ui.setKeyboardFocus(false);
+            this.ui.setKeyboardFocus(false);
         }
 
         for (let o of this._listeners) {
@@ -134,22 +156,6 @@ class Dialog {
         }, 1000 * t);
     }
 
-    addEventListener(target, type, listener) {
-        this._listeners.push({ target: target, type: type, listener: listener });
-        target.addEventListener(type, listener);
-    }
-
-    onShow() {}
-    onHide(ok) {}
-
-    get _ui() {
-        return DISTRHO.UI.sharedInstance;
-    }
-
-    get _uiHelper() {
-        return DISTRHO.UIHelper;
-    }
-
 }
 
 await Dialog._init();
@@ -158,10 +164,16 @@ await Dialog._init();
 export class AboutDialog extends Dialog {
 
     constructor(version) {
-        super(Dialog.getTemplate('about')); 
+        super();
+        this._version = version;
+    }
 
-        this.el.querySelector('#dialog-about-version').innerText = 'v' + version;
-        this._uiHelper.bindSystemBrowser(this._ui, this.el.querySelector('#homepage'));
+    async build() {
+        const el = Dialog.getTemplate('about');
+        el.querySelector('#dialog-about-version').innerText = 'v' + this._version;
+        this.uiHelper.bindSystemBrowser(this.ui, el.querySelector('#homepage'));
+
+        return el;
     }
 
 }
@@ -169,17 +181,12 @@ export class AboutDialog extends Dialog {
 
 export class NetworkDialog extends Dialog {
 
-    // There are no async constructors in JavaScript...
     constructor() {
-        super(/*el*/null, { keyboard: true });
+        super({ keyboard: true });
     }
 
-    // ...so do not show immediately and wait for element to load
-    show() {
-        this._uiHelper.getNetworkDetailsElement(this._ui, { gap: 30 }).then(el => {
-            this.el = el;
-            super.show();
-        });
+    async build() {
+        return await this.uiHelper.getNetworkDetailsElement(this.ui, { gap: 30 });
     }
 
 }
@@ -188,13 +195,17 @@ export class NetworkDialog extends Dialog {
 export class MidiDialog extends Dialog {
 
     constructor(controlDescriptor, map, callback) {
-        super(Dialog.getTemplate('midi'), { ok: true, cancel: true });
+        super({ ok: true, cancel: true });
 
+        this._controlDescriptor = controlDescriptor;
         this._map = map;
         this._callback = callback;
+    }
 
-        const mapElem = this.el.querySelector('#dialog-midi-map'),
-              entryTmpl = this.el.querySelector('template').content.firstElementChild,
+    async build() {
+        const el = Dialog.getTemplate('midi'),
+              mapElem = el.querySelector('#dialog-midi-map'),
+              entryTmpl = el.querySelector('template').content.firstElementChild,
               indexTmpl = entryTmpl.querySelector('.midi-map-index'),
               channelTmpl = entryTmpl.querySelector('.midi-map-channel');
 
@@ -212,7 +223,7 @@ export class MidiDialog extends Dialog {
             channelTmpl.appendChild(option);
         }
 
-        for (let desc of controlDescriptor) {
+        for (let desc of this._controlDescriptor) {
             for (let i = 0; i < desc.n; i++) {
                 const entry = entryTmpl.cloneNode(true),
                       id = desc.id + '-' + (i + 1).toString().padStart(2, '0'),
@@ -235,6 +246,8 @@ export class MidiDialog extends Dialog {
                 mapElem.appendChild(entry);
             }
         }
+
+        return el;
     }
 
     onHide(ok) {
@@ -269,11 +282,15 @@ export class MidiDialog extends Dialog {
 export class LayoutDialog extends Dialog {
 
     constructor(selectedLayoutId, callback) {
-        super(Dialog.getTemplate('layout'), { ok: false, cancel: true });
+        super({ ok: false, cancel: true });
 
-        this._callback = callback;
         this._prevLayoutId = selectedLayoutId;
         this._nextLayoutId = null;
+        this._callback = callback;
+    }
+
+    async build() {
+        const el = Dialog.getTemplate('layout');
 
         const toggle = (li) => {
             if (li.style.color) {
@@ -301,7 +318,15 @@ export class LayoutDialog extends Dialog {
             step(li);
         };
 
-        const layoutList = this.el.querySelector('#dialog-layout-list');
+        const layoutList = el.querySelector('#dialog-layout-list');
+        const index = await U.loadJSON('layouts/index.json');
+
+        for (let layout of index) {
+            const li = document.createElement('li');
+            li.setAttribute('data-id', layout.id);
+            li.innerText = layout.name;
+            layoutList.appendChild(li);
+        }
 
         const focus = layoutList.querySelector(`[data-id=${this._prevLayoutId}]`);
         toggle(focus);
@@ -331,6 +356,8 @@ export class LayoutDialog extends Dialog {
                 });
             });
         }
+
+        return el;
     }
 
     onHide(ok) {

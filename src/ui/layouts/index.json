@@ -1,0 +1,14 @@
+[
+    {
+        "id"   : "mixer",
+        "name" : "8 Strips mixer"
+    },
+    {
+        "id"   : "pads",
+        "name" : "8 Pads"
+    },
+    {
+        "id"   : "knobs",
+        "name" : "16 Knobs"
+    }
+]

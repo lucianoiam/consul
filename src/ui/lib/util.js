@@ -25,6 +25,10 @@ export function isMobileDevice() {
     return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);
 }
 
+export async function loadJSON(url) {
+    return await (await fetch(url)).json();
+}
+
 export async function loadHtml(url) {
     const html = await (await fetch(url)).text(),
           frag = document.createRange().createContextualFragment(html);
