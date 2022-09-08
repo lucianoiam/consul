@@ -18,7 +18,7 @@
 
 import '/dpf.js';
 import './guinda.js';
-import * as U from './util.js';
+import * as Util from './util.js';
 import { AboutDialog, NetworkDialog, MidiDialog, LayoutDialog } from './dialog.js';
 
 function main() {
@@ -36,7 +36,7 @@ function main() {
 class ConsulUI extends DISTRHO.UI {
 
     static async _init() {
-        await U.loadStylesheet('style/ui.css');
+        await Util.loadStylesheet('style/ui.css');
         document.querySelectorAll('g-button').forEach(el => el.reset()); // reload colors
     }
 
@@ -88,7 +88,7 @@ class ConsulUI extends DISTRHO.UI {
         if ((args[0] == 'control') && (args.length == 3)) {
             const id = args[1], value = args[2];
             this._uiState[id] = value;
-            U.el(id).value = value;
+            document.getElementById(id).value = value;
         }
     }
 
@@ -102,12 +102,12 @@ class ConsulUI extends DISTRHO.UI {
             el.shadowRoot.querySelectorAll('path,rect,polygon,circle').forEach(p => p.style.fill = fill);
         };
 
-        const optionAbout    = U.el('option-about'),
-              optionNetwork  = U.el('option-network'),
-              optionMidi     = U.el('option-midi'),
-              optionLayout   = U.el('option-layout'),
-              optionCollapse = U.el('option-collapse'),
-              optionExpand   = U.el('option-expand');
+        const optionAbout    = document.getElementById('option-about'),
+              optionNetwork  = document.getElementById('option-network'),
+              optionMidi     = document.getElementById('option-midi'),
+              optionLayout   = document.getElementById('option-layout'),
+              optionCollapse = document.getElementById('option-collapse'),
+              optionExpand   = document.getElementById('option-expand');
 
         optionAbout.addEventListener('input', ev => {
             updateButtonImage(ev.target);
@@ -179,10 +179,10 @@ class ConsulUI extends DISTRHO.UI {
 
         document.body.style.backgroundColor = '#1a1a1a';
 
-        if (U.isMobileDevice()) {
+        if (Util.isMobileDevice()) {
             window.addEventListener('resize', _ => this._zoomUi());
         } else {
-            U.el('main').style.borderRadius = '10px'; // desktop browser
+            document.getElementById('main').style.borderRadius = '10px'; // desktop browser
         }
 
         if (this._env.dev) {
@@ -197,18 +197,18 @@ class ConsulUI extends DISTRHO.UI {
         const apply = () => {
             this._showStatusTimer = null;
 
-            U.el('status-text').textContent = message;
+            document.getElementById('status-text').textContent = message;
 
-            const valueBox = U.el('status-value-box');
+            const valueBox = document.getElementById('status-value-box');
 
             if (typeof numericValue == 'undefined') {
                 valueBox.style.display = 'none';
             } else {
                 valueBox.style.display = 'inline';
-                U.el('status-value').style.width = `${100 * numericValue}%`;
+                document.getElementById('status-value').style.width = `${100 * numericValue}%`;
             }
 
-            const status = U.el('status');
+            const status = document.getElementById('status');
             status.style.transition = 'none';
             status.style.opacity = '1';
 
@@ -241,7 +241,7 @@ class ConsulUI extends DISTRHO.UI {
         // Use mixer size as the base size for all layouts
         const baseWidth = 800,
               baseHeight = 540,
-              main = U.el('main'),
+              main = document.getElementById('main'),
               dv = window.innerHeight - baseHeight;
 
         if (dv > 0) {
@@ -262,11 +262,11 @@ class ConsulUI extends DISTRHO.UI {
     }
 
     async _toggleUi(collapsed) {
-        const menubar        = U.el('menubar'),
-              menubarLeft    = U.el('menubar-left'),
-              menubarRight   = U.el('menubar-right'),
-              optionCollapse = U.el('option-collapse'),
-              optionExpand   = U.el('option-expand');
+        const menubar        = document.getElementById('menubar'),
+              menubarLeft    = document.getElementById('menubar-left'),
+              menubarRight   = document.getElementById('menubar-right'),
+              optionCollapse = document.getElementById('option-collapse'),
+              optionExpand   = document.getElementById('option-expand');
 
         menubar.querySelectorAll('g-button').forEach(el => {
             if (el == optionExpand) {
@@ -303,16 +303,16 @@ class ConsulUI extends DISTRHO.UI {
 
         // Load layout stylesheet. It is necessary to remove the previous one
         // because layout stylesheets define size properties for body and #main.
-        const style = await U.loadStylesheet(`/layouts/${id}.css`);
+        const style = await Util.loadStylesheet(`/layouts/${id}.css`);
         style.id = `style-${id}`;
 
         if (this._activeLayoutId != null) {
-            document.head.removeChild(U.el(`style-${this._activeLayoutId}`));
+            document.head.removeChild(document.getElementById(`style-${this._activeLayoutId}`));
         }
 
         // Load and replace current layout HTML
-        const layout = await U.loadHtml(`/layouts/${id}.html`);
-        U.el('layout').replaceChildren(layout);
+        const layout = await Util.loadHtml(`/layouts/${id}.html`);
+        document.getElementById('layout').replaceChildren(layout);
 
         this._shouldShowStatus = layout.getAttribute('data-show-status') == 'true';
         this._activeLayoutId = id;
@@ -328,7 +328,7 @@ class ConsulUI extends DISTRHO.UI {
         }
 
         // Zoom view for mobile
-        if (U.isMobileDevice()) {
+        if (Util.isMobileDevice()) {
             this._zoomUi(); // relative to startup size (CSS #main)
         }
 
@@ -402,7 +402,7 @@ class ConsulUI extends DISTRHO.UI {
 
     _applyUiState() {
         for (const controlId in this._uiState) {
-            const control = U.el(controlId);
+            const control = document.getElementById(controlId);
             
             if (control) {
                 control.value = this._uiState[controlId];

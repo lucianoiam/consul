@@ -16,10 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function el(id) {
-    return document.getElementById(id);
-}
-
 export function isMobileDevice() {
     const ua = navigator.userAgent;
     return /Android/i.test(ua) || /iPad|iPhone|iPod/.test(ua);

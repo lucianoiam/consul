@@ -17,25 +17,25 @@
  */
  
 import '/dpf.js';
-import * as U from './util.js';
+import * as Util from './util.js';
 
 class Dialog {
 
     static async _init() {
         const res = await Promise.all([
-            U.loadHtml('dialog.html'),
-            U.loadStylesheet('style/dialog.css')
+            Util.loadHtml('dialog.html'),
+            Util.loadStylesheet('style/dialog.css')
         ]);
 
         // Clone nodes to avoid random errors apparently
         // caused by the inclusion of custom HTML elements
         for (const child of res[0]) {
-            U.el('main').appendChild(child.cloneNode(true));
+            document.getElementById('main').appendChild(child.cloneNode(true));
         }
     }
     
     static getTemplate(id) {
-        return U.el('dialog-templates').content.getElementById(`dialog-${id}`).cloneNode(true);
+        return document.getElementById('dialog-templates').content.getElementById(`dialog-${id}`).cloneNode(true);
     }
 
     get ui() {
@@ -71,22 +71,22 @@ class Dialog {
         this.build().then(el => {
             this.el = el;
 
-            U.el('dialog-content').appendChild(this.el);
+            document.getElementById('dialog-content').appendChild(this.el);
 
             const t = 0.2;
 
-            const root = U.el('dialog-root');
+            const root = document.getElementById('dialog-root');
             root.style.animationName = 'fadeIn';
             root.style.animationDuration = t + 's';
 
-            const box = U.el('dialog-box');
+            const box = document.getElementById('dialog-box');
             box.style.animationName = 'dialogBoxIn';
             box.style.animationDuration = t + 's';
 
-            const ok = U.el('dialog-ok'); 
+            const ok = document.getElementById('dialog-ok'); 
             ok.style.display = this.opt.ok ? 'inline' : 'none';
 
-            const cancel = U.el('dialog-cancel')
+            const cancel = document.getElementById('dialog-cancel')
             cancel.style.display = this.opt.cancel ? 'inline' : 'none';
 
             ['touchstart', 'mousedown'].forEach((evName) => {
@@ -120,7 +120,7 @@ class Dialog {
             }
 
             setTimeout(() => {
-                const lastVisibleButton = Array.from(U.el('dialog-buttons').children)
+                const lastVisibleButton = Array.from(document.getElementById('dialog-buttons').children)
                     .filter(el => el.style.display != 'none')
                     .pop();
 
@@ -142,11 +142,11 @@ class Dialog {
             o.target.removeEventListener(o.type, o.listener);
         }
  
-        const root = U.el('dialog-root')
+        const root = document.getElementById('dialog-root')
         root.style.animationName = 'fadeOut';
         root.style.animationDuration = t + 's';
 
-        const box = U.el('dialog-box');
+        const box = document.getElementById('dialog-box');
         box.style.animationName = 'dialogBoxOut';
         box.style.animationDuration = t + 's';
 
@@ -319,7 +319,7 @@ export class LayoutDialog extends Dialog {
         };
 
         const layoutList = el.querySelector('#dialog-layout-list');
-        const index = await U.loadJSON('layouts/index.json');
+        const index = await Util.loadJSON('layouts/index.json');
 
         for (let layout of index) {
             const li = document.createElement('li');
