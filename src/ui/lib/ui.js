@@ -23,7 +23,7 @@ import { AboutDialog, NetworkDialog, MidiDialog, LayoutDialog } from './dialog.j
 
 function main() {
     DISTRHO.UI.sharedInstance = new ConsulUI({
-        productVersion    : '1.3.1',
+        productVersion    : '1.4.0',
         defaultLayout     : 'mixer',
         controlDescriptor : [
             { name: 'Button', id: 'b', n: 16, cont: false, def: { base: 0   , ch: 1 } },

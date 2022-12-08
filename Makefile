@@ -54,7 +54,7 @@ include hiphop/Makefile.plugins.mk
 # Enable all possible plugin types
 
 ifeq ($(PLUGIN_FORMAT),)
-TARGETS += lv2_sep vst vst3
+TARGETS += lv2_sep clap vst3 vst
 else
 TARGETS += $(PLUGIN_FORMAT)
 ifeq ($(PLUGIN_FORMAT),vst3)
