@@ -74,8 +74,6 @@ public:
 
     void initState(uint32_t index, State& state) override
     {
-        PluginEx::initState(index, state);
-
         switch (index)
         {
         case 0:
@@ -93,15 +91,23 @@ public:
             state.defaultValue = "";
             state.hints = kStateIsBase64Blob | kStateIsOnlyForDSP;
             break;
+        default:
+            PluginEx::initState(index, state);
+            return;
         }
 
         // This is necessary because DISTRHO_PLUGIN_WANT_FULL_STATE==1
-        fState[state.key.buffer()] = state.defaultValue;
+        fState[state.key] = state.defaultValue;
     }
 
-    void setState(const char* key, const char* value) override
+    void setState(const char* cKey, const char* value) override
     {
-        PluginEx::setState(key, value);
+        String key(cKey);
+
+        if (fState.find(key) == fState.end()) {
+            PluginEx::setState(key, value);
+            return;
+        }
 
         if ((::strcmp(key, "midi") == 0) && (::strlen(value) > 0)) {
             std::vector<uint8_t> data = d_getChunkFromBase64String(value);
@@ -114,13 +120,13 @@ public:
 
     String getState(const char* key) const override
     {
-        StateMap::const_iterator it = fState.find(key);
+        StateMap::const_iterator it = fState.find(String(key));
 
         if (it == fState.end()) {
-            return String();
+            return PluginEx::getState(key);
         }
         
-        return String(it->second.c_str());
+        return it->second;
     }
 
     void run(const float** /*inputs*/, float** /*outputs*/, uint32_t /*frames*/,
@@ -134,7 +140,7 @@ public:
     }
 
 private:
-    typedef std::unordered_map<std::string,std::string> StateMap;
+    typedef std::map<String,String> StateMap;
 
     StateMap    fState;
     Ring_Buffer fMidiEvents;
