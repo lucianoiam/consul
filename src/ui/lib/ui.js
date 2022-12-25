@@ -35,15 +35,15 @@ function main() {
 
 class ConsulUI extends DISTRHO.UI {
 
-    static async _init() {
+    static async classInit() {
         await Util.loadStylesheet('style/ui.css');
         document.querySelectorAll('g-button').forEach(el => el.reset()); // reload colors
     }
 
-    constructor(opt) {
+    constructor(args) {
         super();
 
-        this._opt = Object.freeze(opt);
+        this._args = Object.freeze(args);
         this._config = {};
         this._uiState = {};
         this._shouldShowStatus = false;
@@ -66,7 +66,7 @@ class ConsulUI extends DISTRHO.UI {
                     
                     if (Object.keys(this._config).length == 0) {
                         this._config['map'] = this._buildDefaultMidiMap();
-                        this._config['layout'] = this._opt.defaultLayout;
+                        this._config['layout'] = this._args.defaultLayout;
                         this._saveConfig();
                     }
 
@@ -113,7 +113,7 @@ class ConsulUI extends DISTRHO.UI {
             updateButtonImage(ev.target);
 
             if (! ev.target.value) {
-                new AboutDialog(this._opt.productVersion).show();
+                new AboutDialog(this._args.productVersion).show();
             }
         });
 
@@ -153,7 +153,7 @@ class ConsulUI extends DISTRHO.UI {
                 updateButtonImage(ev.target);
 
                 if (! ev.target.value) {
-                    new MidiDialog(this._opt.controlDescriptor, this._config['map'], newMap => {
+                    new MidiDialog(this._args.controlDescriptor, this._config['map'], newMap => {
                         this._setConfigEntry('map', newMap);
                     }).show();
                 }
@@ -361,7 +361,7 @@ class ConsulUI extends DISTRHO.UI {
     _buildDefaultMidiMap() {
         let map = {};
 
-        for (let desc of this._opt.controlDescriptor) {
+        for (let desc of this._args.controlDescriptor) {
             const statusOn = (desc.cont ? /*cc*/0xb0 : /*note on*/0x90) | (desc.def.ch - 1),
                   statusOff = desc.cont ? null : (/*note off*/0x80 | (desc.def.ch - 1));
 
@@ -378,7 +378,7 @@ class ConsulUI extends DISTRHO.UI {
         this._uiState[el.id] = el.value;
 
         const map = this._config['map'][el.id],
-              desc = this._opt.controlDescriptor.find(cd => cd.id == el.id[0]),
+              desc = this._args.controlDescriptor.find(cd => cd.id == el.id[0]),
               midiVal = desc.cont ? v => Math.floor(127 * v)       : v => v ? 127 : 0,
               strVal = desc.cont ? v => Math.round(100 * v) + '%' : v => v ? 'ON' : 'OFF',
               status = (map[0] ^ 0xb0) == 0 /*cc*/? map[0] : (el.value ? /*on*/map[0] : /*off*/map[1]);
@@ -429,6 +429,6 @@ class ConsulUI extends DISTRHO.UI {
 
 }
 
-await ConsulUI._init();
+await ConsulUI.classInit();
 
 main();

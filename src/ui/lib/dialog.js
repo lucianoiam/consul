@@ -21,7 +21,7 @@ import * as Util from './util.js';
 
 class Dialog {
 
-    static async _init() {
+    static async classInit() {
         const res = await Promise.all([
             Util.loadHtml('dialog.html'),
             Util.loadStylesheet('style/dialog.css')
@@ -158,7 +158,7 @@ class Dialog {
 
 }
 
-await Dialog._init();
+await Dialog.classInit();
 
 
 export class AboutDialog extends Dialog {
