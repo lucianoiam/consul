@@ -68,7 +68,7 @@ public:
             /*  size*/ argc - 2
         );
 
-        // Save UI state
+        // Save UI state to plugin instance persistent storage
         fState.setObjectItem(id.getString(), value);
         setState("ui", fState.toJSON());
 
