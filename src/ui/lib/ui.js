@@ -84,12 +84,10 @@ class ConsulUI extends DISTRHO.UI {
         }
     }
 
-    messageReceived(args) {
-        if ((args[0] == 'control') && (args.length == 3)) {
-            const id = args[1], value = args[2];
-            this._uiState[id] = value;
-            document.getElementById(id).value = value;
-        }
+    onControl(...args) {
+        const [id, value] = args;
+        this._uiState[id] = value;
+        document.getElementById(id).value = value;
     }
 
     get _env() {
@@ -383,7 +381,7 @@ class ConsulUI extends DISTRHO.UI {
               strVal = desc.cont ? v => Math.round(100 * v) + '%' : v => v ? 'ON' : 'OFF',
               status = (map[0] ^ 0xb0) == 0 /*cc*/? map[0] : (el.value ? /*on*/map[0] : /*off*/map[1]);
 
-        this.postMessage('control', el.id, el.value, status, /*index*/map[2], midiVal(el.value));
+        this.call('control', el.id, el.value, status, /*index*/map[2], midiVal(el.value));
 
         if (this._shouldShowStatus) {
             // For some reason modifying the DOM here takes abnormally long on

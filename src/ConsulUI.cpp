@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <functional>
+
 #include "WebUI.hpp"
 
 #include "DistrhoPlugin.hpp"
@@ -25,44 +27,18 @@ class ConsulUI : public WebUI
 public:
     ConsulUI()
         : WebUI(800 /*width*/, 540 /*height*/, "#101010" /*background*/)
-    {}
+    {
+        setFunctionHandler("control", 5, std::bind(&ConsulUI::onControl, this,
+                            std::placeholders::_1, std::placeholders::_2));
+    }
 
     void stateChanged(const char* key, const char* value) override
     {
         WebUI::stateChanged(key, value);
 
         if (::strcmp(key, "ui") == 0) {
-            fState = JSValue::fromJSON(value);
+            fState = Variant::fromJSON(value);
         }
-    }
-
-    void onMessageReceived(const JSValue& args, uintptr_t origin) override
-    {
-        if (args[0].getString() != "control") {
-            return;
-        }
-
-        const int argc = args.getArraySize();
-        if (argc < 5) {
-            return;
-        }
-
-        sendMidiEvent(
-            /*status*/ static_cast<uint8_t>(args[3].getNumber()),
-            /* data1*/ static_cast<uint8_t>(args[4].getNumber()),
-            /* data2*/ argc > 5 ? static_cast<uint8_t>(args[5].getNumber()) : 0,
-            /*  size*/ argc - 3
-        );
-
-        const JSValue& id = args[1];
-        const JSValue& value = args[2];
-
-        // Save UI state
-        fState.setObjectItem(id.getString(), value);
-        setState("ui", fState.toJSON());
-
-        // Keep all connected UIs in sync
-        broadcastMessage({"control", id, value}, /*exclude*/reinterpret_cast<Client>(origin));
     }
 
     // DPF UI provides sendNote() only, see also ConsulPlugin.cpp .
@@ -79,8 +55,29 @@ public:
         setState("midi", String::asBase64(&event, sizeof(MidiEvent)));
     }
 
+    void onControl(const Variant& args, uintptr_t origin) {
+        size_t argc = args.getArraySize();
+
+        const Variant& id = args[0];
+        const Variant& value = args[1];
+
+        sendMidiEvent(
+            /*status*/ static_cast<uint8_t>(args[2].getNumber()),
+            /* data1*/ static_cast<uint8_t>(args[3].getNumber()),
+            /* data2*/ argc > 4 ? static_cast<uint8_t>(args[4].getNumber()) : 0,
+            /*  size*/ argc - 2
+        );
+
+        // Save UI state
+        fState.setObjectItem(id.getString(), value);
+        setState("ui", fState.toJSON());
+
+        // Keep all connected UIs in sync
+        callback("onControl", { id, value }, kDestinationAll, /*exclude*/origin);
+    }
+
 private:
-    JSValue fState;
+    Variant fState;
 
 };
 
