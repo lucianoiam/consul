@@ -41,20 +41,6 @@ public:
         }
     }
 
-    // DPF UI provides sendNote() only, see also ConsulPlugin.cpp .
-    void sendMidiEvent(uint8_t status, uint8_t data1, uint8_t data2, uint32_t size)
-    {
-        MidiEvent event;
-        event.frame = 0;
-        event.size = size;
-        event.data[0] = status;
-        event.data[1] = data1;
-        event.data[2] = data2;
-        event.dataExt = nullptr;
-        
-        setState("midi", String::asBase64(&event, sizeof(MidiEvent)));
-    }
-
     void onControl(const Variant& args, uintptr_t origin) {
         size_t argc = args.getArraySize();
 
@@ -74,6 +60,20 @@ public:
 
         // Keep all connected UIs in sync
         callback("onControl", { id, value }, kDestinationAll, /*exclude*/origin);
+    }
+
+    // DPF UI provides sendNote() only, see also ConsulPlugin.cpp .
+    void sendMidiEvent(uint8_t status, uint8_t data1, uint8_t data2, uint32_t size)
+    {
+        MidiEvent event;
+        event.frame = 0;
+        event.size = size;
+        event.data[0] = status;
+        event.data[1] = data1;
+        event.data[2] = data2;
+        event.dataExt = nullptr;
+        
+        setState("midi", String::asBase64(&event, sizeof(MidiEvent)));
     }
 
 private:
