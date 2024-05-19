@@ -12,27 +12,27 @@ NAME = consul
 # --------------------------------------------------------------
 # Project version, used for generating unique symbol names
 
-HIPHOP_PROJECT_VERSION = 1
+DPF_WEBUI_PROJECT_VERSION = 1
 
 # --------------------------------------------------------------
 # Enable Web UI control from devices in the local network
 
-HIPHOP_NETWORK_UI = true
+DPF_WEBUI_NETWORK_UI = true
 
 # --------------------------------------------------------------
 # Enable ARM and Intel fat binary for macOS
 
-HIPHOP_MACOS_UNIVERSAL ?= true
+DPF_WEBUI_MACOS_UNIVERSAL ?= true
 
 # --------------------------------------------------------------
 # Support macOS down to High Sierra
 
-HIPHOP_MACOS_OLD = true
+DPF_WEBUI_MACOS_OLD = true
 
 # --------------------------------------------------------------
 # Enable Web UI by setting web files location
 
-HIPHOP_WEB_UI_PATH = src/ui
+DPF_WEBUI_WEB_UI_PATH = src/ui
 
 # --------------------------------------------------------------
 # Files to build
@@ -48,7 +48,7 @@ FILES_UI  = \
 # --------------------------------------------------------------
 # Do some magic
 
-include hiphop/Makefile.plugins.mk
+include dpfwebui/Makefile.plugins.mk
 
 # --------------------------------------------------------------
 # Enable all possible plugin types
@@ -66,6 +66,6 @@ CXXFLAGS += -std=c++17
 BASE_FLAGS += -Isrc
 LXHELPER_CPPFLAGS += -Isrc
 
-all: $(TARGETS) $(HIPHOP_TARGET)
+all: $(TARGETS) $(DPF_WEBUI_TARGET)
 
 # --------------------------------------------------------------
